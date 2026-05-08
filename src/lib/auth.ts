@@ -1,13 +1,19 @@
-// Server-side auth utilities — credentials via env vars, HMAC-SHA256 signed tokens
+// Server-side auth — credentials MUST be set via env vars, no defaults
+// HMAC-SHA256 signed tokens, rate limiting, constant-time comparison
 
-const AUTH_SECRET = process.env.AUTH_SECRET || "gs_k8Tz!mP3xR7vQ2wL9nB5jF0hD6";
+const AUTH_SECRET = process.env.AUTH_SECRET;
+if (!AUTH_SECRET) console.error("[AUTH] AUTH_SECRET env var is missing!");
 
 export function getAdminEmail(): string {
-  return process.env.ADMIN_EMAIL || "admin@goscalestudio.com";
+  const email = process.env.ADMIN_EMAIL;
+  if (!email) throw new Error("ADMIN_EMAIL env var is not configured");
+  return email;
 }
 
 export function getAdminPassword(): string {
-  return process.env.ADMIN_PASSWORD || "GoScale@2024!";
+  const pw = process.env.ADMIN_PASSWORD;
+  if (!pw) throw new Error("ADMIN_PASSWORD env var is not configured");
+  return pw;
 }
 
 export async function createSignedToken(email: string): Promise<string> {

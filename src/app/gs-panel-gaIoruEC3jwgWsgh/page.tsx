@@ -115,7 +115,7 @@ export default function AdminDashboard() {
         <div className="bg-dark-2 rounded-2xl border border-border p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-display text-lg font-bold">Projets R&eacute;cents</h3>
-            <Link href="/admin/portfolio" className="text-xs text-brand hover:text-brand/80">Voir tout &rarr;</Link>
+            <Link href="/gs-panel-gaIoruEC3jwgWsgh/portfolio" className="text-xs text-brand hover:text-brand/80">Voir tout &rarr;</Link>
           </div>
           <div className="flex flex-col gap-3">
             {projects.length === 0 && (
@@ -141,7 +141,7 @@ export default function AdminDashboard() {
         <div className="bg-dark-2 rounded-2xl border border-border p-6">
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-display text-lg font-bold">Messages R&eacute;cents</h3>
-            <Link href="/admin/messages" className="text-xs text-brand hover:text-brand/80">Voir tout &rarr;</Link>
+            <Link href="/gs-panel-gaIoruEC3jwgWsgh/messages" className="text-xs text-brand hover:text-brand/80">Voir tout &rarr;</Link>
           </div>
           <div className="flex flex-col gap-3">
             {messages.length === 0 && (

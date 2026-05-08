@@ -9,12 +9,14 @@ import {
   ShieldCheck, AlertTriangle,
 } from "lucide-react";
 
+const PANEL = "/gs-panel-gaIoruEC3jwgWsgh";
+
 const sidebarLinks = [
-  { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/admin/portfolio", label: "Portfolio", icon: FolderOpen },
-  { href: "/admin/messages", label: "Messages", icon: MessageSquare },
-  { href: "/admin/settings", label: "Parametres", icon: Settings },
+  { href: PANEL, label: "Dashboard", icon: LayoutDashboard },
+  { href: `${PANEL}/analytics`, label: "Analytics", icon: BarChart3 },
+  { href: `${PANEL}/portfolio`, label: "Portfolio", icon: FolderOpen },
+  { href: `${PANEL}/messages`, label: "Messages", icon: MessageSquare },
+  { href: `${PANEL}/settings`, label: "Parametres", icon: Settings },
 ];
 
 function LoginPage() {
@@ -165,7 +167,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   const isActive = (href: string) => {
-    if (href === "/admin") return pathname === "/admin";
+    if (href === PANEL) return pathname === PANEL;
     return pathname.startsWith(href);
   };
 
