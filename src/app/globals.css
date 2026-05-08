@@ -164,11 +164,11 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); }
 }
 
 .anim { opacity:0 }
-.anim.visible { animation-fill-mode:both }
-.anim.fade-up.visible { animation: fadeUp .7s cubic-bezier(.4,0,.2,1) both }
-.anim.fade-left.visible { animation: fadeLeft .7s cubic-bezier(.4,0,.2,1) both }
-.anim.fade-right.visible { animation: fadeRight .7s cubic-bezier(.4,0,.2,1) both }
-.anim.scale-in.visible { animation: scaleIn .6s cubic-bezier(.4,0,.2,1) both }
+.anim[data-visible] { animation-fill-mode:both }
+.anim.fade-up[data-visible] { animation: fadeUp .7s cubic-bezier(.4,0,.2,1) both }
+.anim.fade-left[data-visible] { animation: fadeLeft .7s cubic-bezier(.4,0,.2,1) both }
+.anim.fade-right[data-visible] { animation: fadeRight .7s cubic-bezier(.4,0,.2,1) both }
+.anim.scale-in[data-visible] { animation: scaleIn .6s cubic-bezier(.4,0,.2,1) both }
 
 .delay-1 { animation-delay:.1s !important }
 .delay-2 { animation-delay:.2s !important }

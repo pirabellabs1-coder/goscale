@@ -141,14 +141,14 @@ export default function HomePage() {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("Tous");
 
-  // Scroll animations observer
+  // Scroll animations observer — uses data attribute so React re-renders don't remove it
   useEffect(() => {
-    const els = document.querySelectorAll(".anim");
+    const els = document.querySelectorAll(".anim:not([data-visible])");
     const obs = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           if (e.isIntersecting) {
-            e.target.classList.add("visible");
+            e.target.setAttribute("data-visible", "");
             obs.unobserve(e.target);
           }
         });
@@ -157,7 +157,7 @@ export default function HomePage() {
     );
     els.forEach((el) => obs.observe(el));
     return () => obs.disconnect();
-  }, []);
+  }); // no deps — re-runs on every render to catch dynamically added elements
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 50);
@@ -741,30 +741,35 @@ export default function HomePage() {
             <p className="anim fade-up delay-2 text-white/50 max-w-xl mx-auto text-sm sm:text-base">Decrivez votre besoin et recevez un devis personnalise sous 24h.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8 sm:gap-12">
-            <form className="anim fade-right flex flex-col gap-4" onSubmit={(e) => e.preventDefault()}>
+            <form className="anim fade-right flex flex-col gap-4" action="https://formsubmit.co/contact@goscalestudio.com" method="POST">
+              <input type="hidden" name="_subject" value="Nouveau message depuis GoScaleStudio" />
+              <input type="hidden" name="_captcha" value="false" />
+              <input type="hidden" name="_next" value="https://goscalestudio.com/#contact" />
+              <input type="hidden" name="_template" value="box" />
               <div className="grid grid-cols-2 gap-4">
-                <input type="text" placeholder="Prenom & Nom" className="input-field" />
-                <input type="email" placeholder="Email" className="input-field" />
+                <input type="text" name="name" placeholder="Pr&eacute;nom &amp; Nom" className="input-field" required />
+                <input type="email" name="email" placeholder="Email" className="input-field" required />
               </div>
-              <input type="tel" placeholder="Telephone (optionnel)" className="input-field" />
-              <select className="input-field" defaultValue="">
-                <option value="" disabled>Service souhaite</option>
+              <input type="tel" name="phone" placeholder="WhatsApp / T&eacute;l&eacute;phone" className="input-field" required />
+              <select className="input-field" name="service" required defaultValue="">
+                <option value="" disabled>Service souhait&eacute;</option>
                 {services.map((s, i) => (
                   <option key={i} value={s.title}>{s.title}</option>
                 ))}
               </select>
-              <textarea placeholder="Decrivez votre projet..." rows={4} className="input-field resize-none" />
+              <textarea name="message" placeholder="D&eacute;crivez votre projet..." rows={4} className="input-field resize-none" required />
               <button type="submit" className="btn-primary px-8 py-4 rounded-xl text-sm sm:text-base flex items-center justify-center gap-2 mt-2">
                 Envoyer <ArrowRight size={18} />
               </button>
             </form>
             <div className="anim fade-left flex flex-col gap-4 sm:gap-6 justify-center">
               {[
-                { icon: Mail, label: "Email", value: "contact@goscalestudio.com" },
-                { icon: MapPin, label: "Localisation", value: "Remote — France & International" },
-                { icon: Clock, label: "Reponse", value: "Sous 24h garantie" },
+                { icon: MessageSquare, label: "WhatsApp", value: "+229 01 68 24 28 66", href: "https://wa.me/22901682428066" },
+                { icon: Mail, label: "Email", value: "contact@goscalestudio.com", href: "mailto:contact@goscalestudio.com" },
+                { icon: MapPin, label: "Localisation", value: "Remote — France & International", href: undefined },
+                { icon: Clock, label: "R\u00e9ponse", value: "Sous 24h garantie", href: undefined },
               ].map((c, i) => (
-                <div key={i} className="glass rounded-xl p-4 sm:p-5 flex items-center gap-4">
+                <a key={i} href={c.href || undefined} target={c.href?.startsWith("http") ? "_blank" : undefined} rel={c.href?.startsWith("http") ? "noopener noreferrer" : undefined} className="glass rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-brand/20 transition-all">
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand/10 flex items-center justify-center flex-shrink-0">
                     <c.icon size={18} className="text-brand" />
                   </div>
@@ -772,7 +777,7 @@ export default function HomePage() {
                     <p className="text-white/40 text-xs">{c.label}</p>
                     <p className="font-semibold text-xs sm:text-sm">{c.value}</p>
                   </div>
-                </div>
+                </a>
               ))}
             </div>
           </div>
@@ -798,11 +803,11 @@ export default function HomePage() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} GoScaleStudio. Tous droits reserves.</p>
             <p>
-              Realise par{" "}
+              R&eacute;alis&eacute; par{" "}
               <a href="https://pirabellabs.com" target="_blank" rel="noopener noreferrer" className="text-brand/60 hover:text-brand transition-colors font-semibold">
                 Pirabel Labs
               </a>
-              {" "}— Agence Web, Marketing & SEO
+              , Agence Web, Marketing &amp; SEO
             </p>
           </div>
         </div>
