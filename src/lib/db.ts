@@ -1,0 +1,230 @@
+import { sql } from "@vercel/postgres";
+
+// ── Setup: create tables ──
+export async function createTables() {
+  await sql`
+    CREATE TABLE IF NOT EXISTS projects (
+      id SERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      category TEXT NOT NULL DEFAULT 'Automatisation',
+      description TEXT NOT NULL DEFAULT '',
+      long_description TEXT NOT NULL DEFAULT '',
+      result TEXT NOT NULL DEFAULT '',
+      tools TEXT NOT NULL DEFAULT '',
+      status TEXT NOT NULL DEFAULT 'draft',
+      image_url TEXT NOT NULL DEFAULT '',
+      video_url TEXT NOT NULL DEFAULT '',
+      sort_order INT NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+
+  await sql`
+    CREATE TABLE IF NOT EXISTS messages (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL,
+      phone TEXT NOT NULL DEFAULT '',
+      service TEXT NOT NULL DEFAULT '',
+      message TEXT NOT NULL DEFAULT '',
+      is_read BOOLEAN NOT NULL DEFAULT FALSE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+}
+
+// ── Projects ──
+export async function getProjects() {
+  const { rows } = await sql`
+    SELECT * FROM projects ORDER BY sort_order ASC, created_at DESC
+  `;
+  return rows;
+}
+
+export async function getPublishedProjects() {
+  const { rows } = await sql`
+    SELECT * FROM projects WHERE status = 'published' ORDER BY sort_order ASC, created_at DESC
+  `;
+  return rows;
+}
+
+export async function getProjectById(id: number) {
+  const { rows } = await sql`SELECT * FROM projects WHERE id = ${id}`;
+  return rows[0] || null;
+}
+
+export async function createProject(data: {
+  title: string;
+  category: string;
+  description: string;
+  long_description: string;
+  result: string;
+  tools: string;
+  status: string;
+  image_url: string;
+  video_url?: string;
+  sort_order: number;
+}) {
+  const { rows } = await sql`
+    INSERT INTO projects (title, category, description, long_description, result, tools, status, image_url, video_url, sort_order)
+    VALUES (${data.title}, ${data.category}, ${data.description}, ${data.long_description}, ${data.result}, ${data.tools}, ${data.status}, ${data.image_url}, ${data.video_url || ""}, ${data.sort_order})
+    RETURNING *
+  `;
+  return rows[0];
+}
+
+export async function updateProject(
+  id: number,
+  data: Partial<{
+    title: string;
+    category: string;
+    description: string;
+    long_description: string;
+    result: string;
+    tools: string;
+    status: string;
+    image_url: string;
+    video_url: string;
+    sort_order: number;
+  }>
+) {
+  // Build dynamic update — only update provided fields
+  const sets: string[] = [];
+  const values: unknown[] = [];
+  let idx = 1;
+
+  if (data.title !== undefined) { sets.push(`title = $${idx++}`); values.push(data.title); }
+  if (data.category !== undefined) { sets.push(`category = $${idx++}`); values.push(data.category); }
+  if (data.description !== undefined) { sets.push(`description = $${idx++}`); values.push(data.description); }
+  if (data.long_description !== undefined) { sets.push(`long_description = $${idx++}`); values.push(data.long_description); }
+  if (data.result !== undefined) { sets.push(`result = $${idx++}`); values.push(data.result); }
+  if (data.tools !== undefined) { sets.push(`tools = $${idx++}`); values.push(data.tools); }
+  if (data.status !== undefined) { sets.push(`status = $${idx++}`); values.push(data.status); }
+  if (data.image_url !== undefined) { sets.push(`image_url = $${idx++}`); values.push(data.image_url); }
+  if (data.video_url !== undefined) { sets.push(`video_url = $${idx++}`); values.push(data.video_url); }
+  if (data.sort_order !== undefined) { sets.push(`sort_order = $${idx++}`); values.push(data.sort_order); }
+
+  if (sets.length === 0) return null;
+
+  sets.push(`updated_at = NOW()`);
+
+  // Use sql tagged template for the update
+  const { rows } = await sql.query(
+    `UPDATE projects SET ${sets.join(", ")} WHERE id = $${idx} RETURNING *`,
+    [...values, id]
+  );
+  return rows[0];
+}
+
+export async function deleteProjectById(id: number) {
+  await sql`DELETE FROM projects WHERE id = ${id}`;
+}
+
+export async function toggleProjectStatus(id: number) {
+  const { rows } = await sql`
+    UPDATE projects
+    SET status = CASE WHEN status = 'published' THEN 'draft' ELSE 'published' END,
+        updated_at = NOW()
+    WHERE id = ${id}
+    RETURNING *
+  `;
+  return rows[0];
+}
+
+export async function duplicateProjectById(id: number) {
+  const { rows } = await sql`
+    INSERT INTO projects (title, category, description, long_description, result, tools, status, image_url, video_url, sort_order)
+    SELECT title || ' (copie)', category, description, long_description, result, tools, 'draft', image_url, video_url, sort_order + 1
+    FROM projects WHERE id = ${id}
+    RETURNING *
+  `;
+  return rows[0];
+}
+
+// ── Messages ──
+export async function getMessages() {
+  const { rows } = await sql`
+    SELECT * FROM messages ORDER BY created_at DESC
+  `;
+  return rows;
+}
+
+export async function getMessageById(id: number) {
+  const { rows } = await sql`SELECT * FROM messages WHERE id = ${id}`;
+  return rows[0] || null;
+}
+
+export async function createMessage(data: {
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  message: string;
+}) {
+  const { rows } = await sql`
+    INSERT INTO messages (name, email, phone, service, message)
+    VALUES (${data.name}, ${data.email}, ${data.phone}, ${data.service}, ${data.message})
+    RETURNING *
+  `;
+  return rows[0];
+}
+
+export async function markMessageRead(id: number) {
+  const { rows } = await sql`
+    UPDATE messages SET is_read = TRUE WHERE id = ${id} RETURNING *
+  `;
+  return rows[0];
+}
+
+export async function deleteMessageById(id: number) {
+  await sql`DELETE FROM messages WHERE id = ${id}`;
+}
+
+// ── Stats ──
+export async function getStats() {
+  const projectStats = await sql`
+    SELECT
+      COUNT(*)::int AS total_projects,
+      COUNT(*) FILTER (WHERE status = 'published')::int AS published,
+      COUNT(*) FILTER (WHERE status = 'draft')::int AS drafts
+    FROM projects
+  `;
+  const messageStats = await sql`
+    SELECT
+      COUNT(*)::int AS total_messages,
+      COUNT(*) FILTER (WHERE is_read = FALSE)::int AS unread,
+      COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '30 days')::int AS this_month
+    FROM messages
+  `;
+  const messagesByService = await sql`
+    SELECT service, COUNT(*)::int AS count
+    FROM messages
+    GROUP BY service
+    ORDER BY count DESC
+  `;
+  const messagesByMonth = await sql`
+    SELECT
+      TO_CHAR(created_at, 'Mon') AS month,
+      EXTRACT(MONTH FROM created_at)::int AS month_num,
+      COUNT(*)::int AS count
+    FROM messages
+    WHERE created_at > NOW() - INTERVAL '12 months'
+    GROUP BY month, month_num
+    ORDER BY month_num
+  `;
+  const projectsByCategory = await sql`
+    SELECT category, COUNT(*)::int AS count
+    FROM projects
+    GROUP BY category
+    ORDER BY count DESC
+  `;
+
+  return {
+    projects: projectStats.rows[0],
+    messages: messageStats.rows[0],
+    messagesByService: messagesByService.rows,
+    messagesByMonth: messagesByMonth.rows,
+    projectsByCategory: projectsByCategory.rows,
+  };
+}

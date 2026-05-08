@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import { ProjectProvider } from "@/lib/ProjectContext";
 import "./globals.css";
@@ -53,6 +54,13 @@ export const metadata: Metadata = {
       "Chatbots IA, assistants vocaux, automatisations et sites web performants. 65+ projets livrés.",
   },
   robots: { index: true, follow: true },
+  verification: {
+    google: "1rClZtKcWbBVWicoHQQt4LOguUgvdcyxq8QKM7QNrLw",
+  },
+  icons: {
+    icon: "/logo.jpg",
+    apple: "/logo.jpg",
+  },
 };
 
 export default function RootLayout({
@@ -63,6 +71,16 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${jakarta.variable} ${sora.variable} scroll-smooth`}>
       <body className="font-sans antialiased">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-NQ6SEVPQD3"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-NQ6SEVPQD3');`}
+        </Script>
         <ProjectProvider>{children}</ProjectProvider>
       </body>
     </html>

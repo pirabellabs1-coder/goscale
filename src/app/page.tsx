@@ -223,8 +223,10 @@ export default function HomePage() {
       {/* ── Navbar ── */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-dark/90 backdrop-blur-lg border-b border-border" : ""}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <button onClick={() => scrollTo("hero")} className="font-display text-xl font-bold">
-            <span className="gradient-text">GoScale</span>Studio
+          <button onClick={() => scrollTo("hero")} className="flex items-center gap-2">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.jpg" alt="GoScaleStudio" className="h-8 w-8 rounded-lg object-cover" />
+            <span className="font-display text-xl font-bold"><span className="gradient-text">GoScale</span>Studio</span>
           </button>
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((l) => (
@@ -528,7 +530,7 @@ export default function HomePage() {
                     <div key={p.id} className="anim fade-up group bg-dark-3 rounded-2xl border border-border overflow-hidden hover:border-brand/30 transition-all duration-300 hover:-translate-y-1">
                       <div className="relative h-44 sm:h-52 overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={p.img} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         <div className="portfolio-gradient absolute inset-0" />
                         <span className={`absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded-full border ${colorMap[cat] || colorMap.brand}`}>
                           {p.category}
@@ -536,7 +538,7 @@ export default function HomePage() {
                       </div>
                       <div className="p-5 sm:p-6">
                         <h3 className="font-display text-base sm:text-lg font-bold mb-2">{p.title}</h3>
-                        <p className="text-white/50 text-xs sm:text-sm mb-4 leading-relaxed">{p.desc}</p>
+                        <p className="text-white/50 text-xs sm:text-sm mb-4 leading-relaxed">{p.description}</p>
                         <div className="flex items-center justify-between">
                           <span className="text-brand font-bold text-xs sm:text-sm">{p.result}</span>
                           <div className="flex gap-1.5 flex-wrap justify-end">
@@ -741,11 +743,49 @@ export default function HomePage() {
             <p className="anim fade-up delay-2 text-white/50 max-w-xl mx-auto text-sm sm:text-base">Decrivez votre besoin et recevez un devis personnalise sous 24h.</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8 sm:gap-12">
-            <form className="anim fade-right flex flex-col gap-4" action="https://formsubmit.co/contact@goscalestudio.com" method="POST">
-              <input type="hidden" name="_subject" value="Nouveau message depuis GoScaleStudio" />
-              <input type="hidden" name="_captcha" value="false" />
-              <input type="hidden" name="_next" value="https://goscalestudio.com/#contact" />
-              <input type="hidden" name="_template" value="box" />
+            <form className="anim fade-right flex flex-col gap-4" onSubmit={async (e) => {
+              e.preventDefault();
+              const form = e.currentTarget;
+              const data = new FormData(form);
+              const btn = form.querySelector("button[type=submit]") as HTMLButtonElement;
+              btn.disabled = true;
+              btn.textContent = "Envoi en cours...";
+              try {
+                // Save to database
+                await fetch("/api/messages", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    name: data.get("name"),
+                    email: data.get("email"),
+                    phone: data.get("phone"),
+                    service: data.get("service"),
+                    message: data.get("message"),
+                  }),
+                }).catch(() => {});
+                // Also send via Formsubmit
+                await fetch("https://formsubmit.co/ajax/contact@goscalestudio.com", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json", "Accept": "application/json" },
+                  body: JSON.stringify({
+                    name: data.get("name"),
+                    email: data.get("email"),
+                    phone: data.get("phone"),
+                    service: data.get("service"),
+                    message: data.get("message"),
+                    _subject: "Nouveau message depuis GoScaleStudio",
+                    _template: "box",
+                  }),
+                }).catch(() => {});
+                form.reset();
+                btn.textContent = "Message envoy\u00e9 !";
+                setTimeout(() => { btn.disabled = false; btn.innerHTML = "Envoyer"; }, 3000);
+              } catch {
+                btn.disabled = false;
+                btn.textContent = "Erreur, r\u00e9essayez";
+                setTimeout(() => { btn.innerHTML = "Envoyer"; }, 3000);
+              }
+            }}>
               <div className="grid grid-cols-2 gap-4">
                 <input type="text" name="name" placeholder="Pr&eacute;nom &amp; Nom" className="input-field" required />
                 <input type="email" name="email" placeholder="Email" className="input-field" required />
@@ -764,7 +804,7 @@ export default function HomePage() {
             </form>
             <div className="anim fade-left flex flex-col gap-4 sm:gap-6 justify-center">
               {[
-                { icon: MessageSquare, label: "WhatsApp", value: "+229 01 68 24 28 66", href: "https://wa.me/22901682428066" },
+                { icon: MessageSquare, label: "WhatsApp", value: "+229 01 68 24 28 66", href: "https://wa.me/2290168242866" },
                 { icon: Mail, label: "Email", value: "contact@goscalestudio.com", href: "mailto:contact@goscalestudio.com" },
                 { icon: MapPin, label: "Localisation", value: "Remote — France & International", href: undefined },
                 { icon: Clock, label: "R\u00e9ponse", value: "Sous 24h garantie", href: undefined },

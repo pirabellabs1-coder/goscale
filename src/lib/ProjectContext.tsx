@@ -1,74 +1,152 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { Project, Message, initialProjects, initialMessages } from "./data";
+import { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+
+export interface Project {
+  id: number;
+  title: string;
+  category: string;
+  description: string;
+  long_description: string;
+  result: string;
+  tools: string;
+  status: "published" | "draft";
+  image_url: string;
+  video_url: string;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Message {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+}
 
 interface ProjectContextType {
   projects: Project[];
   messages: Message[];
-  addProject: (p: Omit<Project, "id">) => void;
-  updateProject: (id: number, data: Partial<Project>) => void;
-  deleteProject: (id: number) => void;
-  toggleStatus: (id: number) => void;
-  duplicateProject: (id: number) => void;
+  loading: boolean;
+  refreshProjects: () => Promise<void>;
+  refreshMessages: () => Promise<void>;
+  addProject: (p: Partial<Project>) => Promise<void>;
+  updateProject: (id: number, data: Partial<Project>) => Promise<void>;
+  deleteProject: (id: number) => Promise<void>;
+  toggleStatus: (id: number) => Promise<void>;
+  duplicateProject: (id: number) => Promise<void>;
+  markMessageRead: (id: number) => Promise<void>;
+  deleteMessage: (id: number) => Promise<void>;
   publishedProjects: Project[];
+  setupDatabase: () => Promise<boolean>;
+  dbReady: boolean;
 }
 
 const ProjectContext = createContext<ProjectContextType | null>(null);
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
   const [projects, setProjects] = useState<Project[]>([]);
-  const [messages] = useState<Message[]>(initialMessages);
-  const [loaded, setLoaded] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [dbReady, setDbReady] = useState(false);
 
-  useEffect(() => {
-    const saved = localStorage.getItem("gs-projects");
-    if (saved) {
-      try {
-        setProjects(JSON.parse(saved));
-      } catch {
-        setProjects(initialProjects);
+  const refreshProjects = useCallback(async () => {
+    try {
+      const res = await fetch("/api/projects");
+      if (res.ok) {
+        const data = await res.json();
+        setProjects(data);
+        setDbReady(true);
       }
-    } else {
-      setProjects(initialProjects);
+    } catch {
+      // DB not available yet
     }
-    setLoaded(true);
+  }, []);
+
+  const refreshMessages = useCallback(async () => {
+    try {
+      const res = await fetch("/api/messages");
+      if (res.ok) {
+        const data = await res.json();
+        setMessages(data);
+      }
+    } catch {
+      // DB not available yet
+    }
   }, []);
 
   useEffect(() => {
-    if (loaded) {
-      localStorage.setItem("gs-projects", JSON.stringify(projects));
-    }
-  }, [projects, loaded]);
+    Promise.all([refreshProjects(), refreshMessages()]).finally(() => setLoading(false));
+  }, [refreshProjects, refreshMessages]);
 
-  const addProject = (p: Omit<Project, "id">) => {
-    setProjects((prev) => [{ ...p, id: Date.now() }, ...prev]);
+  const addProject = async (p: Partial<Project>) => {
+    const res = await fetch("/api/projects", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(p),
+    });
+    if (res.ok) await refreshProjects();
   };
 
-  const updateProject = (id: number, data: Partial<Project>) => {
-    setProjects((prev) =>
-      prev.map((p) => (p.id === id ? { ...p, ...data } : p))
-    );
+  const updateProject = async (id: number, data: Partial<Project>) => {
+    const res = await fetch(`/api/projects/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+    if (res.ok) await refreshProjects();
   };
 
-  const deleteProject = (id: number) => {
-    setProjects((prev) => prev.filter((p) => p.id !== id));
+  const deleteProject = async (id: number) => {
+    const res = await fetch(`/api/projects/${id}`, { method: "DELETE" });
+    if (res.ok) await refreshProjects();
   };
 
-  const toggleStatus = (id: number) => {
-    setProjects((prev) =>
-      prev.map((p) =>
-        p.id === id
-          ? { ...p, status: p.status === "published" ? "draft" : "published" }
-          : p
-      )
-    );
+  const toggleStatus = async (id: number) => {
+    const res = await fetch(`/api/projects/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "toggle" }),
+    });
+    if (res.ok) await refreshProjects();
   };
 
-  const duplicateProject = (id: number) => {
-    const p = projects.find((x) => x.id === id);
-    if (p) {
-      addProject({ ...p, title: p.title + " (copie)", status: "draft" });
+  const duplicateProject = async (id: number) => {
+    const res = await fetch(`/api/projects/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "duplicate" }),
+    });
+    if (res.ok) await refreshProjects();
+  };
+
+  const markMessageRead = async (id: number) => {
+    const res = await fetch(`/api/messages/${id}`, { method: "PUT" });
+    if (res.ok) await refreshMessages();
+  };
+
+  const deleteMessage = async (id: number) => {
+    const res = await fetch(`/api/messages/${id}`, { method: "DELETE" });
+    if (res.ok) await refreshMessages();
+  };
+
+  const setupDatabase = async () => {
+    try {
+      const res = await fetch("/api/setup", { method: "POST" });
+      if (res.ok) {
+        setDbReady(true);
+        await refreshProjects();
+        await refreshMessages();
+        return true;
+      }
+      return false;
+    } catch {
+      return false;
     }
   };
 
@@ -79,12 +157,19 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       value={{
         projects,
         messages,
+        loading,
+        refreshProjects,
+        refreshMessages,
         addProject,
         updateProject,
         deleteProject,
         toggleStatus,
         duplicateProject,
+        markMessageRead,
+        deleteMessage,
         publishedProjects,
+        setupDatabase,
+        dbReady,
       }}
     >
       {children}
