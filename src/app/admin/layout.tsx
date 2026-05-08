@@ -6,8 +6,8 @@ import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard, BarChart3, FolderOpen, MessageSquare,
   Settings, Menu, X, LogOut, ChevronRight, Lock, Eye, EyeOff,
+  ShieldCheck, AlertTriangle,
 } from "lucide-react";
-import { isAuthenticated, verifyCredentials, login, logout } from "@/lib/auth";
 
 const sidebarLinks = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -23,22 +23,35 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [attempts, setAttempts] = useState(0);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
-    // Small delay to prevent brute force
-    setTimeout(() => {
-      if (verifyCredentials(email, password)) {
-        login();
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
         window.location.reload();
+      } else if (res.status === 429) {
+        setError(data.error || "Trop de tentatives. R\u00e9essayez plus tard.");
       } else {
-        setError("Email ou mot de passe incorrect");
+        setAttempts((p) => p + 1);
+        setError(data.error || "Identifiants incorrects");
         setLoading(false);
       }
-    }, 500);
+    } catch {
+      setError("Erreur de connexion. V\u00e9rifiez votre r\u00e9seau.");
+      setLoading(false);
+    }
   };
 
   return (
@@ -48,25 +61,33 @@ function LoginPage() {
           <div className="font-display text-2xl font-bold mb-2">
             <span className="gradient-text">GoScale</span>Studio
           </div>
-          <p className="text-white/40 text-sm">Espace Administration</p>
+          <p className="text-white/40 text-sm">Espace Administration S&eacute;curis&eacute;</p>
         </div>
 
         <form onSubmit={handleLogin} className="bg-dark-2 rounded-2xl border border-border p-8">
           <div className="w-14 h-14 rounded-2xl bg-brand/10 flex items-center justify-center mx-auto mb-6">
-            <Lock size={24} className="text-brand" />
+            <ShieldCheck size={24} className="text-brand" />
           </div>
 
-          <h2 className="font-display text-xl font-bold text-center mb-6">Connexion</h2>
+          <h2 className="font-display text-xl font-bold text-center mb-2">Connexion</h2>
+          <p className="text-center text-white/30 text-xs mb-6">Authentification s&eacute;curis&eacute;e HMAC-SHA256</p>
 
           {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-xl mb-4">
-              {error}
+            <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-xl mb-4 flex items-center gap-2">
+              <AlertTriangle size={16} className="flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {attempts >= 3 && (
+            <div className="bg-amber/10 border border-amber/20 text-amber text-xs px-4 py-3 rounded-xl mb-4">
+              Attention : {5 - attempts > 0 ? `${5 - attempts} tentative(s) restante(s)` : "Compte temporairement verrouill\u00e9"}
             </div>
           )}
 
           <div className="flex flex-col gap-4">
             <div>
-              <label className="text-xs text-white/40 mb-1.5 block">Email</label>
+              <label className="text-xs text-white/40 mb-1.5 block">Email administrateur</label>
               <input
                 type="email"
                 value={email}
@@ -74,6 +95,7 @@ function LoginPage() {
                 className="input-field"
                 placeholder="admin@goscalestudio.com"
                 required
+                autoComplete="email"
               />
             </div>
 
@@ -85,8 +107,9 @@ function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="input-field pr-10"
-                  placeholder="••••••••"
+                  placeholder="••••••••••••"
                   required
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
@@ -103,14 +126,15 @@ function LoginPage() {
               disabled={loading}
               className="btn-primary px-6 py-3.5 rounded-xl text-sm font-bold mt-2 disabled:opacity-50"
             >
-              {loading ? "Connexion..." : "Se connecter"}
+              {loading ? "V\u00e9rification..." : "Se connecter"}
             </button>
           </div>
         </form>
 
-        <p className="text-center text-white/20 text-xs mt-6">
-          Acces reserve aux administrateurs
-        </p>
+        <div className="text-center mt-6 flex items-center justify-center gap-2 text-white/15 text-xs">
+          <Lock size={10} />
+          <span>Connexion chiffr&eacute;e &middot; Cookie httpOnly &middot; Token sign&eacute; 24h</span>
+        </div>
       </div>
     </div>
   );
@@ -124,12 +148,19 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [checking, setChecking] = useState(true);
 
   useEffect(() => {
-    setAuthenticated(isAuthenticated());
-    setChecking(false);
+    fetch("/api/auth/check")
+      .then((r) => {
+        setAuthenticated(r.ok);
+        setChecking(false);
+      })
+      .catch(() => {
+        setAuthenticated(false);
+        setChecking(false);
+      });
   }, []);
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
   };
 
@@ -139,7 +170,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   if (checking) {
-    return <div className="bg-dark min-h-screen" />;
+    return (
+      <div className="bg-dark min-h-screen flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
   }
 
   if (!authenticated) {
@@ -178,9 +213,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <LogOut size={18} />
             Retour au site
           </Link>
-          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-400/60 hover:text-red-400 hover:bg-red-500/5 transition-all">
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-400/60 hover:text-red-400 hover:bg-red-500/5 transition-all text-left">
             <Lock size={18} />
-            Deconnexion
+            D&eacute;connexion
           </button>
         </div>
       </aside>
@@ -218,9 +253,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <LogOut size={18} />
                 Retour au site
               </Link>
-              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-400/60 hover:text-red-400">
+              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm text-red-400/60 hover:text-red-400 text-left">
                 <Lock size={18} />
-                Deconnexion
+                D&eacute;connexion
               </button>
             </div>
           </aside>
