@@ -145,6 +145,42 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); }
 .faq-chevron { transition: transform .3s ease; }
 .faq-item.open .faq-chevron { transform: rotate(180deg); }
 
+/* Scroll Animations */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(40px) }
+  to { opacity:1; transform:translateY(0) }
+}
+@keyframes fadeLeft {
+  from { opacity:0; transform:translateX(-40px) }
+  to { opacity:1; transform:translateX(0) }
+}
+@keyframes fadeRight {
+  from { opacity:0; transform:translateX(40px) }
+  to { opacity:1; transform:translateX(0) }
+}
+@keyframes scaleIn {
+  from { opacity:0; transform:scale(.9) }
+  to { opacity:1; transform:scale(1) }
+}
+
+.anim { opacity:0 }
+.anim.visible { animation-fill-mode:both }
+.anim.fade-up.visible { animation: fadeUp .7s cubic-bezier(.4,0,.2,1) both }
+.anim.fade-left.visible { animation: fadeLeft .7s cubic-bezier(.4,0,.2,1) both }
+.anim.fade-right.visible { animation: fadeRight .7s cubic-bezier(.4,0,.2,1) both }
+.anim.scale-in.visible { animation: scaleIn .6s cubic-bezier(.4,0,.2,1) both }
+
+.delay-1 { animation-delay:.1s !important }
+.delay-2 { animation-delay:.2s !important }
+.delay-3 { animation-delay:.3s !important }
+.delay-4 { animation-delay:.4s !important }
+.delay-5 { animation-delay:.5s !important }
+.delay-6 { animation-delay:.6s !important }
+
+/* Progress bar animation */
+@keyframes progressFill { from { width:0 } }
+.progress-bar { animation: progressFill 1.5s cubic-bezier(.4,0,.2,1) both }
+
 /* Admin toggle */
 .toggle-track { width:44px;height:24px;border-radius:12px;background:#333;position:relative;cursor:pointer;transition:background .3s }
 .toggle-track.on { background:#10B981 }
