@@ -3,6 +3,7 @@ import Script from "next/script";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import { ProjectProvider } from "@/lib/ProjectContext";
 import Preloader from "@/components/public/Preloader";
+import { faqItems } from "@/lib/faq-data";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -392,6 +393,22 @@ export default function RootLayout({
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdServices) }}
+        />
+        {/* FAQPage JSON-LD — SSR-rendered so Google + AI crawlers see it without JS */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: faqItems.map((f) => ({
+                "@type": "Question",
+                name: f.q.fr,
+                inLanguage: "fr",
+                acceptedAnswer: { "@type": "Answer", text: f.a.fr, inLanguage: "fr" },
+              })),
+            }),
+          }}
         />
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-NQ6SEVPQD3"

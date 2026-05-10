@@ -85,7 +85,16 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    Promise.all([refreshProjects(), refreshMessages()]).finally(() => setLoading(false));
+    let cancelled = false;
+    const run = async () => {
+      await Promise.all([refreshProjects(), refreshMessages()]);
+      if (!cancelled) setLoading(false);
+    };
+    // Defer one microtask so the effect body itself is side-effect-free
+    queueMicrotask(run);
+    return () => {
+      cancelled = true;
+    };
   }, [refreshProjects, refreshMessages]);
 
   const addProject = async (p: Partial<Project>) => {
