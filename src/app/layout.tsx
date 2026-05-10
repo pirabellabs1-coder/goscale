@@ -252,22 +252,16 @@ export default function RootLayout({
   return (
     <html lang="fr" className={`${jakarta.variable} ${sora.variable} scroll-smooth`}>
       <body className="font-sans antialiased">
-        <Script
-          id="ld-organization"
+        <script
           type="application/ld+json"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}
         />
-        <Script
-          id="ld-website"
+        <script
           type="application/ld+json"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebSite) }}
         />
-        <Script
-          id="ld-services"
+        <script
           type="application/ld+json"
-          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdServices) }}
         />
         <Script
