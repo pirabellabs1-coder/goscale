@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getQuoteByToken, markQuoteViewed, markQuoteAccepted, markQuoteDeclined } from "@/lib/db";
+import { getQuoteByToken, markQuoteViewed, markQuoteAccepted, markQuoteDeclined, findOrCreateClientFromQuote } from "@/lib/db";
 
 export const runtime = "nodejs";
 type Ctx = { params: Promise<{ token: string }> };
@@ -49,6 +49,19 @@ export async function POST(request: Request, context: Ctx) {
     if (body.action === "accept") {
       const q = await markQuoteAccepted(token);
       if (!q) return NextResponse.json({ error: "Action impossible (déjà traité)" }, { status: 400 });
+      // Auto-promote the quote signer into the clients list
+      try {
+        await findOrCreateClientFromQuote({
+          client_name: q.client_name,
+          client_email: q.client_email || "",
+          client_phone: q.client_phone || "",
+          client_company: q.client_company || "",
+          token: q.token,
+        });
+      } catch (err) {
+        console.error("Auto-create client error:", err);
+        // Don't fail the accept if client creation hiccups
+      }
       return NextResponse.json({ success: true, status: q.status });
     }
     if (body.action === "decline") {

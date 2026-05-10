@@ -3,7 +3,7 @@
 import { use, useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  Check, X, Printer, ArrowLeft, AlertTriangle, Sparkles,
+  Check, X, Download, ArrowLeft, AlertTriangle, Sparkles,
   CheckCircle2, XCircle, Clock,
 } from "lucide-react";
 
@@ -120,8 +120,21 @@ export default function DevisPublicPage({ params }: { params: Promise<{ token: s
         <Link href="/" className="font-display text-lg font-bold">
           <span className="gradient-text">GoScale</span>Studio
         </Link>
-        <button onClick={() => window.print()} className="text-xs px-4 py-2 rounded-full bg-brand/10 text-brand border border-brand/20 hover:bg-brand/15 flex items-center gap-2">
-          <Printer size={14} /> Imprimer / PDF
+        <button
+          onClick={() => {
+            // Set a friendly default filename for "Save as PDF" in the browser dialog
+            const safeTitle = (quote.title || "devis").replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 40);
+            const safeName = (quote.client_name || "client").replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 30);
+            const number = quote.token.slice(0, 8).toUpperCase();
+            const previousTitle = document.title;
+            document.title = `Devis-${number}-${safeName}-${safeTitle}`;
+            window.print();
+            // Restore the original title shortly after the dialog closes
+            setTimeout(() => { document.title = previousTitle; }, 1000);
+          }}
+          className="text-xs px-4 py-2 rounded-full bg-brand text-white hover:opacity-90 flex items-center gap-2 font-bold"
+        >
+          <Download size={14} /> Télécharger en PDF
         </button>
       </div>
 

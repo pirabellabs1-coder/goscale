@@ -507,6 +507,25 @@ function getYouTubeId(url: string): string | null {
   return m ? m[1] : null;
 }
 
+function getVimeoId(url: string): string | null {
+  if (!url) return null;
+  const m = url.match(/vimeo\.com\/(?:video\/|channels\/[\w-]+\/)?(\d+)/i);
+  return m ? m[1] : null;
+}
+
+function getLoomId(url: string): string | null {
+  if (!url) return null;
+  const m = url.match(/loom\.com\/(?:share|embed)\/([a-f0-9]+)/i);
+  return m ? m[1] : null;
+}
+
+function getDriveFileId(url: string): string | null {
+  if (!url) return null;
+  // Google Drive: /file/d/<id>/view  or  ?id=<id>
+  const m = url.match(/drive\.google\.com\/(?:file\/d\/|open\?id=|uc\?id=)([\w-]{20,})/);
+  return m ? m[1] : null;
+}
+
 function isVideoFile(url: string): boolean {
   return !!url && /\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i.test(url);
 }
@@ -539,6 +558,48 @@ function ProjectMedia({
         src={`https://www.youtube.com/embed/${ytId}?${params}`}
         title={title}
         allow="autoplay; encrypted-media; picture-in-picture"
+        allowFullScreen
+        className={className || "w-full h-full border-0"}
+      />
+    );
+  }
+  const vimeoId = videoUrl ? getVimeoId(videoUrl) : null;
+  if (vimeoId) {
+    const params = new URLSearchParams({
+      ...(autoplay ? { autoplay: "1", muted: "1", loop: "1" } : {}),
+      title: "0",
+      byline: "0",
+      portrait: "0",
+    });
+    return (
+      <iframe
+        src={`https://player.vimeo.com/video/${vimeoId}?${params}`}
+        title={title}
+        allow="autoplay; fullscreen; picture-in-picture"
+        allowFullScreen
+        className={className || "w-full h-full border-0"}
+      />
+    );
+  }
+  const loomId = videoUrl ? getLoomId(videoUrl) : null;
+  if (loomId) {
+    return (
+      <iframe
+        src={`https://www.loom.com/embed/${loomId}${autoplay ? "?autoplay=1&muted=1" : ""}`}
+        title={title}
+        allow="autoplay; fullscreen"
+        allowFullScreen
+        className={className || "w-full h-full border-0"}
+      />
+    );
+  }
+  const driveId = videoUrl ? getDriveFileId(videoUrl) : null;
+  if (driveId) {
+    return (
+      <iframe
+        src={`https://drive.google.com/file/d/${driveId}/preview`}
+        title={title}
+        allow="autoplay"
         allowFullScreen
         className={className || "w-full h-full border-0"}
       />
@@ -643,11 +704,32 @@ function HomePage() {
   const [selectedProject, setSelectedProject] = useState<typeof publishedProjects[number] | null>(null);
   const [testimonials, setTestimonials] = useState<DBTestimonial[]>([]);
 
+  // Site settings (admin-managed via /gs-panel-…/settings)
+  type SiteSettings = {
+    site_name: string;
+    site_description: string;
+    contact_email: string;
+    contact_phone: string;
+    contact_whatsapp: string;
+    contact_address: string;
+    maintenance_mode: boolean;
+    maintenance_message: string;
+  };
+  const [settings, setSettings] = useState<SiteSettings | null>(null);
+
   // Fetch published testimonials from the admin-managed DB
   useEffect(() => {
     fetch("/api/testimonials")
       .then((r) => (r.ok ? r.json() : []))
       .then((data) => Array.isArray(data) && setTestimonials(data))
+      .catch(() => {});
+  }, []);
+
+  // Fetch site settings (re-fetched after each toggle to stay fresh)
+  useEffect(() => {
+    fetch("/api/settings", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then(setSettings)
       .catch(() => {});
   }, []);
 
@@ -760,6 +842,44 @@ function HomePage() {
 
   const visibleProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, 4);
 
+  // Maintenance mode: full-screen banner replacing the home page
+  if (settings?.maintenance_mode) {
+    return (
+      <div className="bg-dark text-white min-h-screen flex items-center justify-center p-6">
+        <div className="max-w-md text-center">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.jpg" alt={settings.site_name || "GoScaleStudio"} className="h-16 w-16 rounded-2xl object-cover mx-auto mb-6" />
+          <h1 className="font-display text-3xl font-bold mb-4">
+            <span className="gradient-text">{(settings.site_name || "GoScale").replace(/Studio$/i, "")}</span>
+            {settings.site_name?.toLowerCase().endsWith("studio") ? "Studio" : ""}
+          </h1>
+          <div className="bg-amber/10 border border-amber/20 rounded-2xl p-6 mb-6">
+            <p className="text-amber font-bold mb-2">Site en maintenance</p>
+            <p className="text-white/70 text-sm leading-relaxed whitespace-pre-line">
+              {settings.maintenance_message || "Le site est temporairement indisponible. Nous revenons rapidement."}
+            </p>
+          </div>
+          {(settings.contact_email || settings.contact_whatsapp) && (
+            <p className="text-white/40 text-xs">
+              Besoin de nous joindre ?
+              {settings.contact_email && (
+                <> <a href={`mailto:${settings.contact_email}`} className="text-brand hover:underline">{settings.contact_email}</a></>
+              )}
+              {settings.contact_whatsapp && (
+                <> &middot; <a href={`https://wa.me/${settings.contact_whatsapp.replace(/[^0-9]/g, "")}`} target="_blank" rel="noopener noreferrer" className="text-brand hover:underline">WhatsApp</a></>
+              )}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Brand label split (e.g. "GoScaleStudio" → "GoScale" + "Studio")
+  const fullName = settings?.site_name || "GoScaleStudio";
+  const brandSuffix = fullName.toLowerCase().endsWith("studio") ? "Studio" : "";
+  const brandPrefix = brandSuffix ? fullName.slice(0, fullName.length - brandSuffix.length) : fullName;
+
   return (
     <div className="bg-dark text-white min-h-screen overflow-x-hidden">
       {/* ── Navbar ── */}
@@ -767,8 +887,8 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <button onClick={() => scrollTo("hero")} className="flex items-center gap-2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.jpg" alt="GoScaleStudio" className="h-8 w-8 rounded-lg object-cover" />
-            <span className="font-display text-xl font-bold"><span className="gradient-text">GoScale</span>Studio</span>
+            <img src="/logo.jpg" alt={fullName} className="h-8 w-8 rounded-lg object-cover" />
+            <span className="font-display text-xl font-bold"><span className="gradient-text">{brandPrefix}</span>{brandSuffix}</span>
           </button>
           <div className="hidden md:flex items-center gap-6 lg:gap-8">
             {navLinks.map((l) => (
@@ -1783,12 +1903,18 @@ function HomePage() {
               </button>
             </form>
             <div className="anim fade-left flex flex-col gap-4 sm:gap-6 justify-center">
-              {[
-                { icon: MessageSquare, label: { fr: "WhatsApp", en: "WhatsApp" }, value: { fr: "+229 01 68 24 28 66", en: "+229 01 68 24 28 66" }, href: "https://wa.me/2290168242866" },
-                { icon: Mail, label: { fr: "Email", en: "Email" }, value: { fr: "contact@goscalestudio.com", en: "contact@goscalestudio.com" }, href: "mailto:contact@goscalestudio.com" },
-                { icon: MapPin, label: { fr: "Localisation", en: "Location" }, value: { fr: "Cotonou, Bénin · Afrique & International", en: "Cotonou, Benin · Africa & International" }, href: undefined },
+              {(() => {
+                const wa = settings?.contact_whatsapp || "+229 01 68 24 28 66";
+                const email = settings?.contact_email || "contact@goscalestudio.com";
+                const addr = settings?.contact_address || "Cotonou, Bénin · Afrique & International";
+                const waHref = `https://wa.me/${wa.replace(/[^0-9]/g, "")}`;
+                return [
+                { icon: MessageSquare, label: { fr: "WhatsApp", en: "WhatsApp" }, value: { fr: wa, en: wa }, href: waHref },
+                { icon: Mail, label: { fr: "Email", en: "Email" }, value: { fr: email, en: email }, href: `mailto:${email}` },
+                { icon: MapPin, label: { fr: "Localisation", en: "Location" }, value: { fr: addr, en: addr }, href: undefined },
                 { icon: Clock, label: { fr: "R\u00e9ponse", en: "Response" }, value: { fr: "Sous 24h garantie", en: "Within 24h guaranteed" }, href: undefined },
-              ].map((c, i) => (
+              ];
+              })().map((c, i) => (
                 <a key={i} href={c.href || undefined} target={c.href?.startsWith("http") ? "_blank" : undefined} rel={c.href?.startsWith("http") ? "noopener noreferrer" : undefined} className="glass rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-brand/20 transition-all">
                   <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand/10 flex items-center justify-center flex-shrink-0">
                     <c.icon size={18} className="text-brand" />

@@ -598,6 +598,162 @@ export async function deleteQuoteById(id: number) {
   await sql`DELETE FROM quotes WHERE id = ${id}`;
 }
 
+// ── Site settings (single-row table) ──
+let _settingsEnsured = false;
+async function ensureSettingsTable() {
+  if (_settingsEnsured) return;
+  await sql`
+    CREATE TABLE IF NOT EXISTS site_settings (
+      id INT PRIMARY KEY DEFAULT 1,
+      site_name TEXT NOT NULL DEFAULT 'GoScaleStudio',
+      site_description TEXT NOT NULL DEFAULT 'Studio digital base a Cotonou — Automatisation, IA & Web.',
+      contact_email TEXT NOT NULL DEFAULT 'contact@goscalestudio.com',
+      contact_phone TEXT NOT NULL DEFAULT '+229 01 68 24 28 66',
+      contact_whatsapp TEXT NOT NULL DEFAULT '+229 01 68 24 28 66',
+      contact_address TEXT NOT NULL DEFAULT 'Cotonou, Benin · Afrique & International',
+      notify_email BOOLEAN NOT NULL DEFAULT TRUE,
+      notify_messages BOOLEAN NOT NULL DEFAULT TRUE,
+      maintenance_mode BOOLEAN NOT NULL DEFAULT FALSE,
+      maintenance_message TEXT NOT NULL DEFAULT 'Le site est en maintenance. Nous revenons rapidement.',
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      CONSTRAINT site_settings_singleton CHECK (id = 1)
+    )
+  `;
+  // Seed the singleton row if not exists
+  await sql`INSERT INTO site_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
+  _settingsEnsured = true;
+}
+
+export async function getSettings() {
+  await ensureSettingsTable();
+  const { rows } = await sql`SELECT * FROM site_settings WHERE id = 1`;
+  return rows[0];
+}
+
+export async function updateSettings(data: Partial<{
+  site_name: string;
+  site_description: string;
+  contact_email: string;
+  contact_phone: string;
+  contact_whatsapp: string;
+  contact_address: string;
+  notify_email: boolean;
+  notify_messages: boolean;
+  maintenance_mode: boolean;
+  maintenance_message: string;
+}>) {
+  await ensureSettingsTable();
+  const sets: string[] = [];
+  const values: unknown[] = [];
+  let idx = 1;
+  for (const [k, v] of Object.entries(data)) {
+    if (v === undefined) continue;
+    sets.push(`${k} = $${idx++}`);
+    values.push(v);
+  }
+  if (sets.length === 0) return getSettings();
+  sets.push(`updated_at = NOW()`);
+  await sql.query(
+    `UPDATE site_settings SET ${sets.join(", ")} WHERE id = 1`,
+    values
+  );
+  return getSettings();
+}
+
+// ── Clients ──
+let _clientsEnsured = false;
+async function ensureClientsTable() {
+  if (_clientsEnsured) return;
+  await sql`
+    CREATE TABLE IF NOT EXISTS clients (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL DEFAULT '',
+      phone TEXT NOT NULL DEFAULT '',
+      company TEXT NOT NULL DEFAULT '',
+      source TEXT NOT NULL DEFAULT 'manual',
+      notes TEXT NOT NULL DEFAULT '',
+      status TEXT NOT NULL DEFAULT 'active',
+      quote_token TEXT NOT NULL DEFAULT '',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  _clientsEnsured = true;
+}
+
+export async function getAllClients() {
+  await ensureClientsTable();
+  const { rows } = await sql`SELECT * FROM clients ORDER BY created_at DESC`;
+  return rows;
+}
+
+export async function createClient(data: {
+  name: string;
+  email?: string;
+  phone?: string;
+  company?: string;
+  source?: string;
+  notes?: string;
+  quote_token?: string;
+}) {
+  await ensureClientsTable();
+  const { rows } = await sql`
+    INSERT INTO clients (name, email, phone, company, source, notes, quote_token)
+    VALUES (${data.name}, ${data.email || ''}, ${data.phone || ''}, ${data.company || ''},
+            ${data.source || 'manual'}, ${data.notes || ''}, ${data.quote_token || ''})
+    RETURNING *
+  `;
+  return rows[0];
+}
+
+export async function updateClient(id: number, data: Partial<{
+  name: string; email: string; phone: string; company: string; notes: string; status: string;
+}>) {
+  await ensureClientsTable();
+  const sets: string[] = [];
+  const values: unknown[] = [];
+  let idx = 1;
+  for (const [k, v] of Object.entries(data)) {
+    if (v === undefined) continue;
+    sets.push(`${k} = $${idx++}`);
+    values.push(v);
+  }
+  if (sets.length === 0) return null;
+  const { rows } = await sql.query(
+    `UPDATE clients SET ${sets.join(", ")} WHERE id = $${idx} RETURNING *`,
+    [...values, id]
+  );
+  return rows[0];
+}
+
+export async function deleteClientById(id: number) {
+  await ensureClientsTable();
+  await sql`DELETE FROM clients WHERE id = ${id}`;
+}
+
+export async function findOrCreateClientFromQuote(quote: {
+  client_name: string;
+  client_email: string;
+  client_phone: string;
+  client_company: string;
+  token: string;
+}) {
+  await ensureClientsTable();
+  // Match by email if provided, else by name+company
+  if (quote.client_email) {
+    const { rows } = await sql`SELECT * FROM clients WHERE LOWER(email) = LOWER(${quote.client_email}) LIMIT 1`;
+    if (rows[0]) return rows[0];
+  }
+  return createClient({
+    name: quote.client_name,
+    email: quote.client_email,
+    phone: quote.client_phone,
+    company: quote.client_company,
+    source: 'quote_accepted',
+    quote_token: quote.token,
+  });
+}
+
 // ── Stats ──
 export async function getStats() {
   await ensureQuotesTable();

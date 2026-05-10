@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import {
-  Plus, Trash2, X, Save, FileText, ExternalLink, Copy, Check,
-  Edit3, Send, AlertTriangle, Search, Eye,
+  Plus, Trash2, X, Save, FileText, Copy, Check,
+  Edit3, Send, AlertTriangle, Search, Eye, Mail, MessageSquare,
 } from "lucide-react";
 
 type QuoteItem = { description: string; qty: number; unit_price: number };
@@ -221,23 +221,50 @@ export default function QuotesAdminPage() {
 
                 <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-border">
                   <button onClick={() => copyLink(q.token)} className="text-xs px-3 py-1.5 rounded-lg bg-brand/10 text-brand border border-brand/20 hover:bg-brand/15 flex items-center gap-1.5">
-                    {copied === q.token ? <><Check size={12} /> Copi&eacute; !</> : <><Copy size={12} /> Lien client</>}
+                    {copied === q.token ? <><Check size={12} /> Copi&eacute; !</> : <><Copy size={12} /> Lien</>}
                   </button>
+                  {q.client_phone && (
+                    <a
+                      href={(() => {
+                        const link = `${typeof window !== "undefined" ? window.location.origin : ""}/devis/${q.token}`;
+                        const text = `Bonjour ${q.client_name},\n\nVoici votre devis ${q.title ? `« ${q.title} »` : ""} :\n${link}\n\nValable ${q.validity_days} jours. À bientôt.`;
+                        const phone = q.client_phone.replace(/[^0-9]/g, "");
+                        return `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+                      })()}
+                      target="_blank" rel="noopener noreferrer"
+                      className="text-xs px-3 py-1.5 rounded-lg bg-emerald/10 text-emerald border border-emerald/20 hover:bg-emerald/15 flex items-center gap-1.5"
+                    >
+                      <MessageSquare size={12} /> WhatsApp
+                    </a>
+                  )}
+                  {q.client_email && (
+                    <a
+                      href={(() => {
+                        const link = `${typeof window !== "undefined" ? window.location.origin : ""}/devis/${q.token}`;
+                        const subject = `Votre devis ${q.title || ""} - GoScaleStudio`;
+                        const body = `Bonjour ${q.client_name},\n\nVoici votre devis ${q.title ? `« ${q.title} »` : ""} :\n${link}\n\nIl est valable ${q.validity_days} jours. Vous pouvez le consulter, l'accepter ou le télécharger en PDF directement depuis ce lien.\n\nN'hésitez pas si vous avez la moindre question.\n\nCordialement,\nGoScaleStudio`;
+                        return `mailto:${q.client_email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                      })()}
+                      className="text-xs px-3 py-1.5 rounded-lg bg-blue/10 text-blue border border-blue/20 hover:bg-blue/15 flex items-center gap-1.5"
+                    >
+                      <Mail size={12} /> Email
+                    </a>
+                  )}
                   <a
                     href={`/devis/${q.token}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-white/70 border border-white/10 hover:text-white flex items-center gap-1.5"
                   >
-                    <Eye size={12} /> Pr&eacute;visualiser
+                    <Eye size={12} /> Aper&ccedil;u
                   </a>
                   {q.status === "draft" && (
                     <button onClick={() => updateStatus(q.id, "sent")} className="text-xs px-3 py-1.5 rounded-lg bg-blue/10 text-blue border border-blue/20 hover:bg-blue/15 flex items-center gap-1.5">
-                      <Send size={12} /> Marquer envoy&eacute;
+                      <Send size={12} /> Envoy&eacute;
                     </button>
                   )}
                   <button onClick={() => openEdit(q)} className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-white/60 border border-white/10 hover:text-white flex items-center gap-1.5">
-                    <Edit3 size={12} /> &Eacute;diter
+                    <Edit3 size={12} />
                   </button>
                   <button onClick={() => remove(q.id)} className="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/15 flex items-center gap-1.5 ml-auto">
                     <Trash2 size={12} />
