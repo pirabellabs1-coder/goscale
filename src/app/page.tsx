@@ -229,6 +229,80 @@ const techTools = [
   "HubSpot", "Notion", "WhatsApp API", "Bland AI",
 ];
 
+const toolsStack = [
+  {
+    title: "Automatisation",
+    icon: Zap,
+    color: "emerald",
+    tools: [
+      { name: "Make", initials: "Mk", bg: "linear-gradient(135deg,#6D5BFC,#9D4EFF)" },
+      { name: "n8n", initials: "n8", bg: "linear-gradient(135deg,#EA4B71,#FF6B6B)" },
+      { name: "Zapier", initials: "Z", bg: "linear-gradient(135deg,#FF4A00,#FF7A45)" },
+      { name: "GoHighLevel", initials: "GHL", bg: "linear-gradient(135deg,#1F77FF,#3CC8FF)" },
+    ],
+  },
+  {
+    title: "IA Conversationnelle",
+    icon: Bot,
+    color: "brand",
+    tools: [
+      { name: "ChatGPT (GPT-4)", initials: "GPT", bg: "linear-gradient(135deg,#10A37F,#0EAA85)" },
+      { name: "Claude (Anthropic)", initials: "C", bg: "linear-gradient(135deg,#D97757,#F4A261)" },
+      { name: "Claude Code", initials: "CC", bg: "linear-gradient(135deg,#1F2937,#D97757)" },
+      { name: "Gemini", initials: "G", bg: "linear-gradient(135deg,#4285F4,#9B72CB)" },
+      { name: "Botpress", initials: "Bp", bg: "linear-gradient(135deg,#1F4FE0,#4F8AFF)" },
+      { name: "Voiceflow", initials: "Vf", bg: "linear-gradient(135deg,#5247FF,#7B6BFF)" },
+    ],
+  },
+  {
+    title: "Voix & Téléphonie",
+    icon: Phone,
+    color: "blue",
+    tools: [
+      { name: "Vapi", initials: "Va", bg: "linear-gradient(135deg,#15B79E,#5EE5C2)" },
+      { name: "Twilio", initials: "Tw", bg: "linear-gradient(135deg,#F22F46,#FF6B7A)" },
+      { name: "Bland AI", initials: "Bl", bg: "linear-gradient(135deg,#000000,#404040)" },
+      { name: "ElevenLabs", initials: "11", bg: "linear-gradient(135deg,#000000,#5C5C5C)" },
+      { name: "WhatsApp Business", initials: "Wa", bg: "linear-gradient(135deg,#25D366,#128C7E)" },
+    ],
+  },
+  {
+    title: "Design & Web",
+    icon: Palette,
+    color: "purple",
+    tools: [
+      { name: "Figma AI", initials: "Fg", bg: "linear-gradient(135deg,#F24E1E,#A259FF)" },
+      { name: "v0.dev", initials: "v0", bg: "linear-gradient(135deg,#000000,#404040)" },
+      { name: "Google Stitch", initials: "St", bg: "linear-gradient(135deg,#4285F4,#34A853)" },
+      { name: "WordPress", initials: "Wp", bg: "linear-gradient(135deg,#21759B,#1E8CBE)" },
+      { name: "Elementor", initials: "El", bg: "linear-gradient(135deg,#92003B,#D7286E)" },
+    ],
+  },
+  {
+    title: "CRM & Productivité",
+    icon: Briefcase,
+    color: "amber",
+    tools: [
+      { name: "HubSpot", initials: "Hs", bg: "linear-gradient(135deg,#FF7A59,#FF9F7C)" },
+      { name: "Notion", initials: "N", bg: "linear-gradient(135deg,#000000,#404040)" },
+      { name: "Airtable", initials: "At", bg: "linear-gradient(135deg,#FCB400,#FF8800)" },
+      { name: "Slack", initials: "Sl", bg: "linear-gradient(135deg,#4A154B,#ECB22E)" },
+      { name: "Google Workspace", initials: "GW", bg: "linear-gradient(135deg,#4285F4,#34A853)" },
+    ],
+  },
+  {
+    title: "SEO & Analytics",
+    icon: BarChart3,
+    color: "emerald",
+    tools: [
+      { name: "Google Search Console", initials: "GSC", bg: "linear-gradient(135deg,#4285F4,#34A853)" },
+      { name: "Google Analytics 4", initials: "GA4", bg: "linear-gradient(135deg,#F9AB00,#E8710A)" },
+      { name: "RankMath", initials: "Rm", bg: "linear-gradient(135deg,#724BCB,#9D4EFF)" },
+      { name: "Search Console Insights", initials: "Sci", bg: "linear-gradient(135deg,#34A853,#0F9D58)" },
+    ],
+  },
+];
+
 const guarantees = [
   { icon: Shield, title: "Satisfait ou Repris", desc: "Si le livrable ne correspond pas au cahier des charges, on reprend gratuitement." },
   { icon: Headphones, title: "Support 30 Jours", desc: "Suivi post-livraison inclus. On ne vous lâche pas après la mise en ligne." },
@@ -562,6 +636,71 @@ export default function HomePage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Stack & Outils maîtrisés ── */}
+      <section id="stack" className="py-16 sm:py-24 px-4 sm:px-6 bg-dark-2">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="anim fade-up section-badge mx-auto mb-4"><Cpu size={12} /> Stack Technique</div>
+            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+              Les <span className="gradient-text">outils</span> qu&apos;on maîtrise pour vous
+            </h2>
+            <p className="anim fade-up delay-2 text-white/50 max-w-2xl mx-auto text-sm sm:text-base">
+              Plus de 30 outils industriels combinés au cas par cas pour livrer vite, fiable et sans dette technique.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            {toolsStack.map((cat, i) => {
+              const cls = colorMap[cat.color] || colorMap.brand;
+              return (
+                <div
+                  key={i}
+                  className={`anim fade-up delay-${Math.min(i + 1, 6)} bg-dark rounded-2xl border border-border p-6 hover:border-brand/30 transition-all`}
+                >
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center border ${cls}`}>
+                      <cat.icon size={18} />
+                    </div>
+                    <h3 className="font-display text-base font-bold">{cat.title}</h3>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {cat.tools.map((t, j) => (
+                      <div
+                        key={j}
+                        className="flex items-center gap-3 px-3 py-2 rounded-xl bg-white/[0.02] border border-white/5 hover:border-brand/20 transition-colors"
+                      >
+                        <div
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0 shadow-md"
+                          style={{ background: t.bg }}
+                        >
+                          {t.initials}
+                        </div>
+                        <span className="text-sm text-white/80 font-medium truncate">{t.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Mini stats footer */}
+          <div className="anim fade-up grid grid-cols-2 sm:grid-cols-4 gap-4 mt-10 sm:mt-12">
+            {[
+              { v: "30+", l: "Outils maîtrisés" },
+              { v: "6", l: "Catégories" },
+              { v: "100 %", l: "Production-ready" },
+              { v: "24/7", l: "Veille techno" },
+            ].map((s, i) => (
+              <div key={i} className="text-center p-4 rounded-2xl glass">
+                <div className="font-display text-xl sm:text-2xl font-bold gradient-text mb-1">{s.v}</div>
+                <div className="text-xs text-white/50">{s.l}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

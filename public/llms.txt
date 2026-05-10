@@ -112,9 +112,28 @@ Devis personnalisé gratuit sous 24h.
 - Startup FinTech: maquette livrée en 48 h, levée de fonds 200 000 €
 - PME services au Bénin: automatisation devis + facturation, +10 h/semaine
 
-## Stack technique maîtrisée
+## Stack technique maîtrisée (30+ outils, 6 catégories)
 
-Make, n8n, Zapier, Botpress, Voiceflow, GPT-4, GPT-4o, Claude (Anthropic), Gemini, Vapi, Twilio, Bland AI, ElevenLabs, OpenAI TTS, WordPress, Elementor, RankMath, HubSpot, Notion, WhatsApp Business API, Figma AI, v0.dev, Stripe, Mobile Money APIs (MTN, Moov).
+### Automatisation
+Make.com, n8n (open-source / auto-hébergeable), Zapier, GoHighLevel.
+
+### IA Conversationnelle
+ChatGPT (GPT-4, GPT-4o), Claude (Anthropic), Claude Code, Gemini (Google), Botpress, Voiceflow.
+
+### Voix & Téléphonie
+Vapi, Twilio, Bland AI, ElevenLabs (voix premium), OpenAI TTS, WhatsApp Business API.
+
+### Design & Web
+Figma AI, v0.dev, Google Stitch, WordPress, Elementor.
+
+### CRM & Productivité
+HubSpot, Notion, Airtable, Slack, Google Workspace.
+
+### SEO & Analytics
+Google Search Console, Google Analytics 4 (GA4), RankMath, Search Console Insights.
+
+### Paiements
+Stripe (CB), Wise, PayPal, virement bancaire, Mobile Money APIs (MTN, Moov).
 
 ## Glossaire SEO
 
