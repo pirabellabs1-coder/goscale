@@ -63,29 +63,17 @@ const stats = [
   { value: 48, suffix: "h", label: { fr: "Délai moyen", en: "Avg delivery" } },
 ];
 
-const testimonials1 = [
-  { name: "Jean-Marc D.", rating: 5,
-    role: { fr: "Agent immobilier", en: "Real estate agent" },
-    text: { fr: "GoScaleStudio a automatisé tout mon CRM. Je gagne 15h par semaine et je ne rate plus aucun lead. Service au top !", en: "GoScaleStudio automated my entire CRM. I save 15 hours a week and never miss a lead. Top-notch service!" } },
-  { name: "Sophie L.", rating: 5,
-    role: { fr: "CEO Startup FinTech", en: "FinTech Startup CEO" },
-    text: { fr: "Maquette livrée en 48h, exactement ce qu'il nous fallait pour notre levée de fonds. Résultat : 200K levés !", en: "Mockup delivered in 48h — exactly what we needed for our fundraising. Result: €200K raised!" } },
-  { name: "Marc A.", rating: 5,
-    role: { fr: "E-commerce Mode", en: "Fashion E-commerce" },
-    text: { fr: "Le chatbot WhatsApp a augmenté nos conversions de 35%. Les clients adorent avoir des réponses instantanées.", en: "The WhatsApp chatbot lifted our conversions by 35%. Customers love getting instant answers." } },
-];
-
-const testimonials2 = [
-  { name: "Claire M.", rating: 5,
-    role: { fr: "Directrice Clinique", en: "Clinic Director" },
-    text: { fr: "Le callbot gère 80% de nos appels. Plus d'appels manqués, les patients adorent. Un vrai game-changer.", en: "The callbot handles 80% of our calls. No more missed calls, patients love it. A real game-changer." } },
-  { name: "Pierre K.", rating: 5,
-    role: { fr: "Consultant SEO", en: "SEO Consultant" },
-    text: { fr: "Site WordPress impeccable, page 1 Google en 2 mois. Le meilleur investissement digital que j'ai fait.", en: "Flawless WordPress site, Google page 1 in 2 months. Best digital investment I've ever made." } },
-  { name: "Amina B.", rating: 5,
-    role: { fr: "Fondatrice Agence", en: "Agency Founder" },
-    text: { fr: "Automatisation complète de notre social media. 4 réseaux gérés automatiquement, reporting inclus.", en: "Full social media automation. 4 networks running on autopilot, reporting included." } },
-];
+// Testimonials are now fetched from /api/testimonials (admin-managed via /gs-panel-.../testimonials)
+type DBTestimonial = {
+  id: number;
+  name: string;
+  role: string;
+  text: string;
+  rating: number;
+  status: string;
+  source: string;
+  created_at: string;
+};
 
 const faqItems: { cat: { fr: string; en: string }; q: { fr: string; en: string }; a: { fr: string; en: string } }[] = [
   // ── Tarifs & paiement ──
@@ -615,6 +603,15 @@ function HomePage() {
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("Tous");
   const [selectedProject, setSelectedProject] = useState<typeof publishedProjects[number] | null>(null);
+  const [testimonials, setTestimonials] = useState<DBTestimonial[]>([]);
+
+  // Fetch published testimonials from the admin-managed DB
+  useEffect(() => {
+    fetch("/api/testimonials")
+      .then((r) => (r.ok ? r.json() : []))
+      .then((data) => Array.isArray(data) && setTestimonials(data))
+      .catch(() => {});
+  }, []);
 
   // Lock body scroll when modal is open + close on ESC
   useEffect(() => {
@@ -1320,47 +1317,72 @@ function HomePage() {
       <section className="py-16 sm:py-24 bg-dark-2 overflow-hidden">
         <div className="text-center mb-12 sm:mb-16 px-4 sm:px-6">
           <div className="anim fade-up section-badge mx-auto mb-4"><Star size={12} /> {t({ fr: "Avis Clients", en: "Client Reviews" })}</div>
-          <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold">
+          <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
             {t({ fr: "Ce que disent nos ", en: "What our " })}
             <span className="gradient-text">{t({ fr: "clients", en: "clients say" })}</span>
           </h2>
+          <p className="anim fade-up delay-2 text-white/40 text-xs sm:text-sm">
+            {t({ fr: "Vous avez travaillé avec nous ? ", en: "Worked with us? " })}
+            <a href="/avis" className="text-brand hover:underline font-semibold">
+              {t({ fr: "Laissez votre avis →", en: "Leave a review →" })}
+            </a>
+          </p>
         </div>
-        <div className="mb-6 overflow-hidden">
-          <div className="marquee-left flex gap-6">
-            {[...testimonials1, ...testimonials1].map((tm, i) => (
-              <div key={i} className="testimonial-card glass rounded-2xl p-5 sm:p-6 flex-shrink-0">
-                <div className="flex gap-1 mb-3">
-                  {Array.from({ length: tm.rating }).map((_, j) => (
-                    <Star key={j} size={14} className="text-amber fill-amber" />
+
+        {testimonials.length === 0 ? (
+          <div className="text-center px-6">
+            <p className="text-white/30 text-sm max-w-md mx-auto">
+              {t({ fr: "Les premiers avis arrivent bientôt. Soyez le premier à témoigner !", en: "The first reviews are coming soon. Be the first to leave one!" })}
+            </p>
+          </div>
+        ) : (() => {
+          // Split testimonials evenly across two scrolling rows
+          const mid = Math.ceil(testimonials.length / 2);
+          const row1 = testimonials.slice(0, mid);
+          const row2 = testimonials.slice(mid).length > 0 ? testimonials.slice(mid) : row1;
+          return (
+            <>
+              <div className="mb-6 overflow-hidden">
+                <div className="marquee-left flex gap-6">
+                  {[...row1, ...row1].map((tm, i) => (
+                    <div key={i} className="testimonial-card glass rounded-2xl p-5 sm:p-6 flex-shrink-0">
+                      <div className="flex gap-1 mb-3">
+                        {Array.from({ length: tm.rating }).map((_, j) => (
+                          <Star key={j} size={14} className="text-amber fill-amber" />
+                        ))}
+                      </div>
+                      <p className="text-white/70 text-xs sm:text-sm mb-4 leading-relaxed">&quot;{tm.text}&quot;</p>
+                      <div>
+                        <p className="font-bold text-sm">{tm.name}</p>
+                        {tm.role && <p className="text-white/40 text-xs">{tm.role}</p>}
+                      </div>
+                    </div>
                   ))}
                 </div>
-                <p className="text-white/70 text-xs sm:text-sm mb-4 leading-relaxed">&quot;{t(tm.text)}&quot;</p>
-                <div>
-                  <p className="font-bold text-sm">{tm.name}</p>
-                  <p className="text-white/40 text-xs">{t(tm.role)}</p>
-                </div>
               </div>
-            ))}
-          </div>
-        </div>
-        <div className="overflow-hidden">
-          <div className="marquee-right flex gap-6">
-            {[...testimonials2, ...testimonials2].map((tm, i) => (
-              <div key={i} className="testimonial-card glass rounded-2xl p-5 sm:p-6 flex-shrink-0">
-                <div className="flex gap-1 mb-3">
-                  {Array.from({ length: tm.rating }).map((_, j) => (
-                    <Star key={j} size={14} className="text-amber fill-amber" />
-                  ))}
+              {row2 !== row1 && (
+                <div className="overflow-hidden">
+                  <div className="marquee-right flex gap-6">
+                    {[...row2, ...row2].map((tm, i) => (
+                      <div key={i} className="testimonial-card glass rounded-2xl p-5 sm:p-6 flex-shrink-0">
+                        <div className="flex gap-1 mb-3">
+                          {Array.from({ length: tm.rating }).map((_, j) => (
+                            <Star key={j} size={14} className="text-amber fill-amber" />
+                          ))}
+                        </div>
+                        <p className="text-white/70 text-xs sm:text-sm mb-4 leading-relaxed">&quot;{tm.text}&quot;</p>
+                        <div>
+                          <p className="font-bold text-sm">{tm.name}</p>
+                          {tm.role && <p className="text-white/40 text-xs">{tm.role}</p>}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <p className="text-white/70 text-xs sm:text-sm mb-4 leading-relaxed">&quot;{t(tm.text)}&quot;</p>
-                <div>
-                  <p className="font-bold text-sm">{tm.name}</p>
-                  <p className="text-white/40 text-xs">{t(tm.role)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              )}
+            </>
+          );
+        })()}
       </section>
 
       {/* ── NEW: Pourquoi Nous ── */}

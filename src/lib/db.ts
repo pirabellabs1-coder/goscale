@@ -326,6 +326,109 @@ export async function deleteMessageById(id: number) {
   await sql`DELETE FROM messages WHERE id = ${id}`;
 }
 
+// ── Testimonials (avis clients) ──
+let _testimonialsEnsured = false;
+async function ensureTestimonialsTable() {
+  if (_testimonialsEnsured) return;
+  await sql`
+    CREATE TABLE IF NOT EXISTS testimonials (
+      id SERIAL PRIMARY KEY,
+      name TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT '',
+      text TEXT NOT NULL,
+      rating INT NOT NULL DEFAULT 5,
+      status TEXT NOT NULL DEFAULT 'pending',
+      source TEXT NOT NULL DEFAULT '',
+      email TEXT NOT NULL DEFAULT '',
+      sort_order INT NOT NULL DEFAULT 0,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  _testimonialsEnsured = true;
+}
+
+export async function getPublishedTestimonials() {
+  await ensureTestimonialsTable();
+  const { rows } = await sql`
+    SELECT * FROM testimonials WHERE status = 'published'
+    ORDER BY sort_order ASC, created_at DESC
+  `;
+  return rows;
+}
+
+export async function getAllTestimonials() {
+  await ensureTestimonialsTable();
+  const { rows } = await sql`
+    SELECT * FROM testimonials
+    ORDER BY
+      CASE status WHEN 'pending' THEN 0 WHEN 'published' THEN 1 ELSE 2 END,
+      created_at DESC
+  `;
+  return rows;
+}
+
+export async function getTestimonialById(id: number) {
+  await ensureTestimonialsTable();
+  const { rows } = await sql`SELECT * FROM testimonials WHERE id = ${id}`;
+  return rows[0] || null;
+}
+
+export async function createTestimonial(data: {
+  name: string;
+  role?: string;
+  text: string;
+  rating?: number;
+  status?: string;
+  source?: string;
+  email?: string;
+}) {
+  await ensureTestimonialsTable();
+  const rating = Math.min(5, Math.max(1, data.rating ?? 5));
+  const { rows } = await sql`
+    INSERT INTO testimonials (name, role, text, rating, status, source, email)
+    VALUES (
+      ${data.name}, ${data.role || ""}, ${data.text}, ${rating},
+      ${data.status || "pending"}, ${data.source || ""}, ${data.email || ""}
+    )
+    RETURNING *
+  `;
+  return rows[0];
+}
+
+export async function updateTestimonial(
+  id: number,
+  data: Partial<{
+    name: string;
+    role: string;
+    text: string;
+    rating: number;
+    status: string;
+    sort_order: number;
+  }>
+) {
+  await ensureTestimonialsTable();
+  const sets: string[] = [];
+  const values: unknown[] = [];
+  let idx = 1;
+  if (data.name !== undefined) { sets.push(`name = $${idx++}`); values.push(data.name); }
+  if (data.role !== undefined) { sets.push(`role = $${idx++}`); values.push(data.role); }
+  if (data.text !== undefined) { sets.push(`text = $${idx++}`); values.push(data.text); }
+  if (data.rating !== undefined) { sets.push(`rating = $${idx++}`); values.push(data.rating); }
+  if (data.status !== undefined) { sets.push(`status = $${idx++}`); values.push(data.status); }
+  if (data.sort_order !== undefined) { sets.push(`sort_order = $${idx++}`); values.push(data.sort_order); }
+  if (sets.length === 0) return null;
+  const { rows } = await sql.query(
+    `UPDATE testimonials SET ${sets.join(", ")} WHERE id = $${idx} RETURNING *`,
+    [...values, id]
+  );
+  return rows[0];
+}
+
+export async function deleteTestimonialById(id: number) {
+  await ensureTestimonialsTable();
+  await sql`DELETE FROM testimonials WHERE id = ${id}`;
+}
+
 // ── Stats ──
 export async function getStats() {
   const projectStats = await sql`
