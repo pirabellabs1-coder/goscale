@@ -26,6 +26,10 @@ function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [attempts, setAttempts] = useState(0);
+  const [showForgot, setShowForgot] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotMsg, setForgotMsg] = useState<{ type: "ok" | "err"; text: string } | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +57,29 @@ function LoginPage() {
     } catch {
       setError("Erreur de connexion. V\u00e9rifiez votre r\u00e9seau.");
       setLoading(false);
+    }
+  };
+
+  const handleForgot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotLoading(true);
+    setForgotMsg(null);
+    try {
+      const res = await fetch("/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: forgotEmail }),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setForgotMsg({ type: "ok", text: data.message || "Email envoy\u00e9 si le compte existe." });
+      } else {
+        setForgotMsg({ type: "err", text: data.error || "Erreur" });
+      }
+    } catch {
+      setForgotMsg({ type: "err", text: "Erreur r\u00e9seau" });
+    } finally {
+      setForgotLoading(false);
     }
   };
 
@@ -130,7 +157,52 @@ function LoginPage() {
             >
               {loading ? "V\u00e9rification..." : "Se connecter"}
             </button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowForgot(!showForgot);
+                setForgotMsg(null);
+              }}
+              className="text-xs text-white/40 hover:text-brand transition-colors mt-1"
+            >
+              Mot de passe oubli&eacute; ?
+            </button>
           </div>
+
+          {showForgot && (
+            <div className="mt-6 pt-6 border-t border-border">
+              <p className="text-xs text-white/50 mb-3">
+                Entrez votre email administrateur. Un lien de r&eacute;initialisation sera envoy&eacute; par email.
+              </p>
+              <div className="flex gap-2">
+                <input
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  placeholder="admin@goscalestudio.com"
+                  className="input-field flex-1"
+                />
+                <button
+                  type="button"
+                  onClick={handleForgot}
+                  disabled={forgotLoading || !forgotEmail}
+                  className="btn-primary px-4 py-2 rounded-xl text-xs font-bold disabled:opacity-50 whitespace-nowrap"
+                >
+                  {forgotLoading ? "..." : "Envoyer"}
+                </button>
+              </div>
+              {forgotMsg && (
+                <p
+                  className={`text-xs mt-3 ${
+                    forgotMsg.type === "ok" ? "text-green-400" : "text-red-400"
+                  }`}
+                >
+                  {forgotMsg.text}
+                </p>
+              )}
+            </div>
+          )}
         </form>
 
         <div className="text-center mt-6 flex items-center justify-center gap-2 text-white/15 text-xs">
@@ -149,7 +221,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [authenticated, setAuthenticated] = useState(false);
   const [checking, setChecking] = useState(true);
 
+  // Public sub-routes inside the admin panel that don't require auth
+  const isPublicRoute = pathname?.startsWith(`${PANEL}/reset`) ?? false;
+
   useEffect(() => {
+    if (isPublicRoute) return;
     fetch("/api/auth/check")
       .then((r) => {
         setAuthenticated(r.ok);
@@ -159,7 +235,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         setAuthenticated(false);
         setChecking(false);
       });
-  }, []);
+  }, [isPublicRoute]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -170,6 +246,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (href === PANEL) return pathname === PANEL;
     return pathname.startsWith(href);
   };
+
+  if (isPublicRoute) {
+    return <>{children}</>;
+  }
 
   if (checking) {
     return (

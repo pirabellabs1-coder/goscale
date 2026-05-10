@@ -1,14 +1,8 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import {
-  getAdminEmail,
-  getAdminPassword,
-  createSignedToken,
-  checkRateLimit,
-} from "@/lib/auth";
+import { createSignedToken, checkRateLimit, verifyLogin } from "@/lib/auth";
 
 export async function POST(request: Request) {
-  // Rate limiting
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
     request.headers.get("x-real-ip") ||
@@ -18,10 +12,7 @@ export async function POST(request: Request) {
   if (!allowed) {
     return NextResponse.json(
       { error: "Trop de tentatives. Réessayez dans 15 minutes." },
-      {
-        status: 429,
-        headers: { "Retry-After": "900" },
-      }
+      { status: 429, headers: { "Retry-After": "900" } }
     );
   }
 
@@ -33,7 +24,6 @@ export async function POST(request: Request) {
   }
 
   const { email, password } = body;
-
   if (!email || !password) {
     return NextResponse.json(
       { error: "Email et mot de passe requis" },
@@ -41,26 +31,21 @@ export async function POST(request: Request) {
     );
   }
 
-  // Validate credentials against server-side env vars
-  if (email !== getAdminEmail() || password !== getAdminPassword()) {
+  const result = await verifyLogin(email, password);
+  if (!result.ok) {
     return NextResponse.json(
-      {
-        error: "Email ou mot de passe incorrect",
-        remaining,
-      },
+      { error: "Email ou mot de passe incorrect", remaining },
       { status: 401 }
     );
   }
 
-  // Create signed token and set httpOnly cookie
-  const token = await createSignedToken(email);
+  const token = await createSignedToken(result.email);
   const cookieStore = await cookies();
-
   cookieStore.set("gs-auth", token, {
     httpOnly: true,
     secure: true,
     sameSite: "lax",
-    maxAge: 60 * 60 * 24, // 24h
+    maxAge: 60 * 60 * 24,
     path: "/",
   });
 

@@ -1,7 +1,101 @@
 import { sql } from "@vercel/postgres";
 
+// ── Admin users (auth) ──
+let _adminTableEnsured = false;
+export async function ensureAdminUsersTable() {
+  if (_adminTableEnsured) return;
+  await sql`
+    CREATE TABLE IF NOT EXISTS admin_users (
+      id SERIAL PRIMARY KEY,
+      email TEXT UNIQUE NOT NULL,
+      password_hash TEXT NOT NULL,
+      reset_token_hash TEXT,
+      reset_token_expires_at TIMESTAMPTZ,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  _adminTableEnsured = true;
+}
+
+export async function getAdminUserByEmail(email: string) {
+  await ensureAdminUsersTable();
+  const { rows } = await sql`
+    SELECT * FROM admin_users WHERE LOWER(email) = LOWER(${email}) LIMIT 1
+  `;
+  return rows[0] || null;
+}
+
+export async function getAdminUserById(id: number) {
+  await ensureAdminUsersTable();
+  const { rows } = await sql`SELECT * FROM admin_users WHERE id = ${id} LIMIT 1`;
+  return rows[0] || null;
+}
+
+export async function getAdminUserCount(): Promise<number> {
+  await ensureAdminUsersTable();
+  const { rows } = await sql`SELECT COUNT(*)::int AS c FROM admin_users`;
+  return rows[0].c;
+}
+
+export async function createAdminUser(email: string, passwordHash: string) {
+  await ensureAdminUsersTable();
+  const { rows } = await sql`
+    INSERT INTO admin_users (email, password_hash)
+    VALUES (${email.toLowerCase()}, ${passwordHash})
+    RETURNING *
+  `;
+  return rows[0];
+}
+
+export async function updateAdminPassword(id: number, passwordHash: string) {
+  await ensureAdminUsersTable();
+  await sql`
+    UPDATE admin_users
+    SET password_hash = ${passwordHash},
+        reset_token_hash = NULL,
+        reset_token_expires_at = NULL,
+        updated_at = NOW()
+    WHERE id = ${id}
+  `;
+}
+
+export async function updateAdminEmail(id: number, email: string) {
+  await ensureAdminUsersTable();
+  await sql`
+    UPDATE admin_users
+    SET email = ${email.toLowerCase()}, updated_at = NOW()
+    WHERE id = ${id}
+  `;
+}
+
+export async function setAdminResetToken(
+  id: number,
+  tokenHash: string,
+  expiresAt: Date
+) {
+  await ensureAdminUsersTable();
+  await sql`
+    UPDATE admin_users
+    SET reset_token_hash = ${tokenHash},
+        reset_token_expires_at = ${expiresAt.toISOString()},
+        updated_at = NOW()
+    WHERE id = ${id}
+  `;
+}
+
+export async function clearAdminResetToken(id: number) {
+  await ensureAdminUsersTable();
+  await sql`
+    UPDATE admin_users
+    SET reset_token_hash = NULL, reset_token_expires_at = NULL, updated_at = NOW()
+    WHERE id = ${id}
+  `;
+}
+
 // ── Setup: create tables ──
 export async function createTables() {
+  await ensureAdminUsersTable();
   await sql`
     CREATE TABLE IF NOT EXISTS projects (
       id SERIAL PRIMARY KEY,
