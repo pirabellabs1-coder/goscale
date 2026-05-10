@@ -1306,17 +1306,7 @@ function HomePage() {
                       <div className="relative h-44 sm:h-52 overflow-hidden">
                         {(() => {
                           const gallery = (p.images && p.images.length > 0) ? p.images : (p.image_url ? [p.image_url] : []);
-                          // Video takes priority for the cover preview if present
-                          if (p.video_url) {
-                            return (
-                              <ProjectMedia
-                                imageUrl={p.image_url}
-                                videoUrl={p.video_url}
-                                title={tp.title}
-                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                              />
-                            );
-                          }
+                          // Multi-image gallery wins on the card preview
                           if (gallery.length > 1) {
                             return (
                               <Carousel
@@ -2017,21 +2007,9 @@ function HomePage() {
               </button>
             </div>
 
-            {/* Media — video > carousel > single image */}
+            {/* Media — gallery (>1 photos) wins, then video, then single image */}
             <div className="relative w-full aspect-video bg-black">
               {(() => {
-                if (selectedProject.video_url) {
-                  return (
-                    <ProjectMedia
-                      imageUrl={selectedProject.image_url}
-                      videoUrl={selectedProject.video_url}
-                      title={selectedProject.title}
-                      autoplay
-                      controls
-                      className="w-full h-full object-cover"
-                    />
-                  );
-                }
                 const gallery = (selectedProject.images && selectedProject.images.length > 0)
                   ? selectedProject.images
                   : (selectedProject.image_url ? [selectedProject.image_url] : []);
@@ -2043,6 +2021,8 @@ function HomePage() {
                     imageUrl={selectedProject.image_url}
                     videoUrl={selectedProject.video_url}
                     title={selectedProject.title}
+                    autoplay
+                    controls
                     className="w-full h-full object-cover"
                   />
                 );
