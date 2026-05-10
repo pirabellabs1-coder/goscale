@@ -205,11 +205,11 @@ const whyUs = [
 ];
 
 const resultsBars = [
-  { label: "Temps économisé par semaine", value: 85, display: "15h+" },
-  { label: "Taux de satisfaction client", value: 100, display: "100 %" },
-  { label: "Augmentation des conversions", value: 70, display: "+35 %" },
-  { label: "Réduction des appels manqués", value: 80, display: "-40 %" },
-  { label: "Amélioration du trafic SEO", value: 90, display: "x5" },
+  { label: "Temps économisé par semaine", value: 85, display: "15h+", from: "#10B981", to: "#34D399", text: "text-emerald" },
+  { label: "Taux de satisfaction client", value: 100, display: "100 %", from: "#F07830", to: "#D94048", text: "text-brand" },
+  { label: "Augmentation des conversions", value: 70, display: "+35 %", from: "#3B82F6", to: "#60A5FA", text: "text-blue" },
+  { label: "Réduction des appels manqués", value: 80, display: "-40 %", from: "#8B5CF6", to: "#C084FC", text: "text-purple" },
+  { label: "Amélioration du trafic SEO", value: 90, display: "x5", from: "#F59E0B", to: "#FBBF24", text: "text-amber" },
 ];
 
 const colorMap: Record<string, string> = {
@@ -906,13 +906,21 @@ export default function HomePage() {
           </div>
           <div className="flex flex-col gap-5 sm:gap-6">
             {resultsBars.map((r, i) => (
-              <div key={i} className={`anim fade-left delay-${Math.min(i + 1, 5)}`}>
+              <div
+                key={i}
+                className={`anim fade-left delay-${Math.min(i + 1, 5)} result-bar`}
+                style={{
+                  ["--bar-w" as string]: `${r.value}%`,
+                  ["--bar-from" as string]: r.from,
+                  ["--bar-to" as string]: r.to,
+                }}
+              >
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs sm:text-sm text-white/70">{r.label}</span>
-                  <span className="text-xs sm:text-sm font-bold gradient-text">{r.display}</span>
+                  <span className={`text-xs sm:text-sm font-bold ${r.text}`}>{r.display}</span>
                 </div>
-                <div className="h-2.5 sm:h-3 bg-white/5 rounded-full overflow-hidden">
-                  <div className="progress-bar h-full rounded-full bg-gradient-to-r from-brand to-accent" style={{ width: `${r.value}%` }} />
+                <div className="h-2.5 sm:h-3 bg-white/5 rounded-full overflow-hidden relative">
+                  <div className="result-bar-fill h-full rounded-full" />
                 </div>
               </div>
             ))}

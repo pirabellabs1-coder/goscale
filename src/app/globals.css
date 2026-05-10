@@ -177,9 +177,33 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); }
 .delay-5 { animation-delay:.5s !important }
 .delay-6 { animation-delay:.6s !important }
 
-/* Progress bar animation */
+/* Progress bar animation (fills when parent .anim becomes data-visible via IntersectionObserver) */
 @keyframes progressFill { from { width:0 } }
 .progress-bar { animation: progressFill 1.5s cubic-bezier(.4,0,.2,1) both }
+
+.result-bar-fill {
+  width: 0;
+  background: linear-gradient(90deg, var(--bar-from, #F07830), var(--bar-to, #D94048));
+  box-shadow: 0 0 12px var(--bar-from, #F07830);
+  position: relative;
+  overflow: hidden;
+  transition: width 1.6s cubic-bezier(.22,.61,.36,1);
+}
+.result-bar[data-visible] .result-bar-fill {
+  width: var(--bar-w, 0%);
+}
+/* Shimmer pass once filled */
+.result-bar-fill::after {
+  content: "";
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.35) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: bar-shimmer 2.6s ease-in-out 1.4s infinite;
+}
+@keyframes bar-shimmer {
+  0% { transform: translateX(-100%); }
+  60%, 100% { transform: translateX(220%); }
+}
 
 /* Admin toggle */
 .toggle-track { width:44px;height:24px;border-radius:12px;background:#333;position:relative;cursor:pointer;transition:background .3s }
