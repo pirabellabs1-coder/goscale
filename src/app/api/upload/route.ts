@@ -22,17 +22,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
   }
 
-  // ── Blob configured? ──
-  if (!process.env.BLOB_READ_WRITE_TOKEN) {
-    return NextResponse.json(
-      {
-        error:
-          "Stockage non configuré. Ouvrez Vercel → Storage → Create Blob store, redéployez, puis réessayez.",
-      },
-      { status: 503 }
-    );
-  }
-
   // ── Read file ──
   let formData: FormData;
   try {
@@ -73,19 +62,43 @@ export async function POST(request: Request) {
       .slice(0, 100) || "upload";
   const path = `projects/${Date.now()}-${safeName}`;
 
+  // ── Try Vercel Blob first (best path: CDN, no DB bloat) ──
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const blob = await put(path, file, {
+        access: "public",
+        addRandomSuffix: true,
+      });
+      return NextResponse.json({
+        url: blob.url,
+        pathname: blob.pathname,
+        size: file.size,
+        type: file.type,
+        storage: "blob",
+      });
+    } catch (err) {
+      console.error("Blob upload error, falling back to base64:", err);
+      // fall through to base64
+    }
+  }
+
+  // ── Fallback: base64 data URL ──
+  // Works without any extra Vercel setup. Stored inline in the project's image_url.
+  // For larger images we recommend enabling Vercel Blob (Vercel → Storage).
   try {
-    const blob = await put(path, file, {
-      access: "public",
-      addRandomSuffix: true,
-    });
+    const buffer = await file.arrayBuffer();
+    const base64 = Buffer.from(buffer).toString("base64");
     return NextResponse.json({
-      url: blob.url,
-      pathname: blob.pathname,
+      url: `data:${file.type};base64,${base64}`,
       size: file.size,
       type: file.type,
+      storage: "base64",
+      notice: !process.env.BLOB_READ_WRITE_TOKEN
+        ? "Image stockée en base64 (mode démarrage). Pour de meilleures performances, activez Vercel → Storage → Blob."
+        : undefined,
     });
   } catch (err) {
-    console.error("Blob upload error:", err);
+    console.error("Base64 fallback error:", err);
     return NextResponse.json(
       { error: "Erreur lors de l'upload. Réessayez." },
       { status: 500 }

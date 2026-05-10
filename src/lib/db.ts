@@ -429,6 +429,161 @@ export async function deleteTestimonialById(id: number) {
   await sql`DELETE FROM testimonials WHERE id = ${id}`;
 }
 
+// ── Quotes (devis clients) ──
+let _quotesEnsured = false;
+async function ensureQuotesTable() {
+  if (_quotesEnsured) return;
+  await sql`
+    CREATE TABLE IF NOT EXISTS quotes (
+      id SERIAL PRIMARY KEY,
+      token TEXT UNIQUE NOT NULL,
+      client_name TEXT NOT NULL,
+      client_email TEXT NOT NULL DEFAULT '',
+      client_company TEXT NOT NULL DEFAULT '',
+      client_phone TEXT NOT NULL DEFAULT '',
+      title TEXT NOT NULL DEFAULT '',
+      items JSONB NOT NULL DEFAULT '[]'::jsonb,
+      notes TEXT NOT NULL DEFAULT '',
+      currency TEXT NOT NULL DEFAULT 'EUR',
+      validity_days INT NOT NULL DEFAULT 30,
+      status TEXT NOT NULL DEFAULT 'draft',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      sent_at TIMESTAMPTZ,
+      viewed_at TIMESTAMPTZ,
+      accepted_at TIMESTAMPTZ,
+      declined_at TIMESTAMPTZ
+    )
+  `;
+  _quotesEnsured = true;
+}
+
+function genQuoteToken(): string {
+  const bytes = new Uint8Array(16);
+  crypto.getRandomValues(bytes);
+  return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
+export async function getAllQuotes() {
+  await ensureQuotesTable();
+  const { rows } = await sql`SELECT * FROM quotes ORDER BY created_at DESC`;
+  return rows;
+}
+
+export async function getQuoteById(id: number) {
+  await ensureQuotesTable();
+  const { rows } = await sql`SELECT * FROM quotes WHERE id = ${id}`;
+  return rows[0] || null;
+}
+
+export async function getQuoteByToken(token: string) {
+  await ensureQuotesTable();
+  const { rows } = await sql`SELECT * FROM quotes WHERE token = ${token}`;
+  return rows[0] || null;
+}
+
+export async function createQuote(data: {
+  client_name: string;
+  client_email?: string;
+  client_company?: string;
+  client_phone?: string;
+  title?: string;
+  items?: unknown[];
+  notes?: string;
+  currency?: string;
+  validity_days?: number;
+  status?: string;
+}) {
+  await ensureQuotesTable();
+  const token = genQuoteToken();
+  const items = JSON.stringify(data.items || []);
+  const { rows } = await sql`
+    INSERT INTO quotes (
+      token, client_name, client_email, client_company, client_phone,
+      title, items, notes, currency, validity_days, status
+    ) VALUES (
+      ${token}, ${data.client_name}, ${data.client_email || ""}, ${data.client_company || ""}, ${data.client_phone || ""},
+      ${data.title || ""}, ${items}::jsonb, ${data.notes || ""}, ${data.currency || "EUR"},
+      ${data.validity_days || 30}, ${data.status || "draft"}
+    )
+    RETURNING *
+  `;
+  return rows[0];
+}
+
+export async function updateQuote(
+  id: number,
+  data: Partial<{
+    client_name: string;
+    client_email: string;
+    client_company: string;
+    client_phone: string;
+    title: string;
+    items: unknown[];
+    notes: string;
+    currency: string;
+    validity_days: number;
+    status: string;
+  }>
+) {
+  await ensureQuotesTable();
+  const sets: string[] = [];
+  const values: unknown[] = [];
+  let idx = 1;
+  if (data.client_name !== undefined) { sets.push(`client_name = $${idx++}`); values.push(data.client_name); }
+  if (data.client_email !== undefined) { sets.push(`client_email = $${idx++}`); values.push(data.client_email); }
+  if (data.client_company !== undefined) { sets.push(`client_company = $${idx++}`); values.push(data.client_company); }
+  if (data.client_phone !== undefined) { sets.push(`client_phone = $${idx++}`); values.push(data.client_phone); }
+  if (data.title !== undefined) { sets.push(`title = $${idx++}`); values.push(data.title); }
+  if (data.items !== undefined) { sets.push(`items = $${idx++}::jsonb`); values.push(JSON.stringify(data.items)); }
+  if (data.notes !== undefined) { sets.push(`notes = $${idx++}`); values.push(data.notes); }
+  if (data.currency !== undefined) { sets.push(`currency = $${idx++}`); values.push(data.currency); }
+  if (data.validity_days !== undefined) { sets.push(`validity_days = $${idx++}`); values.push(data.validity_days); }
+  if (data.status !== undefined) { sets.push(`status = $${idx++}`); values.push(data.status); }
+  if (sets.length === 0) return null;
+  const { rows } = await sql.query(
+    `UPDATE quotes SET ${sets.join(", ")} WHERE id = $${idx} RETURNING *`,
+    [...values, id]
+  );
+  return rows[0];
+}
+
+export async function markQuoteViewed(token: string) {
+  await ensureQuotesTable();
+  await sql`
+    UPDATE quotes
+    SET status = CASE WHEN status = 'sent' THEN 'viewed' ELSE status END,
+        viewed_at = COALESCE(viewed_at, NOW())
+    WHERE token = ${token}
+  `;
+}
+
+export async function markQuoteAccepted(token: string) {
+  await ensureQuotesTable();
+  const { rows } = await sql`
+    UPDATE quotes
+    SET status = 'accepted', accepted_at = NOW()
+    WHERE token = ${token} AND status NOT IN ('accepted', 'declined')
+    RETURNING *
+  `;
+  return rows[0] || null;
+}
+
+export async function markQuoteDeclined(token: string) {
+  await ensureQuotesTable();
+  const { rows } = await sql`
+    UPDATE quotes
+    SET status = 'declined', declined_at = NOW()
+    WHERE token = ${token} AND status NOT IN ('accepted', 'declined')
+    RETURNING *
+  `;
+  return rows[0] || null;
+}
+
+export async function deleteQuoteById(id: number) {
+  await ensureQuotesTable();
+  await sql`DELETE FROM quotes WHERE id = ${id}`;
+}
+
 // ── Stats ──
 export async function getStats() {
   const projectStats = await sql`

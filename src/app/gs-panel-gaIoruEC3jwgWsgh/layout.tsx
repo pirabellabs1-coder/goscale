@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard, BarChart3, FolderOpen, MessageSquare, Star,
+  LayoutDashboard, BarChart3, FolderOpen, MessageSquare, Star, FileText,
   Settings, Menu, X, LogOut, ChevronRight, Lock, Eye, EyeOff,
   ShieldCheck, AlertTriangle,
 } from "lucide-react";
@@ -15,6 +15,7 @@ const sidebarLinks = [
   { href: PANEL, label: "Dashboard", icon: LayoutDashboard },
   { href: `${PANEL}/analytics`, label: "Analytics", icon: BarChart3 },
   { href: `${PANEL}/portfolio`, label: "Portfolio", icon: FolderOpen },
+  { href: `${PANEL}/quotes`, label: "Devis", icon: FileText },
   { href: `${PANEL}/messages`, label: "Messages", icon: MessageSquare },
   { href: `${PANEL}/testimonials`, label: "Avis clients", icon: Star },
   { href: `${PANEL}/settings`, label: "Parametres", icon: Settings },
