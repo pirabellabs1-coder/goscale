@@ -17,6 +17,7 @@ export interface Project {
   status: "published" | "draft";
   image_url: string;
   video_url: string;
+  images?: string[];
   sort_order: number;
   created_at: string;
   updated_at: string;

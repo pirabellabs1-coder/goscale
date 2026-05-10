@@ -33,8 +33,9 @@ export default function PortfolioPage() {
     long_description: "", long_description_en: "",
     result: "", result_en: "",
     tools: "", status: "draft" as "published" | "draft",
-    image_url: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&q=80",
+    image_url: "",
     video_url: "",
+    images: [] as string[],
     sort_order: 0,
   });
 
@@ -53,8 +54,9 @@ export default function PortfolioPage() {
       long_description: "", long_description_en: "",
       result: "", result_en: "",
       tools: "", status: "draft",
-      image_url: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&q=80",
+      image_url: "",
       video_url: "",
+      images: [],
       sort_order: projects.length + 1,
     });
     setShowForm(true);
@@ -78,6 +80,7 @@ export default function PortfolioPage() {
       status: p.status,
       image_url: p.image_url,
       video_url: p.video_url || "",
+      images: Array.isArray(p.images) ? p.images : [],
       sort_order: p.sort_order,
     });
     setShowForm(true);
@@ -112,27 +115,65 @@ export default function PortfolioPage() {
   const [uploadError, setUploadError] = useState<string | null>(null);
 
   const handleFilePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+    const files = Array.from(e.target.files || []);
+    if (files.length === 0) return;
     setUploadError(null);
     setUploading(true);
+    const newUrls: string[] = [];
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (!res.ok) {
-        setUploadError(data.error || "Échec de l'upload");
-      } else {
-        setForm((f) => ({ ...f, image_url: data.url }));
+      // Upload sequentially to keep order predictable + avoid hammering the route
+      for (const file of files) {
+        const fd = new FormData();
+        fd.append("file", file);
+        const res = await fetch("/api/upload", { method: "POST", body: fd });
+        const data = await res.json();
+        if (!res.ok) {
+          setUploadError(data.error || "Échec de l'upload");
+          break;
+        }
+        newUrls.push(data.url);
+      }
+      if (newUrls.length > 0) {
+        setForm((f) => ({
+          ...f,
+          // First upload becomes the cover if no cover yet
+          image_url: f.image_url || newUrls[0],
+          images: [...(f.images || []), ...newUrls],
+        }));
       }
     } catch {
       setUploadError("Erreur réseau pendant l'upload");
     } finally {
       setUploading(false);
-      // Reset the file input so picking the same file twice still triggers onChange
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
+  };
+
+  const removeImage = (url: string) => {
+    setForm((f) => {
+      const next = (f.images || []).filter((u) => u !== url);
+      return {
+        ...f,
+        images: next,
+        image_url: f.image_url === url ? (next[0] || "") : f.image_url,
+      };
+    });
+  };
+
+  const setCoverImage = (url: string) => {
+    setForm((f) => ({ ...f, image_url: url }));
+  };
+
+  const moveImage = (url: string, dir: -1 | 1) => {
+    setForm((f) => {
+      const arr = [...(f.images || [])];
+      const i = arr.indexOf(url);
+      if (i < 0) return f;
+      const j = i + dir;
+      if (j < 0 || j >= arr.length) return f;
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+      return { ...f, images: arr };
+    });
   };
 
   const colorMap: Record<string, string> = {
@@ -347,7 +388,7 @@ export default function PortfolioPage() {
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="absolute inset-0 bg-black/60" onClick={() => setShowForm(false)} />
-          <div className="relative bg-dark-2 rounded-2xl border border-border p-6 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-dark-2 rounded-2xl border border-border p-6 sm:p-8 w-full max-w-3xl max-h-[92vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h3 className="font-display text-lg font-bold">{editId ? "Modifier" : "Nouveau"} projet</h3>
               <button onClick={() => setShowForm(false)}><X size={20} className="text-white/40" /></button>
@@ -414,14 +455,18 @@ export default function PortfolioPage() {
               <div className="border-t border-border pt-4 -mb-2">
                 <span className="text-xs text-white/40">M&eacute;dia</span>
               </div>
-              <div className="flex items-center justify-between gap-2 mb-1">
+              <div className="flex items-center justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 text-xs text-white/40">
-                  <ImageIcon size={14} /> Image
+                  <ImageIcon size={14} /> Images du projet
+                  {(form.images?.length || 0) > 0 && (
+                    <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded-md">{form.images!.length}</span>
+                  )}
                 </div>
                 <input
                   ref={fileInputRef}
                   type="file"
                   accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                  multiple
                   hidden
                   onChange={handleFilePick}
                 />
@@ -432,35 +477,85 @@ export default function PortfolioPage() {
                   className="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand/10 text-brand hover:bg-brand/15 border border-brand/20 disabled:opacity-50"
                 >
                   {uploading ? (
-                    <><Loader2 size={12} className="animate-spin" /> Upload en cours...</>
+                    <><Loader2 size={12} className="animate-spin" /> Upload...</>
                   ) : (
-                    <><Upload size={12} /> Uploader depuis la galerie</>
+                    <><Upload size={12} /> Ajouter des images</>
                   )}
                 </button>
               </div>
+
+              {(form.images?.length || 0) > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {form.images!.map((url, i) => {
+                    const isCover = url === form.image_url;
+                    return (
+                      <div
+                        key={url + i}
+                        className={`relative rounded-lg border overflow-hidden bg-dark-3 group ${
+                          isCover ? "border-brand ring-2 ring-brand/30" : "border-border"
+                        }`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img src={url} alt={`Image ${i + 1}`} className="w-full h-28 object-cover" />
+                        {isCover && (
+                          <span className="absolute top-1.5 left-1.5 text-[9px] uppercase font-bold tracking-wider bg-brand text-white px-1.5 py-0.5 rounded">
+                            Cover
+                          </span>
+                        )}
+                        <div className="absolute inset-x-0 bottom-0 bg-black/70 backdrop-blur-sm p-1 flex items-center justify-between gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="flex gap-0.5">
+                            <button type="button" onClick={() => moveImage(url, -1)}
+                                    disabled={i === 0}
+                                    className="text-[10px] px-1.5 py-1 rounded bg-white/10 text-white/70 hover:bg-white/20 disabled:opacity-30">
+                              ←
+                            </button>
+                            <button type="button" onClick={() => moveImage(url, 1)}
+                                    disabled={i === form.images!.length - 1}
+                                    className="text-[10px] px-1.5 py-1 rounded bg-white/10 text-white/70 hover:bg-white/20 disabled:opacity-30">
+                              →
+                            </button>
+                          </div>
+                          {!isCover && (
+                            <button type="button" onClick={() => setCoverImage(url)}
+                                    className="text-[10px] px-2 py-1 rounded bg-brand/30 text-brand hover:bg-brand/50">
+                              Cover
+                            </button>
+                          )}
+                          <button type="button" onClick={() => removeImage(url)}
+                                  className="text-[10px] px-2 py-1 rounded bg-red-500/30 text-red-300 hover:bg-red-500/50">
+                            <Trash2 size={10} />
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="rounded-lg border border-dashed border-border bg-dark-3 p-6 text-center">
+                  <ImageIcon size={28} className="text-white/15 mx-auto mb-2" />
+                  <p className="text-xs text-white/40">Aucune image. Cliquez « Ajouter des images » pour uploader plusieurs photos d&apos;un coup.</p>
+                </div>
+              )}
+
               <input
-                type="text" placeholder="URL de l'image ou bouton Upload &uarr;" className="input-field"
-                value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                type="text" placeholder="Ou collez une URL d'image..." className="input-field text-xs"
+                value={form.image_url}
+                onChange={(e) => {
+                  const url = e.target.value;
+                  setForm((f) => ({
+                    ...f,
+                    image_url: url,
+                    images: url && !f.images.includes(url) ? [...f.images, url] : f.images,
+                  }));
+                }}
               />
+
               {uploadError && (
                 <div className="flex items-start gap-2 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
                   <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
                   <span>{uploadError}</span>
                 </div>
               )}
-              {form.image_url && (
-                <div className="rounded-lg border border-border overflow-hidden bg-dark-3">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={form.image_url} alt="Aperçu" className="w-full h-32 object-cover" />
-                </div>
-              )}
-              <div className="flex items-center gap-2 text-xs text-white/40 mb-1">
-                <Video size={14} /> Vid&eacute;o (optionnel)
-              </div>
-              <input
-                type="text" placeholder="URL YouTube ou lien vid&eacute;o" className="input-field"
-                value={form.video_url} onChange={(e) => setForm({ ...form, video_url: e.target.value })}
-              />
               <div className="flex items-center gap-3">
                 <label className="text-sm text-white/50">Statut :</label>
                 <div

@@ -5,6 +5,8 @@ import { useProjects } from "@/lib/ProjectContext";
 import { categoryColors } from "@/lib/data";
 import { useT, useLang, useSyncHtmlLang } from "@/lib/i18n";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import Carousel from "@/components/public/Carousel";
+import RichText from "@/components/public/RichText";
 import {
   Menu, X, Zap, Bot, Phone, Globe, Palette, ChevronDown,
   ArrowRight, Star, Mail, MapPin, Clock, Shield, Headphones,
@@ -1302,12 +1304,37 @@ function HomePage() {
                       onClick={() => setSelectedProject(p)}
                     >
                       <div className="relative h-44 sm:h-52 overflow-hidden">
-                        <ProjectMedia
-                          imageUrl={p.image_url}
-                          videoUrl={p.video_url}
-                          title={tp.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
+                        {(() => {
+                          const gallery = (p.images && p.images.length > 0) ? p.images : (p.image_url ? [p.image_url] : []);
+                          // Video takes priority for the cover preview if present
+                          if (p.video_url) {
+                            return (
+                              <ProjectMedia
+                                imageUrl={p.image_url}
+                                videoUrl={p.video_url}
+                                title={tp.title}
+                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                              />
+                            );
+                          }
+                          if (gallery.length > 1) {
+                            return (
+                              <Carousel
+                                images={gallery}
+                                alt={tp.title}
+                                className="w-full h-full"
+                              />
+                            );
+                          }
+                          return (
+                            <ProjectMedia
+                              imageUrl={p.image_url}
+                              videoUrl={p.video_url}
+                              title={tp.title}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          );
+                        })()}
                         <div className="portfolio-gradient absolute inset-0 pointer-events-none" />
                         <span className={`absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded-full border ${colorMap[cat] || colorMap.brand}`}>
                           {trCategory(p.category)}
@@ -1315,6 +1342,11 @@ function HomePage() {
                         {p.video_url && (
                           <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white/80 flex items-center gap-1">
                             <Play size={10} /> {t({ fr: "Vidéo", en: "Video" })}
+                          </span>
+                        )}
+                        {!p.video_url && p.images && p.images.length > 1 && (
+                          <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white/80">
+                            {p.images.length} photos
                           </span>
                         )}
                       </div>
@@ -1985,16 +2017,36 @@ function HomePage() {
               </button>
             </div>
 
-            {/* Media */}
+            {/* Media — video > carousel > single image */}
             <div className="relative w-full aspect-video bg-black">
-              <ProjectMedia
-                imageUrl={selectedProject.image_url}
-                videoUrl={selectedProject.video_url}
-                title={selectedProject.title}
-                autoplay
-                controls
-                className="w-full h-full object-cover"
-              />
+              {(() => {
+                if (selectedProject.video_url) {
+                  return (
+                    <ProjectMedia
+                      imageUrl={selectedProject.image_url}
+                      videoUrl={selectedProject.video_url}
+                      title={selectedProject.title}
+                      autoplay
+                      controls
+                      className="w-full h-full object-cover"
+                    />
+                  );
+                }
+                const gallery = (selectedProject.images && selectedProject.images.length > 0)
+                  ? selectedProject.images
+                  : (selectedProject.image_url ? [selectedProject.image_url] : []);
+                if (gallery.length > 1) {
+                  return <Carousel images={gallery} alt={selectedProject.title} className="w-full h-full" />;
+                }
+                return (
+                  <ProjectMedia
+                    imageUrl={selectedProject.image_url}
+                    videoUrl={selectedProject.video_url}
+                    title={selectedProject.title}
+                    className="w-full h-full object-cover"
+                  />
+                );
+              })()}
             </div>
 
             {/* Body */}
@@ -2011,9 +2063,7 @@ function HomePage() {
                         <h3 className="text-xs font-bold uppercase tracking-widest text-brand mb-3">
                           {t({ fr: "Étude de cas", en: "Case study" })}
                         </h3>
-                        <p className="text-white/70 text-sm sm:text-[15px] leading-relaxed whitespace-pre-line">
-                          {tp.long_description}
-                        </p>
+                        <RichText text={tp.long_description} />
                       </div>
                     )}
 

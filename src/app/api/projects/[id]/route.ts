@@ -60,6 +60,7 @@ export async function PUT(request: Request, context: Ctx) {
       status: body.status,
       image_url: body.image_url ?? body.img,
       video_url: body.video_url,
+      images: Array.isArray(body.images) ? body.images.filter((u: unknown) => typeof u === "string") : undefined,
       sort_order: body.sort_order ?? body.order,
     });
     return NextResponse.json(project);

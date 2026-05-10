@@ -122,6 +122,7 @@ export async function createTables() {
   await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS long_description_en TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS result_en TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS images JSONB NOT NULL DEFAULT '[]'::jsonb`;
 
   await sql`
     CREATE TABLE IF NOT EXISTS messages (
@@ -150,6 +151,7 @@ async function ensureProjectsBilingual() {
     await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en TEXT NOT NULL DEFAULT ''`;
     await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS long_description_en TEXT NOT NULL DEFAULT ''`;
     await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS result_en TEXT NOT NULL DEFAULT ''`;
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS images JSONB NOT NULL DEFAULT '[]'::jsonb`;
     _projectsBilingualEnsured = true;
   } catch {
     // table doesn't exist yet — createTables() will handle it
@@ -191,22 +193,26 @@ export async function createProject(data: {
   status: string;
   image_url: string;
   video_url?: string;
+  images?: string[];
   sort_order: number;
 }) {
+  await ensureProjectsBilingual();
+  const imgs = JSON.stringify(Array.isArray(data.images) ? data.images : []);
   const { rows } = await sql`
     INSERT INTO projects (
       title, title_en, category,
       description, description_en,
       long_description, long_description_en,
       result, result_en,
-      tools, status, image_url, video_url, sort_order
+      tools, status, image_url, video_url, images, sort_order
     )
     VALUES (
       ${data.title}, ${data.title_en || ""}, ${data.category},
       ${data.description}, ${data.description_en || ""},
       ${data.long_description}, ${data.long_description_en || ""},
       ${data.result}, ${data.result_en || ""},
-      ${data.tools}, ${data.status}, ${data.image_url}, ${data.video_url || ""}, ${data.sort_order}
+      ${data.tools}, ${data.status}, ${data.image_url}, ${data.video_url || ""},
+      ${imgs}::jsonb, ${data.sort_order}
     )
     RETURNING *
   `;
@@ -229,9 +235,11 @@ export async function updateProject(
     status: string;
     image_url: string;
     video_url: string;
+    images: string[];
     sort_order: number;
   }>
 ) {
+  await ensureProjectsBilingual();
   const sets: string[] = [];
   const values: unknown[] = [];
   let idx = 1;
@@ -249,6 +257,7 @@ export async function updateProject(
   if (data.status !== undefined) { sets.push(`status = $${idx++}`); values.push(data.status); }
   if (data.image_url !== undefined) { sets.push(`image_url = $${idx++}`); values.push(data.image_url); }
   if (data.video_url !== undefined) { sets.push(`video_url = $${idx++}`); values.push(data.video_url); }
+  if (data.images !== undefined) { sets.push(`images = $${idx++}::jsonb`); values.push(JSON.stringify(data.images)); }
   if (data.sort_order !== undefined) { sets.push(`sort_order = $${idx++}`); values.push(data.sort_order); }
 
   if (sets.length === 0) return null;
