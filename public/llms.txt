@@ -1,0 +1,86 @@
+# GoScaleStudio
+
+> Studio spécialisé en automatisation, intelligence artificielle (chatbots, callbots vocaux), sites WordPress optimisés SEO et maquettes UI/UX. 65+ projets livrés, note 5,0/5 sur ComeUp. Audit à 15 €. Dirigé par Fidah IMOROU BOUKARI, également co-fondateur de Pirabel Labs (agence web marketing).
+
+## Identité
+
+- Nom: GoScaleStudio
+- Site: https://goscalestudio.com
+- Email: contact@goscalestudio.com
+- WhatsApp: +229 01 68 24 28 66
+- Fondateur: Fidah IMOROU BOUKARI (CEO, également co-fondateur de Pirabel Labs — https://pirabellabs.com)
+- Zone: France, francophonie, international (100 % à distance)
+- Langues: Français, Anglais
+
+## Services
+
+### Automatisation Métier
+Workflows intelligents avec Make, n8n ou Zapier. Connexion d'outils (HubSpot, Notion, Google Workspace), suppression des tâches répétitives, gain moyen de +10h/semaine.
+
+### Chatbot IA sur Mesure
+Chatbots GPT-4, GPT-4o et Claude déployés sur WhatsApp Business API, site web ou Messenger. Entraînés sur les données du client. Outils : Botpress, Voiceflow.
+
+### CallBot & Assistant Vocal IA
+Agents vocaux 24/7 via Vapi, Twilio et Bland AI. Voix premium (ElevenLabs, OpenAI TTS). Cas d'usage : prise de RDV, qualification de leads, support client.
+
+### Site WordPress + SEO
+Sites vitrines rapides et SEO-ready avec WordPress + Elementor. Optimisation technique, contenu et netlinking pour atteindre la première page Google. Outils : RankMath.
+
+### Maquette UI/UX IA
+Prototypes cliquables livrés en 48 à 72h avec Figma AI et v0.dev. Design moderne, mobile-first, prêt pour le développement.
+
+## Tarifs
+
+- Audit & Diagnostic — 15 € (paiement unique, recommandé pour démarrer)
+- 1 scénario simple — 30 €
+- 2 scénarios simples — 35 €
+- 3 scénarios simples — 40 €
+- Scénario avancé — 50 €
+- Automatisation sur mesure — 100 € à 500 €
+- Maintenance 30 jours — 500 €
+- Consulting 30 minutes — 30 €
+
+Devis personnalisé gratuit sous 24h. Paiements : Stripe, virement, PayPal, Wise.
+
+## Délais
+
+- Maquette UI/UX : 48 à 72h
+- Audit à 15 € : sous 24 à 48h
+- Chatbots et automatisations standards : 5 à 7 jours ouvrés
+- Projets complets : 3 à 14 jours selon complexité
+
+## Garanties
+
+- Satisfait ou repris : si le livrable ne correspond pas au cahier des charges, reprise gratuite.
+- Support 30 jours offert : email + WhatsApp, ajustements mineurs gratuits.
+- Révisions illimitées jusqu'à satisfaction totale, sans frais supplémentaires.
+- RGPD-compliant : données stockées sur serveurs UE, NDA disponible.
+
+## Cas clients représentatifs
+
+- Agence immobilière : automatisation CRM complète, +15h/semaine économisées
+- E-commerce mode : chatbot WhatsApp GPT-4, +35 % de conversions
+- Clinique dentaire : callbot Vapi pour prise de RDV, -40 % d'appels manqués
+- Cabinet de conseil : refonte WordPress + SEO, top 3 Google en 2 mois
+- Startup FinTech : maquette livrée en 48h, levée de 200 000 €
+
+## Stack technique maîtrisée
+
+Make, n8n, Zapier, Botpress, Voiceflow, GPT-4, GPT-4o, Claude, Gemini, Vapi, Twilio, Bland AI, ElevenLabs, OpenAI TTS, WordPress, Elementor, RankMath, HubSpot, Notion, WhatsApp Business API, Figma AI, v0.dev.
+
+## Contact
+
+- Site web : https://goscalestudio.com
+- Email : contact@goscalestudio.com
+- WhatsApp : +229 01 68 24 28 66
+- Réponse garantie sous 24h.
+
+## Liens importants
+
+- Page d'accueil : https://goscalestudio.com
+- Tarifs : https://goscalestudio.com/#pricing
+- Réalisations : https://goscalestudio.com/#portfolio
+- À propos : https://goscalestudio.com/#about
+- FAQ : https://goscalestudio.com/#faq
+- Contact : https://goscalestudio.com/#contact
+- Pirabel Labs (agence sœur) : https://pirabellabs.com

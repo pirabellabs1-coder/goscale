@@ -4,8 +4,8 @@ import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 
 const STORAGE_KEY = "gs-preloader-shown";
-const MIN_DURATION_MS = 1100;
-const MAX_DURATION_MS = 2400;
+const MIN_DURATION_MS = 3000;
+const MAX_DURATION_MS = 5000;
 
 export default function Preloader() {
   const pathname = usePathname();
