@@ -631,9 +631,21 @@ export default function HomePage() {
                 Fidah <span className="gradient-text">IMOROU BOUKARI</span>
               </h3>
               <p className="text-white/40 text-sm mb-2">CEO de GoScaleStudio</p>
-              <p className="text-white/30 text-xs mb-6 flex items-center gap-2">
+              <p className="text-white/30 text-xs mb-6 flex items-center gap-2 flex-wrap">
                 <Sparkles size={11} className="text-brand" />
-                Co-fondateur de <span className="text-white/60 font-semibold">Pirabel Labs</span> &middot; Agence web marketing
+                <span>
+                  Co-fondateur de{" "}
+                  <a
+                    href="https://pirabellabs.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand font-semibold hover:underline inline-flex items-center gap-1"
+                  >
+                    Pirabel Labs
+                    <ArrowUpRight size={11} />
+                  </a>{" "}
+                  &middot; Agence web marketing
+                </span>
               </p>
 
               <div className="flex flex-col gap-4 text-sm sm:text-[15px] text-white/70 leading-relaxed">
@@ -648,8 +660,17 @@ export default function HomePage() {
                   plus efficacement grace a des solutions digitales modernes et intelligentes.
                 </p>
                 <p>
-                  Je suis aussi co-fondateur de <span className="text-white font-semibold">Pirabel Labs</span>,
-                  une agence web marketing specialisee dans la croissance digitale, la strategie de contenu
+                  Je suis aussi co-fondateur de{" "}
+                  <a
+                    href="https://pirabellabs.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand font-semibold hover:underline inline-flex items-center gap-1"
+                  >
+                    Pirabel Labs
+                    <ArrowUpRight size={13} />
+                  </a>
+                  , une agence web marketing specialisee dans la croissance digitale, la strategie de contenu
                   et l&apos;acquisition client. Une double casquette qui me permet de combiner technologie,
                   automatisation et marketing pour des resultats concrets.
                 </p>

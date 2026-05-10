@@ -68,15 +68,16 @@ export default function Preloader() {
       className={`preloader ${fading ? "preloader-fade" : ""}`}
     >
       <div className="preloader-inner">
-        <div className="preloader-rings">
-          <span className="ring ring-1" />
-          <span className="ring ring-2" />
-          <span className="ring ring-3" />
-        </div>
-
-        <div className="preloader-logo">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.jpg" alt="GoScaleStudio" className="preloader-logo-img" />
+        <div className="preloader-logo-wrap">
+          <div className="preloader-rings">
+            <span className="ring ring-1" />
+            <span className="ring ring-2" />
+            <span className="ring ring-3" />
+          </div>
+          <div className="preloader-logo">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.jpg" alt="GoScaleStudio" className="preloader-logo-img" />
+          </div>
         </div>
 
         <div className="preloader-brand">

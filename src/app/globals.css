@@ -207,14 +207,19 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); }
 .preloader-fade { opacity: 0; visibility: hidden; pointer-events: none; }
 
 .preloader-inner {
-  position: relative;
   display: flex; flex-direction: column; align-items: center;
 }
 
+/* Wrapper that holds the rings + logo, sized so rings stay around logo only */
+.preloader-logo-wrap {
+  position: relative;
+  width: 180px; height: 180px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 30px;
+}
+
 .preloader-rings {
-  position: absolute; top: 50%; left: 50%;
-  width: 220px; height: 220px;
-  transform: translate(-50%, -50%) translateY(-30px);
+  position: absolute; inset: 0;
   pointer-events: none;
 }
 .ring {
@@ -246,7 +251,6 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); }
   background: linear-gradient(135deg, rgba(240,120,48,.15), rgba(217,64,72,.1));
   border-radius: 22px;
   padding: 8px;
-  margin-bottom: 26px;
   box-shadow: 0 0 60px rgba(232,92,26,.25);
   animation: logo-pulse 2.2s ease-in-out infinite;
 }
@@ -301,8 +305,10 @@ h1,h2,h3,h4,h5,h6 { font-family: var(--font-display); }
 }
 
 @media (max-width: 640px) {
-  .preloader-rings { width: 180px; height: 180px; }
+  .preloader-logo-wrap { width: 150px; height: 150px; margin-bottom: 24px; }
   .preloader-logo { width: 72px; height: 72px; }
+  .ring-2 { inset: 14px; }
+  .ring-3 { inset: 28px; }
   .preloader-brand { font-size: 1.3rem; }
   .preloader-bar { width: 140px; }
 }
