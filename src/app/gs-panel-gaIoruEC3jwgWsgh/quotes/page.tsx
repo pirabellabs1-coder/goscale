@@ -61,7 +61,18 @@ export default function QuotesAdminPage() {
       if (res.ok) setItems(await res.json());
     } finally { setLoading(false); }
   };
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    queueMicrotask(async () => {
+      try {
+        const res = await fetch("/api/quotes");
+        if (!cancelled && res.ok) setItems(await res.json());
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   const subtotal = (its: QuoteItem[]) =>
     its.reduce((sum, it) => sum + (Number(it.qty) || 0) * (Number(it.unit_price) || 0), 0);

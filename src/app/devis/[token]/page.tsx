@@ -34,6 +34,8 @@ export default function DevisPublicPage({ params }: { params: Promise<{ token: s
   const [confirmAction, setConfirmAction] = useState<"accept" | "decline" | null>(null);
   const [clientMessage, setClientMessage] = useState("");
   const [actionError, setActionError] = useState<string | null>(null);
+  // Snapshot Date.now() once at mount so render stays pure under React 19's purity rule
+  const [now] = useState(() => Date.now());
 
   useEffect(() => {
     fetch(`/api/quotes/public/${token}`)
@@ -111,10 +113,10 @@ export default function DevisPublicPage({ params }: { params: Promise<{ token: s
   const currencySymbol = quote.currency === "EUR" ? "€" : quote.currency === "USD" ? "$" : quote.currency;
   const fmt = (n: number) => `${n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currencySymbol}`;
 
-  // Compute expiry
+  // Compute expiry (now is captured at mount via useState for purity)
   const sentDate = quote.sent_at ? new Date(quote.sent_at) : new Date(quote.created_at);
   const expiryDate = new Date(sentDate.getTime() + quote.validity_days * 24 * 60 * 60 * 1000);
-  const isExpired = Date.now() > expiryDate.getTime() && !["accepted", "declined"].includes(quote.status);
+  const isExpired = now > expiryDate.getTime() && !["accepted", "declined"].includes(quote.status);
   const isDecided = quote.status === "accepted" || quote.status === "declined";
 
   return (

@@ -62,7 +62,18 @@ export default function TestimonialsAdminPage() {
     finally { setLoading(false); }
   };
 
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    queueMicrotask(async () => {
+      try {
+        const res = await fetch("/api/testimonials?admin=true");
+        if (!cancelled && res.ok) setItems(await res.json());
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   const copyLink = async () => {
     try {

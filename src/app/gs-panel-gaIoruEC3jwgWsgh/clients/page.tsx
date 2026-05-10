@@ -41,7 +41,18 @@ export default function ClientsAdminPage() {
       if (res.ok) setItems(await res.json());
     } finally { setLoading(false); }
   };
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => {
+    let cancelled = false;
+    queueMicrotask(async () => {
+      try {
+        const res = await fetch("/api/clients");
+        if (!cancelled && res.ok) setItems(await res.json());
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    });
+    return () => { cancelled = true; };
+  }, []);
 
   const openNew = () => {
     setEditId(null);

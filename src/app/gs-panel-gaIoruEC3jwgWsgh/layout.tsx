@@ -315,7 +315,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   // Close the sidebar automatically when navigating to a new page
   useEffect(() => {
-    setSidebarOpen(false);
+    const t = setTimeout(() => setSidebarOpen(false), 0);
+    return () => clearTimeout(t);
   }, [pathname]);
 
   const handleLogout = async () => {
