@@ -509,6 +509,70 @@ const pricingOptions = [
     note: { fr: "Appel stratégique", en: "Strategy call" } },
 ];
 
+/* ── Media helpers ─────────────────────────────────── */
+
+function getYouTubeId(url: string): string | null {
+  if (!url) return null;
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|shorts\/)|youtu\.be\/)([\w-]{11})/);
+  return m ? m[1] : null;
+}
+
+function isVideoFile(url: string): boolean {
+  return !!url && /\.(mp4|webm|ogg|mov|m4v)(\?|#|$)/i.test(url);
+}
+
+/**
+ * Renders the most appropriate media for a project URL:
+ * - YouTube link → iframe embed
+ * - Direct video (mp4/webm/...) → <video>
+ * - Anything else → falls back to image
+ */
+function ProjectMedia({
+  imageUrl, videoUrl, title, autoplay, controls, className,
+}: {
+  imageUrl: string;
+  videoUrl?: string;
+  title: string;
+  autoplay?: boolean;
+  controls?: boolean;
+  className?: string;
+}) {
+  const ytId = videoUrl ? getYouTubeId(videoUrl) : null;
+  if (ytId) {
+    const params = new URLSearchParams({
+      ...(autoplay ? { autoplay: "1", mute: "1", loop: "1", playlist: ytId, controls: controls ? "1" : "0" } : { autoplay: "0" }),
+      modestbranding: "1",
+      rel: "0",
+    });
+    return (
+      <iframe
+        src={`https://www.youtube.com/embed/${ytId}?${params}`}
+        title={title}
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowFullScreen
+        className={className || "w-full h-full border-0"}
+      />
+    );
+  }
+  if (videoUrl && isVideoFile(videoUrl)) {
+    return (
+      <video
+        src={videoUrl}
+        poster={imageUrl}
+        autoPlay={autoplay}
+        muted={autoplay}
+        loop={autoplay}
+        playsInline
+        controls={controls}
+        preload="metadata"
+        className={className || "w-full h-full object-cover"}
+      />
+    );
+  }
+  // eslint-disable-next-line @next/next/no-img-element
+  return <img src={imageUrl} alt={title} className={className || "w-full h-full object-cover"} />;
+}
+
 /* ── Component ─────────────────────────────────────── */
 
 export default function Page() {
@@ -545,6 +609,20 @@ function HomePage() {
   const [counted, setCounted] = useState(false);
   const [showAllProjects, setShowAllProjects] = useState(false);
   const [activeTab, setActiveTab] = useState("Tous");
+  const [selectedProject, setSelectedProject] = useState<typeof publishedProjects[number] | null>(null);
+
+  // Lock body scroll when modal is open + close on ESC
+  useEffect(() => {
+    if (!selectedProject) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setSelectedProject(null); };
+    window.addEventListener("keydown", onKey);
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [selectedProject]);
 
   // Scroll animations observer — uses data attribute so React re-renders don't remove it
   useEffect(() => {
@@ -625,6 +703,20 @@ function HomePage() {
   const filteredFaqItems = activeFaqCat === "Tous"
     ? faqItems
     : faqItems.filter((f) => f.cat.fr === activeFaqCat);
+
+  // Translate a project's category (stored as the FR id in DB) to the active language
+  const trCategory = (cat: string) => {
+    const tab = portfolioTabs.find((p) => p.id === cat);
+    return tab ? t(tab.label) : cat;
+  };
+
+  // Use EN field if present (and active lang is en), fall back to FR
+  const trProject = (p: typeof publishedProjects[number]) => ({
+    title: lang === "en" && p.title_en ? p.title_en : p.title,
+    description: lang === "en" && p.description_en ? p.description_en : p.description,
+    long_description: lang === "en" && p.long_description_en ? p.long_description_en : p.long_description,
+    result: lang === "en" && p.result_en ? p.result_en : p.result,
+  });
 
   const visibleProjects = showAllProjects ? filteredProjects : filteredProjects.slice(0, 4);
 
@@ -1037,27 +1129,47 @@ function HomePage() {
               <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
                 {visibleProjects.map((p) => {
                   const cat = categoryColors[p.category] || "brand";
+                  const tp = trProject(p);
                   return (
-                    <div key={p.id} className="anim fade-up group bg-dark-3 rounded-2xl border border-border overflow-hidden hover:border-brand/30 transition-all duration-300 hover:-translate-y-1">
+                    <div
+                      key={p.id}
+                      className="anim fade-up group bg-dark-3 rounded-2xl border border-border overflow-hidden hover:border-brand/30 transition-all duration-300 hover:-translate-y-1 flex flex-col cursor-pointer"
+                      onClick={() => setSelectedProject(p)}
+                    >
                       <div className="relative h-44 sm:h-52 overflow-hidden">
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img src={p.image_url} alt={p.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                        <div className="portfolio-gradient absolute inset-0" />
+                        <ProjectMedia
+                          imageUrl={p.image_url}
+                          videoUrl={p.video_url}
+                          title={tp.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                        <div className="portfolio-gradient absolute inset-0 pointer-events-none" />
                         <span className={`absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded-full border ${colorMap[cat] || colorMap.brand}`}>
-                          {p.category}
+                          {trCategory(p.category)}
                         </span>
+                        {p.video_url && (
+                          <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white/80 flex items-center gap-1">
+                            <Play size={10} /> {t({ fr: "Vidéo", en: "Video" })}
+                          </span>
+                        )}
                       </div>
-                      <div className="p-5 sm:p-6">
-                        <h3 className="font-display text-base sm:text-lg font-bold mb-2">{p.title}</h3>
-                        <p className="text-white/50 text-xs sm:text-sm mb-4 leading-relaxed">{p.description}</p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-brand font-bold text-xs sm:text-sm">{p.result}</span>
+                      <div className="p-5 sm:p-6 flex flex-col flex-1">
+                        <h3 className="font-display text-base sm:text-lg font-bold mb-2">{tp.title}</h3>
+                        <p className="text-white/50 text-xs sm:text-sm mb-4 leading-relaxed line-clamp-3">{tp.description}</p>
+                        <div className="flex items-center justify-between mb-4">
+                          <span className="text-brand font-bold text-xs sm:text-sm">{tp.result}</span>
                           <div className="flex gap-1.5 flex-wrap justify-end">
-                            {p.tools.split(", ").map((t, ti) => (
-                              <span key={ti} className="tool-pill">{t}</span>
+                            {p.tools.split(", ").slice(0, 3).map((tt, ti) => (
+                              <span key={ti} className="tool-pill">{tt}</span>
                             ))}
                           </div>
                         </div>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setSelectedProject(p); }}
+                          className="mt-auto w-full btn-outline px-5 py-3 rounded-xl text-xs sm:text-sm font-bold flex items-center justify-center gap-2 group-hover:bg-brand group-hover:text-white group-hover:border-brand transition-all"
+                        >
+                          {t({ fr: "Voir le cas", en: "View case study" })} <ArrowUpRight size={14} />
+                        </button>
                       </div>
                     </div>
                   );
@@ -1667,6 +1779,105 @@ function HomePage() {
           </div>
         </div>
       </footer>
+
+      {/* ── Case Study Modal ── */}
+      {selectedProject && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 bg-black/80 backdrop-blur-sm"
+          onClick={() => setSelectedProject(null)}
+          role="dialog"
+          aria-modal="true"
+        >
+          <div
+            className="bg-dark-2 rounded-3xl border border-border w-full max-w-4xl max-h-[92vh] overflow-y-auto relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Sticky header */}
+            <div className="sticky top-0 z-10 bg-dark-2/95 backdrop-blur-md border-b border-border px-6 py-4 flex items-center justify-between">
+              <span className={`text-xs font-bold px-3 py-1.5 rounded-full border ${colorMap[categoryColors[selectedProject.category] || "brand"] || colorMap.brand}`}>
+                {trCategory(selectedProject.category)}
+              </span>
+              <button
+                onClick={() => setSelectedProject(null)}
+                className="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors"
+                aria-label={t({ fr: "Fermer", en: "Close" })}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Media */}
+            <div className="relative w-full aspect-video bg-black">
+              <ProjectMedia
+                imageUrl={selectedProject.image_url}
+                videoUrl={selectedProject.video_url}
+                title={selectedProject.title}
+                autoplay
+                controls
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Body */}
+            <div className="p-6 sm:p-8">
+              {(() => {
+                const tp = trProject(selectedProject);
+                return (
+                  <>
+                    <h2 className="font-display text-2xl sm:text-3xl font-bold mb-3">{tp.title}</h2>
+                    <p className="text-white/60 text-sm sm:text-base mb-6 leading-relaxed">{tp.description}</p>
+
+                    {tp.long_description && (
+                      <div className="mb-8">
+                        <h3 className="text-xs font-bold uppercase tracking-widest text-brand mb-3">
+                          {t({ fr: "Étude de cas", en: "Case study" })}
+                        </h3>
+                        <p className="text-white/70 text-sm sm:text-[15px] leading-relaxed whitespace-pre-line">
+                          {tp.long_description}
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+                      <div className="bg-dark-3 rounded-xl border border-border p-4">
+                        <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-widest text-emerald">
+                          <TrendingUp size={12} /> {t({ fr: "Résultat", en: "Result" })}
+                        </div>
+                        <p className="font-display text-base sm:text-lg font-bold">{tp.result || "—"}</p>
+                      </div>
+                      <div className="bg-dark-3 rounded-xl border border-border p-4">
+                        <div className="flex items-center gap-2 mb-2 text-xs font-bold uppercase tracking-widest text-brand">
+                          <Cpu size={12} /> {t({ fr: "Outils utilisés", en: "Tools used" })}
+                        </div>
+                        <div className="flex gap-1.5 flex-wrap">
+                          {selectedProject.tools && selectedProject.tools.split(", ").map((tool, ti) => (
+                            <span key={ti} className="tool-pill">{tool}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                );
+              })()}
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-border">
+                <button
+                  onClick={() => { setSelectedProject(null); scrollTo("contact"); }}
+                  className="btn-primary px-6 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 flex-1"
+                >
+                  {t({ fr: "Démarrer un projet similaire", en: "Start a similar project" })} <ArrowRight size={16} />
+                </button>
+                <button
+                  onClick={() => setSelectedProject(null)}
+                  className="btn-dark px-6 py-3.5 rounded-xl text-sm flex items-center justify-center gap-2 sm:w-auto"
+                >
+                  {t({ fr: "Fermer", en: "Close" })}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

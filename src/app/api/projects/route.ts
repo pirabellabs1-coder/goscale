@@ -30,10 +30,14 @@ export async function POST(request: Request) {
     const body = await request.json();
     const project = await createProject({
       title: body.title || "",
+      title_en: body.title_en || "",
       category: body.category || "Automatisation",
       description: body.description || body.desc || "",
+      description_en: body.description_en || "",
       long_description: body.long_description || body.longDesc || "",
+      long_description_en: body.long_description_en || "",
       result: body.result || "",
+      result_en: body.result_en || "",
       tools: body.tools || "",
       status: body.status || "draft",
       image_url: body.image_url || body.img || "",

@@ -48,10 +48,14 @@ export async function PUT(request: Request, context: Ctx) {
 
     const project = await updateProject(parseInt(id), {
       title: body.title,
+      title_en: body.title_en,
       category: body.category,
       description: body.description ?? body.desc,
+      description_en: body.description_en,
       long_description: body.long_description ?? body.longDesc,
+      long_description_en: body.long_description_en,
       result: body.result,
+      result_en: body.result_en,
       tools: body.tools,
       status: body.status,
       image_url: body.image_url ?? body.img,

@@ -25,8 +25,12 @@ export default function PortfolioPage() {
   const [editId, setEditId] = useState<number | null>(null);
   const [viewProject, setViewProject] = useState<Project | null>(null);
   const [form, setForm] = useState({
-    title: "", category: "Automatisation", description: "", long_description: "",
-    result: "", tools: "", status: "draft" as "published" | "draft",
+    title: "", title_en: "",
+    category: "Automatisation",
+    description: "", description_en: "",
+    long_description: "", long_description_en: "",
+    result: "", result_en: "",
+    tools: "", status: "draft" as "published" | "draft",
     image_url: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&q=80",
     video_url: "",
     sort_order: 0,
@@ -41,8 +45,12 @@ export default function PortfolioPage() {
   const openNew = () => {
     setEditId(null);
     setForm({
-      title: "", category: "Automatisation", description: "", long_description: "",
-      result: "", tools: "", status: "draft",
+      title: "", title_en: "",
+      category: "Automatisation",
+      description: "", description_en: "",
+      long_description: "", long_description_en: "",
+      result: "", result_en: "",
+      tools: "", status: "draft",
       image_url: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=600&q=80",
       video_url: "",
       sort_order: projects.length + 1,
@@ -56,10 +64,14 @@ export default function PortfolioPage() {
     setEditId(id);
     setForm({
       title: p.title,
+      title_en: p.title_en || "",
       category: p.category,
       description: p.description,
+      description_en: p.description_en || "",
       long_description: p.long_description,
+      long_description_en: p.long_description_en || "",
       result: p.result,
+      result_en: p.result_en || "",
       tools: p.tools,
       status: p.status,
       image_url: p.image_url,
@@ -290,6 +302,11 @@ export default function PortfolioPage() {
               <button onClick={() => setShowForm(false)}><X size={20} className="text-white/40" /></button>
             </div>
             <div className="flex flex-col gap-4">
+              {/* ── Version Française ── */}
+              <div className="flex items-center gap-2 -mb-2">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-brand bg-brand/10 px-2 py-1 rounded-md">FR</span>
+                <span className="text-xs text-white/40">Version fran&ccedil;aise</span>
+              </div>
               <input
                 type="text" placeholder="Titre du projet" className="input-field"
                 value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })}
@@ -319,6 +336,32 @@ export default function PortfolioPage() {
                   type="text" placeholder="Outils (s&eacute;par&eacute;s par ,)" className="input-field"
                   value={form.tools} onChange={(e) => setForm({ ...form, tools: e.target.value })}
                 />
+              </div>
+
+              {/* ── Version Anglaise ── */}
+              <div className="flex items-center gap-2 mt-4 -mb-2 pt-4 border-t border-border">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-blue bg-blue/10 px-2 py-1 rounded-md">EN</span>
+                <span className="text-xs text-white/40">English version (optional &mdash; falls back to FR if empty)</span>
+              </div>
+              <input
+                type="text" placeholder="Project title (English)" className="input-field"
+                value={form.title_en} onChange={(e) => setForm({ ...form, title_en: e.target.value })}
+              />
+              <input
+                type="text" placeholder="Short description (English)" className="input-field"
+                value={form.description_en} onChange={(e) => setForm({ ...form, description_en: e.target.value })}
+              />
+              <textarea
+                placeholder="Long description / Case study (English)" rows={5} className="input-field resize-none"
+                value={form.long_description_en} onChange={(e) => setForm({ ...form, long_description_en: e.target.value })}
+              />
+              <input
+                type="text" placeholder="Result (e.g. +15h/wk)" className="input-field"
+                value={form.result_en} onChange={(e) => setForm({ ...form, result_en: e.target.value })}
+              />
+
+              <div className="border-t border-border pt-4 -mb-2">
+                <span className="text-xs text-white/40">M&eacute;dia</span>
               </div>
               <div className="flex items-center gap-2 text-xs text-white/40 mb-1">
                 <ImageIcon size={14} /> Image

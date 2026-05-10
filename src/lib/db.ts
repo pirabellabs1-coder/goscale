@@ -100,10 +100,14 @@ export async function createTables() {
     CREATE TABLE IF NOT EXISTS projects (
       id SERIAL PRIMARY KEY,
       title TEXT NOT NULL,
+      title_en TEXT NOT NULL DEFAULT '',
       category TEXT NOT NULL DEFAULT 'Automatisation',
       description TEXT NOT NULL DEFAULT '',
+      description_en TEXT NOT NULL DEFAULT '',
       long_description TEXT NOT NULL DEFAULT '',
+      long_description_en TEXT NOT NULL DEFAULT '',
       result TEXT NOT NULL DEFAULT '',
+      result_en TEXT NOT NULL DEFAULT '',
       tools TEXT NOT NULL DEFAULT '',
       status TEXT NOT NULL DEFAULT 'draft',
       image_url TEXT NOT NULL DEFAULT '',
@@ -113,6 +117,11 @@ export async function createTables() {
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+  // Idempotent migrations for existing installs (ADD COLUMN IF NOT EXISTS)
+  await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS title_en TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS long_description_en TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS result_en TEXT NOT NULL DEFAULT ''`;
 
   await sql`
     CREATE TABLE IF NOT EXISTS messages (
@@ -129,7 +138,26 @@ export async function createTables() {
 }
 
 // ── Projects ──
+
+// Idempotent migration to add bilingual columns on existing installs.
+// Uses an in-memory flag so the ALTER TABLE statements only run once per
+// serverless instance (subsequent calls are free).
+let _projectsBilingualEnsured = false;
+async function ensureProjectsBilingual() {
+  if (_projectsBilingualEnsured) return;
+  try {
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS title_en TEXT NOT NULL DEFAULT ''`;
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS description_en TEXT NOT NULL DEFAULT ''`;
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS long_description_en TEXT NOT NULL DEFAULT ''`;
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS result_en TEXT NOT NULL DEFAULT ''`;
+    _projectsBilingualEnsured = true;
+  } catch {
+    // table doesn't exist yet — createTables() will handle it
+  }
+}
+
 export async function getProjects() {
+  await ensureProjectsBilingual();
   const { rows } = await sql`
     SELECT * FROM projects ORDER BY sort_order ASC, created_at DESC
   `;
@@ -137,6 +165,7 @@ export async function getProjects() {
 }
 
 export async function getPublishedProjects() {
+  await ensureProjectsBilingual();
   const { rows } = await sql`
     SELECT * FROM projects WHERE status = 'published' ORDER BY sort_order ASC, created_at DESC
   `;
@@ -150,10 +179,14 @@ export async function getProjectById(id: number) {
 
 export async function createProject(data: {
   title: string;
+  title_en?: string;
   category: string;
   description: string;
+  description_en?: string;
   long_description: string;
+  long_description_en?: string;
   result: string;
+  result_en?: string;
   tools: string;
   status: string;
   image_url: string;
@@ -161,8 +194,20 @@ export async function createProject(data: {
   sort_order: number;
 }) {
   const { rows } = await sql`
-    INSERT INTO projects (title, category, description, long_description, result, tools, status, image_url, video_url, sort_order)
-    VALUES (${data.title}, ${data.category}, ${data.description}, ${data.long_description}, ${data.result}, ${data.tools}, ${data.status}, ${data.image_url}, ${data.video_url || ""}, ${data.sort_order})
+    INSERT INTO projects (
+      title, title_en, category,
+      description, description_en,
+      long_description, long_description_en,
+      result, result_en,
+      tools, status, image_url, video_url, sort_order
+    )
+    VALUES (
+      ${data.title}, ${data.title_en || ""}, ${data.category},
+      ${data.description}, ${data.description_en || ""},
+      ${data.long_description}, ${data.long_description_en || ""},
+      ${data.result}, ${data.result_en || ""},
+      ${data.tools}, ${data.status}, ${data.image_url}, ${data.video_url || ""}, ${data.sort_order}
+    )
     RETURNING *
   `;
   return rows[0];
@@ -172,10 +217,14 @@ export async function updateProject(
   id: number,
   data: Partial<{
     title: string;
+    title_en: string;
     category: string;
     description: string;
+    description_en: string;
     long_description: string;
+    long_description_en: string;
     result: string;
+    result_en: string;
     tools: string;
     status: string;
     image_url: string;
@@ -183,16 +232,19 @@ export async function updateProject(
     sort_order: number;
   }>
 ) {
-  // Build dynamic update — only update provided fields
   const sets: string[] = [];
   const values: unknown[] = [];
   let idx = 1;
 
   if (data.title !== undefined) { sets.push(`title = $${idx++}`); values.push(data.title); }
+  if (data.title_en !== undefined) { sets.push(`title_en = $${idx++}`); values.push(data.title_en); }
   if (data.category !== undefined) { sets.push(`category = $${idx++}`); values.push(data.category); }
   if (data.description !== undefined) { sets.push(`description = $${idx++}`); values.push(data.description); }
+  if (data.description_en !== undefined) { sets.push(`description_en = $${idx++}`); values.push(data.description_en); }
   if (data.long_description !== undefined) { sets.push(`long_description = $${idx++}`); values.push(data.long_description); }
+  if (data.long_description_en !== undefined) { sets.push(`long_description_en = $${idx++}`); values.push(data.long_description_en); }
   if (data.result !== undefined) { sets.push(`result = $${idx++}`); values.push(data.result); }
+  if (data.result_en !== undefined) { sets.push(`result_en = $${idx++}`); values.push(data.result_en); }
   if (data.tools !== undefined) { sets.push(`tools = $${idx++}`); values.push(data.tools); }
   if (data.status !== undefined) { sets.push(`status = $${idx++}`); values.push(data.status); }
   if (data.image_url !== undefined) { sets.push(`image_url = $${idx++}`); values.push(data.image_url); }
@@ -203,7 +255,6 @@ export async function updateProject(
 
   sets.push(`updated_at = NOW()`);
 
-  // Use sql tagged template for the update
   const { rows } = await sql.query(
     `UPDATE projects SET ${sets.join(", ")} WHERE id = $${idx} RETURNING *`,
     [...values, id]

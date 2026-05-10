@@ -5,10 +5,14 @@ import { createContext, useContext, useState, useEffect, useCallback, ReactNode 
 export interface Project {
   id: number;
   title: string;
+  title_en?: string;
   category: string;
   description: string;
+  description_en?: string;
   long_description: string;
+  long_description_en?: string;
   result: string;
+  result_en?: string;
   tools: string;
   status: "published" | "draft";
   image_url: string;
