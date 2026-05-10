@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Plus_Jakarta_Sans, Sora } from "next/font/google";
 import { ProjectProvider } from "@/lib/ProjectContext";
+import Preloader from "@/components/public/Preloader";
 import "./globals.css";
 
 const jakarta = Plus_Jakarta_Sans({
@@ -81,6 +82,7 @@ function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', 'G-NQ6SEVPQD3');`}
         </Script>
+        <Preloader />
         <ProjectProvider>{children}</ProjectProvider>
       </body>
     </html>

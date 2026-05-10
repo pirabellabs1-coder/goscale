@@ -585,6 +585,103 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* ── About ── */}
+      <section id="about" className="py-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="anim fade-up section-badge mx-auto mb-4"><User size={12} /> A propos</div>
+            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+              Qui suis-<span className="gradient-text">je</span> ?
+            </h2>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-8 sm:gap-12 items-center">
+            {/* Photo */}
+            <div className="lg:col-span-5 anim fade-right">
+              <div className="relative max-w-sm mx-auto">
+                <div className="absolute -inset-4 bg-gradient-to-br from-brand/30 via-purple/20 to-emerald/20 rounded-3xl blur-2xl" />
+                <div className="relative glass rounded-3xl p-2 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://i.postimg.cc/tR89Dwj9/Whats-App-Image-2026-05-10-at-01-30-44.jpg"
+                    alt="Fidah IMOROU BOUKARI - CEO GoScaleStudio"
+                    className="w-full aspect-[4/5] object-cover rounded-2xl"
+                  />
+                  <div className="absolute bottom-4 left-4 right-4 glass rounded-2xl px-4 py-3 backdrop-blur-xl">
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-2 h-2 rounded-full bg-emerald animate-pulse" />
+                      <span className="text-white/70 font-medium">Disponible pour vos projets</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -top-3 -right-3 bg-gradient-to-br from-brand to-accent rounded-2xl p-3 shadow-lg shadow-brand/30">
+                  <Sparkles size={20} className="text-white" />
+                </div>
+              </div>
+            </div>
+
+            {/* Bio */}
+            <div className="lg:col-span-7 anim fade-left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px w-8 bg-brand" />
+                <span className="text-brand text-xs font-bold tracking-widest uppercase">CEO &amp; Fondateur</span>
+              </div>
+
+              <h3 className="font-display text-2xl sm:text-3xl font-bold mb-2">
+                Fidah <span className="gradient-text">IMOROU BOUKARI</span>
+              </h3>
+              <p className="text-white/40 text-sm mb-2">CEO de GoScaleStudio</p>
+              <p className="text-white/30 text-xs mb-6 flex items-center gap-2">
+                <Sparkles size={11} className="text-brand" />
+                Co-fondateur de <span className="text-white/60 font-semibold">Pirabel Labs</span> &middot; Agence web marketing
+              </p>
+
+              <div className="flex flex-col gap-4 text-sm sm:text-[15px] text-white/70 leading-relaxed">
+                <p>
+                  Passionne par l&apos;automatisation, l&apos;intelligence artificielle et la croissance digitale,
+                  j&apos;accompagne les entreprises dans la creation de systemes performants capables de simplifier
+                  leur activite et d&apos;accelerer leur developpement.
+                </p>
+                <p>
+                  Chez <span className="text-white font-semibold">GoScaleStudio</span>, notre mission est d&apos;aider
+                  les marques, entrepreneurs et entreprises a gagner du temps, optimiser leurs processus et scaler
+                  plus efficacement grace a des solutions digitales modernes et intelligentes.
+                </p>
+                <p>
+                  Je suis aussi co-fondateur de <span className="text-white font-semibold">Pirabel Labs</span>,
+                  une agence web marketing specialisee dans la croissance digitale, la strategie de contenu
+                  et l&apos;acquisition client. Une double casquette qui me permet de combiner technologie,
+                  automatisation et marketing pour des resultats concrets.
+                </p>
+              </div>
+
+              {/* Pillars */}
+              <div className="grid grid-cols-3 gap-3 mt-8">
+                {[
+                  { icon: Lightbulb, label: "Innovation" },
+                  { icon: Target, label: "Strategie" },
+                  { icon: TrendingUp, label: "Performance" },
+                ].map((p, i) => (
+                  <div key={i} className="glass rounded-xl p-4 text-center hover:border-brand/30 transition-colors">
+                    <p.icon size={18} className="text-brand mx-auto mb-2" />
+                    <span className="text-xs font-semibold text-white/80">{p.label}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-3 mt-8">
+                <button onClick={() => scrollTo("contact")} className="btn-primary px-6 py-3 rounded-full text-sm flex items-center gap-2">
+                  Travaillons ensemble <ArrowRight size={16} />
+                </button>
+                <button onClick={() => scrollTo("portfolio")} className="btn-dark px-6 py-3 rounded-full text-sm">
+                  Voir mes realisations
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ── Testimonials ── */}
       <section className="py-16 sm:py-24 bg-dark-2 overflow-hidden">
         <div className="text-center mb-12 sm:mb-16 px-4 sm:px-6">
@@ -704,98 +801,6 @@ export default function HomePage() {
       </section>
 
       <div className="divider max-w-4xl mx-auto" />
-
-      {/* ── About ── */}
-      <section id="about" className="py-16 sm:py-24 px-4 sm:px-6 bg-dark-2">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12 sm:mb-16">
-            <div className="anim fade-up section-badge mx-auto mb-4"><User size={12} /> A propos</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-              Qui suis-<span className="gradient-text">je</span> ?
-            </h2>
-          </div>
-
-          <div className="grid lg:grid-cols-12 gap-8 sm:gap-12 items-center">
-            {/* Photo */}
-            <div className="lg:col-span-5 anim fade-right">
-              <div className="relative max-w-sm mx-auto">
-                <div className="absolute -inset-4 bg-gradient-to-br from-brand/30 via-purple/20 to-emerald/20 rounded-3xl blur-2xl" />
-                <div className="relative glass rounded-3xl p-2 overflow-hidden">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src="https://i.postimg.cc/tR89Dwj9/Whats-App-Image-2026-05-10-at-01-30-44.jpg"
-                    alt="Fidah IMOROU BOUKARI - CEO GoScaleStudio"
-                    className="w-full aspect-[4/5] object-cover rounded-2xl"
-                  />
-                  <div className="absolute bottom-4 left-4 right-4 glass rounded-2xl px-4 py-3 backdrop-blur-xl">
-                    <div className="flex items-center gap-2 text-xs">
-                      <div className="w-2 h-2 rounded-full bg-emerald animate-pulse" />
-                      <span className="text-white/70 font-medium">Disponible pour vos projets</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="absolute -top-3 -right-3 bg-gradient-to-br from-brand to-accent rounded-2xl p-3 shadow-lg shadow-brand/30">
-                  <Sparkles size={20} className="text-white" />
-                </div>
-              </div>
-            </div>
-
-            {/* Bio */}
-            <div className="lg:col-span-7 anim fade-left">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="h-px w-8 bg-brand" />
-                <span className="text-brand text-xs font-bold tracking-widest uppercase">CEO &amp; Fondateur</span>
-              </div>
-
-              <h3 className="font-display text-2xl sm:text-3xl font-bold mb-2">
-                Fidah <span className="gradient-text">IMOROU BOUKARI</span>
-              </h3>
-              <p className="text-white/40 text-sm mb-6">CEO de GoScaleStudio</p>
-
-              <div className="flex flex-col gap-4 text-sm sm:text-[15px] text-white/70 leading-relaxed">
-                <p>
-                  Passionne par l&apos;automatisation, l&apos;intelligence artificielle et la croissance digitale,
-                  j&apos;accompagne les entreprises dans la creation de systemes performants capables de simplifier
-                  leur activite et d&apos;accelerer leur developpement.
-                </p>
-                <p>
-                  Chez <span className="text-white font-semibold">GoScaleStudio</span>, notre mission est d&apos;aider
-                  les marques, entrepreneurs et entreprises a gagner du temps, optimiser leurs processus et scaler
-                  plus efficacement grace a des solutions digitales modernes et intelligentes.
-                </p>
-                <p>
-                  Nous concevons des automatisations sur mesure, des assistants IA, des workflows performants
-                  et des strategies digitales pensees pour ameliorer l&apos;experience client tout en augmentant
-                  la productivite et les resultats.
-                </p>
-              </div>
-
-              {/* Pillars */}
-              <div className="grid grid-cols-3 gap-3 mt-8">
-                {[
-                  { icon: Lightbulb, label: "Innovation" },
-                  { icon: Target, label: "Strategie" },
-                  { icon: TrendingUp, label: "Performance" },
-                ].map((p, i) => (
-                  <div key={i} className="glass rounded-xl p-4 text-center hover:border-brand/30 transition-colors">
-                    <p.icon size={18} className="text-brand mx-auto mb-2" />
-                    <span className="text-xs font-semibold text-white/80">{p.label}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="flex flex-wrap gap-3 mt-8">
-                <button onClick={() => scrollTo("contact")} className="btn-primary px-6 py-3 rounded-full text-sm flex items-center gap-2">
-                  Travaillons ensemble <ArrowRight size={16} />
-                </button>
-                <button onClick={() => scrollTo("portfolio")} className="btn-dark px-6 py-3 rounded-full text-sm">
-                  Voir mes realisations
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* ── Pricing ── */}
       <section id="pricing" className="py-16 sm:py-24 px-4 sm:px-6">
