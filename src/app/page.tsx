@@ -592,8 +592,13 @@ function HomePage() {
   const sp = useSearchParams();
 
   const toggleLang = () => {
+    const newLang = lang === "fr" ? "en" : "fr";
+    // Persist user choice for ~1 year — middleware respects it on next visits
+    if (typeof document !== "undefined") {
+      document.cookie = `gs-lang=${newLang};path=/;max-age=${60 * 60 * 24 * 365};SameSite=Lax`;
+    }
     const params = new URLSearchParams(sp?.toString() || "");
-    if (lang === "fr") params.set("lang", "en");
+    if (newLang === "en") params.set("lang", "en");
     else params.delete("lang");
     const qs = params.toString();
     router.push(qs ? `${pathname}?${qs}` : (pathname || "/"));
@@ -1105,21 +1110,26 @@ function HomePage() {
             </p>
           </div>
 
-          {/* Onglets */}
-          <div className="anim fade-up delay-3 flex flex-wrap justify-center gap-2 mb-10">
-            {portfolioTabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => { setActiveTab(tab.id); setShowAllProjects(false); }}
-                className={`px-4 py-2 rounded-full text-xs font-semibold transition-all ${
-                  activeTab === tab.id
-                    ? "bg-brand text-white shadow-lg shadow-brand/20"
-                    : "bg-white/5 text-white/50 border border-white/10 hover:border-brand/30 hover:text-white"
-                }`}
+          {/* Filter — select dropdown */}
+          <div className="anim fade-up delay-3 flex justify-center mb-10">
+            <label className="relative inline-block w-full max-w-sm">
+              <span className="sr-only">{t({ fr: "Filtrer par catégorie", en: "Filter by category" })}</span>
+              <select
+                value={activeTab}
+                onChange={(e) => { setActiveTab(e.target.value); setShowAllProjects(false); }}
+                className="input-field appearance-none pr-12 cursor-pointer w-full font-semibold"
               >
-                {t(tab.label)}
-              </button>
-            ))}
+                {portfolioTabs.map((tab) => (
+                  <option key={tab.id} value={tab.id} className="bg-dark-2">
+                    {t(tab.label)}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={16}
+                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-brand"
+              />
+            </label>
           </div>
 
           {filteredProjects.length === 0 ? (
@@ -1583,21 +1593,26 @@ function HomePage() {
             </p>
           </div>
 
-          {/* Category filter */}
-          <div className="anim fade-up flex flex-wrap justify-center gap-2 mb-8">
-            {faqCategories.map((c) => (
-              <button
-                key={c.id}
-                onClick={() => { setActiveFaqCat(c.id); setOpenFaq(null); }}
-                className={`text-xs px-4 py-2 rounded-full font-semibold transition-all ${
-                  activeFaqCat === c.id
-                    ? "bg-brand text-white shadow-lg shadow-brand/30"
-                    : "glass text-white/60 hover:text-white hover:border-brand/30"
-                }`}
+          {/* Category filter — select dropdown */}
+          <div className="anim fade-up flex justify-center mb-8">
+            <label className="relative inline-block w-full max-w-sm">
+              <span className="sr-only">{t({ fr: "Filtrer par catégorie", en: "Filter by category" })}</span>
+              <select
+                value={activeFaqCat}
+                onChange={(e) => { setActiveFaqCat(e.target.value); setOpenFaq(null); }}
+                className="input-field appearance-none pr-12 cursor-pointer w-full font-semibold"
               >
-                {t(c.label)}
-              </button>
-            ))}
+                {faqCategories.map((c) => (
+                  <option key={c.id} value={c.id} className="bg-dark-2">
+                    {t(c.label)}
+                  </option>
+                ))}
+              </select>
+              <ChevronDown
+                size={16}
+                className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-brand"
+              />
+            </label>
           </div>
 
           <div className="flex flex-col gap-3">
