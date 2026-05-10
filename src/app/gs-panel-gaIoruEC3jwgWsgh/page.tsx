@@ -24,6 +24,11 @@ interface Stats {
   messagesByService: { service: string; count: number }[];
   messagesByMonth: { month: string; month_num: number; count: number }[];
   projectsByCategory: { category: string; count: number }[];
+  quotes?: { total: number; draft: number; sent: number; viewed: number; accepted: number; declined: number; this_month: number; accepted_revenue: number };
+  quotesByMonth?: { month: string; month_num: number; count: number }[];
+  testimonials?: { total: number; published: number; pending: number; archived: number; avg_rating: number };
+  testimonialsBySource?: { source: string; count: number }[];
+  ratingsDistribution?: { rating: number; count: number }[];
 }
 
 const TOOLTIP = {
@@ -184,6 +189,37 @@ export default function AdminDashboard() {
           borderRadius: 6,
         },
       ],
+    };
+  }, [stats]);
+
+  const quotesDoughnut = useMemo(() => {
+    const q = stats?.quotes;
+    const total = q ? q.draft + q.sent + q.viewed + q.accepted + q.declined : 0;
+    return {
+      labels: ["Brouillon", "Envoyé", "Vu", "Accepté", "Refusé"],
+      datasets: [{
+        data: total > 0 && q ? [q.draft, q.sent, q.viewed, q.accepted, q.declined] : [1],
+        backgroundColor: total > 0 ? ["#6B7280", "#3B82F6", "#8B5CF6", "#10B981", "#EF4444"] : ["#222"],
+        borderWidth: 0,
+        hoverOffset: 6,
+      }],
+    };
+  }, [stats]);
+
+  const ratingsBar = useMemo(() => {
+    const dist = stats?.ratingsDistribution || [];
+    const counts = [0, 0, 0, 0, 0];
+    dist.forEach((d) => {
+      if (d.rating >= 1 && d.rating <= 5) counts[d.rating - 1] = d.count;
+    });
+    return {
+      labels: ["1 ★", "2 ★", "3 ★", "4 ★", "5 ★"],
+      datasets: [{
+        label: "Avis",
+        data: counts,
+        backgroundColor: ["#EF4444", "#F59E0B", "#FBBF24", "#34D399", "#10B981"],
+        borderRadius: 6,
+      }],
     };
   }, [stats]);
 
@@ -368,6 +404,45 @@ export default function AdminDashboard() {
           </div>
           <div className="h-56">
             <Doughnut data={readDoughnut} options={doughnutOptions} />
+          </div>
+        </div>
+
+        {/* 5. Devis status */}
+        <div className="bg-dark-2 rounded-2xl border border-border p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-display text-sm font-bold text-white/80">Statut des devis</h3>
+              <p className="text-white/30 text-xs mt-0.5">R&eacute;partition brouillon &rarr; accept&eacute;</p>
+            </div>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-blue/10 text-blue font-semibold">
+              {stats?.quotes?.total ?? 0} devis
+            </span>
+          </div>
+          <div className="h-56">
+            <Doughnut data={quotesDoughnut} options={doughnutOptions} />
+          </div>
+          {stats?.quotes && stats.quotes.accepted_revenue > 0 && (
+            <p className="text-center text-xs text-white/40 mt-3 pt-3 border-t border-border">
+              CA accept&eacute; : <span className="font-bold gradient-text">{stats.quotes.accepted_revenue.toLocaleString("fr-FR", { maximumFractionDigits: 2 })} &euro;</span>
+            </p>
+          )}
+        </div>
+
+        {/* 6. Distribution des notes */}
+        <div className="bg-dark-2 rounded-2xl border border-border p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="font-display text-sm font-bold text-white/80">Notes des avis clients</h3>
+              <p className="text-white/30 text-xs mt-0.5">Distribution des &eacute;toiles</p>
+            </div>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-amber/10 text-amber font-semibold">
+              {stats?.testimonials?.avg_rating
+                ? `${stats.testimonials.avg_rating.toFixed(1)}/5 moy.`
+                : "—"}
+            </span>
+          </div>
+          <div className="h-56">
+            <Bar data={ratingsBar} options={lineOptions} />
           </div>
         </div>
       </div>

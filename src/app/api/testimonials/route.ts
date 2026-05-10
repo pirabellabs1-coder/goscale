@@ -62,6 +62,8 @@ export async function POST(request: Request) {
     email?: string;
     status?: string;
     source?: string;
+    reply?: string;
+    review_date?: string;
   };
   try {
     body = await request.json();
@@ -102,6 +104,9 @@ export async function POST(request: Request) {
       email: email.slice(0, 200),
       status,
       source,
+      // Admin-only fields (only honored when authenticated)
+      reply: admin && body.reply ? String(body.reply).slice(0, 2000) : "",
+      review_date: admin && body.review_date ? body.review_date : null,
     });
     return NextResponse.json(t, { status: 201 });
   } catch (error) {

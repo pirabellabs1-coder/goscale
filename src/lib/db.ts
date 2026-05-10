@@ -340,10 +340,15 @@ async function ensureTestimonialsTable() {
       status TEXT NOT NULL DEFAULT 'pending',
       source TEXT NOT NULL DEFAULT '',
       email TEXT NOT NULL DEFAULT '',
+      reply TEXT NOT NULL DEFAULT '',
+      review_date DATE,
       sort_order INT NOT NULL DEFAULT 0,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     )
   `;
+  // Idempotent migration for existing installs
+  await sql`ALTER TABLE testimonials ADD COLUMN IF NOT EXISTS reply TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE testimonials ADD COLUMN IF NOT EXISTS review_date DATE`;
   _testimonialsEnsured = true;
 }
 
@@ -381,14 +386,17 @@ export async function createTestimonial(data: {
   status?: string;
   source?: string;
   email?: string;
+  reply?: string;
+  review_date?: string | null;
 }) {
   await ensureTestimonialsTable();
   const rating = Math.min(5, Math.max(1, data.rating ?? 5));
   const { rows } = await sql`
-    INSERT INTO testimonials (name, role, text, rating, status, source, email)
+    INSERT INTO testimonials (name, role, text, rating, status, source, email, reply, review_date)
     VALUES (
       ${data.name}, ${data.role || ""}, ${data.text}, ${rating},
-      ${data.status || "pending"}, ${data.source || ""}, ${data.email || ""}
+      ${data.status || "pending"}, ${data.source || ""}, ${data.email || ""},
+      ${data.reply || ""}, ${data.review_date || null}
     )
     RETURNING *
   `;
@@ -404,6 +412,9 @@ export async function updateTestimonial(
     rating: number;
     status: string;
     sort_order: number;
+    reply: string;
+    review_date: string | null;
+    source: string;
   }>
 ) {
   await ensureTestimonialsTable();
@@ -416,6 +427,9 @@ export async function updateTestimonial(
   if (data.rating !== undefined) { sets.push(`rating = $${idx++}`); values.push(data.rating); }
   if (data.status !== undefined) { sets.push(`status = $${idx++}`); values.push(data.status); }
   if (data.sort_order !== undefined) { sets.push(`sort_order = $${idx++}`); values.push(data.sort_order); }
+  if (data.reply !== undefined) { sets.push(`reply = $${idx++}`); values.push(data.reply); }
+  if (data.review_date !== undefined) { sets.push(`review_date = $${idx++}`); values.push(data.review_date); }
+  if (data.source !== undefined) { sets.push(`source = $${idx++}`); values.push(data.source); }
   if (sets.length === 0) return null;
   const { rows } = await sql.query(
     `UPDATE testimonials SET ${sets.join(", ")} WHERE id = $${idx} RETURNING *`,
@@ -586,6 +600,9 @@ export async function deleteQuoteById(id: number) {
 
 // ── Stats ──
 export async function getStats() {
+  await ensureQuotesTable();
+  await ensureTestimonialsTable();
+
   const projectStats = await sql`
     SELECT
       COUNT(*)::int AS total_projects,
@@ -623,11 +640,77 @@ export async function getStats() {
     ORDER BY count DESC
   `;
 
+  // ── Quotes (devis) ──
+  const quoteStats = await sql`
+    SELECT
+      COUNT(*)::int AS total,
+      COUNT(*) FILTER (WHERE status = 'draft')::int AS draft,
+      COUNT(*) FILTER (WHERE status = 'sent')::int AS sent,
+      COUNT(*) FILTER (WHERE status = 'viewed')::int AS viewed,
+      COUNT(*) FILTER (WHERE status = 'accepted')::int AS accepted,
+      COUNT(*) FILTER (WHERE status = 'declined')::int AS declined,
+      COUNT(*) FILTER (WHERE created_at > NOW() - INTERVAL '30 days')::int AS this_month
+    FROM quotes
+  `;
+  const quotesByMonth = await sql`
+    SELECT
+      TO_CHAR(created_at, 'Mon') AS month,
+      EXTRACT(MONTH FROM created_at)::int AS month_num,
+      COUNT(*)::int AS count
+    FROM quotes
+    WHERE created_at > NOW() - INTERVAL '12 months'
+    GROUP BY month, month_num
+    ORDER BY month_num
+  `;
+  // Approximate total accepted-quote revenue. Items are JSONB
+  // ([{description, qty, unit_price}]) so we sum (qty * unit_price) per row.
+  const quoteRevenue = await sql`
+    SELECT COALESCE(SUM(
+      (SELECT COALESCE(SUM((it->>'qty')::numeric * (it->>'unit_price')::numeric), 0)
+       FROM jsonb_array_elements(items) AS it)
+    ), 0)::float AS accepted_revenue
+    FROM quotes
+    WHERE status = 'accepted'
+  `;
+
+  // ── Testimonials (avis) ──
+  const testimonialStats = await sql`
+    SELECT
+      COUNT(*)::int AS total,
+      COUNT(*) FILTER (WHERE status = 'published')::int AS published,
+      COUNT(*) FILTER (WHERE status = 'pending')::int AS pending,
+      COUNT(*) FILTER (WHERE status = 'archived')::int AS archived,
+      COALESCE(AVG(rating) FILTER (WHERE status = 'published'), 5)::float AS avg_rating
+    FROM testimonials
+  `;
+  const testimonialsBySource = await sql`
+    SELECT COALESCE(NULLIF(source, ''), 'autre') AS source, COUNT(*)::int AS count
+    FROM testimonials
+    WHERE status = 'published'
+    GROUP BY source
+    ORDER BY count DESC
+  `;
+  const ratingsDistribution = await sql`
+    SELECT rating, COUNT(*)::int AS count
+    FROM testimonials
+    WHERE status = 'published'
+    GROUP BY rating
+    ORDER BY rating ASC
+  `;
+
   return {
     projects: projectStats.rows[0],
     messages: messageStats.rows[0],
     messagesByService: messagesByService.rows,
     messagesByMonth: messagesByMonth.rows,
     projectsByCategory: projectsByCategory.rows,
+    quotes: {
+      ...quoteStats.rows[0],
+      accepted_revenue: quoteRevenue.rows[0]?.accepted_revenue || 0,
+    },
+    quotesByMonth: quotesByMonth.rows,
+    testimonials: testimonialStats.rows[0],
+    testimonialsBySource: testimonialsBySource.rows,
+    ratingsDistribution: ratingsDistribution.rows,
   };
 }

@@ -75,6 +75,11 @@ interface Stats {
   messagesByService: { service: string; count: number }[];
   messagesByMonth: { month: string; month_num: number; count: number }[];
   projectsByCategory: { category: string; count: number }[];
+  quotes?: { total: number; draft: number; sent: number; viewed: number; accepted: number; declined: number; this_month: number; accepted_revenue: number };
+  quotesByMonth?: { month: string; month_num: number; count: number }[];
+  testimonials?: { total: number; published: number; pending: number; archived: number; avg_rating: number };
+  testimonialsBySource?: { source: string; count: number }[];
+  ratingsDistribution?: { rating: number; count: number }[];
 }
 
 const categoryColorMap: Record<string, string> = {
@@ -211,6 +216,96 @@ export default function AnalyticsPage() {
         <div className="bg-dark-2 rounded-2xl border border-border p-6">
           <h3 className="font-display text-sm font-bold mb-4 text-white/70">Projets par cat&eacute;gorie</h3>
           <div className="h-64"><Bar data={projectsBarData} options={chartOptions} /></div>
+        </div>
+
+        {/* ── Devis par mois ── */}
+        <div className="bg-dark-2 rounded-2xl border border-border p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-sm font-bold text-white/70">Devis par mois</h3>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-blue/10 text-blue font-semibold">
+              {stats?.quotes?.total ?? 0} total
+            </span>
+          </div>
+          <div className="h-64">
+            <Line
+              data={{
+                labels: ["Jan", "Fév", "Mar", "Avr", "Mai", "Juin", "Juil", "Août", "Sep", "Oct", "Nov", "Déc"],
+                datasets: [{
+                  label: "Devis",
+                  data: (() => {
+                    const arr = new Array(12).fill(0);
+                    stats?.quotesByMonth?.forEach((m) => {
+                      if (m.month_num >= 1 && m.month_num <= 12) arr[m.month_num - 1] = m.count;
+                    });
+                    return arr;
+                  })(),
+                  borderColor: "#3B82F6",
+                  backgroundColor: "rgba(59,130,246,0.1)",
+                  fill: true,
+                  tension: 0.4,
+                  pointRadius: 3,
+                  pointBackgroundColor: "#3B82F6",
+                }],
+              }}
+              options={chartOptions}
+            />
+          </div>
+        </div>
+
+        {/* ── Statut des devis ── */}
+        <div className="bg-dark-2 rounded-2xl border border-border p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-sm font-bold text-white/70">Statut des devis</h3>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-emerald/10 text-emerald font-semibold">
+              {stats?.quotes?.accepted_revenue
+                ? `${stats.quotes.accepted_revenue.toLocaleString("fr-FR", { maximumFractionDigits: 0 })} € CA`
+                : "—"}
+            </span>
+          </div>
+          <div className="h-64">
+            <Doughnut
+              data={{
+                labels: ["Brouillon", "Envoyé", "Vu", "Accepté", "Refusé"],
+                datasets: [{
+                  data: stats?.quotes
+                    ? [stats.quotes.draft, stats.quotes.sent, stats.quotes.viewed, stats.quotes.accepted, stats.quotes.declined]
+                    : [1],
+                  backgroundColor: stats?.quotes
+                    ? ["#6B7280", "#3B82F6", "#8B5CF6", "#10B981", "#EF4444"]
+                    : ["#222"],
+                  borderWidth: 0,
+                  hoverOffset: 6,
+                }],
+              }}
+              options={doughnutOptions}
+            />
+          </div>
+        </div>
+
+        {/* ── Avis par source ── */}
+        <div className="bg-dark-2 rounded-2xl border border-border p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-display text-sm font-bold text-white/70">Avis par source</h3>
+            <span className="text-xs px-2.5 py-1 rounded-full bg-amber/10 text-amber font-semibold">
+              {stats?.testimonials?.avg_rating
+                ? `${stats.testimonials.avg_rating.toFixed(1)}/5`
+                : "—"}
+            </span>
+          </div>
+          <div className="h-64">
+            <Bar
+              data={{
+                labels: stats?.testimonialsBySource?.map((s) => s.source) || ["Aucune donnée"],
+                datasets: [{
+                  label: "Avis publiés",
+                  data: stats?.testimonialsBySource?.map((s) => s.count) || [0],
+                  backgroundColor: ["#F07830", "#3B82F6", "#10B981", "#8B5CF6", "#F59E0B"],
+                  borderRadius: 8,
+                }],
+              }}
+              options={chartOptions}
+            />
+          </div>
         </div>
       </div>
     </div>

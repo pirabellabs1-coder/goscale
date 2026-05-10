@@ -72,6 +72,8 @@ type DBTestimonial = {
   rating: number;
   status: string;
   source: string;
+  reply: string;
+  review_date: string | null;
   created_at: string;
 };
 
@@ -559,6 +561,42 @@ function ProjectMedia({
   }
   // eslint-disable-next-line @next/next/no-img-element
   return <img src={imageUrl} alt={title} className={className || "w-full h-full object-cover"} />;
+}
+
+function TestimonialCard({ tm }: { tm: DBTestimonial }) {
+  return (
+    <div className="testimonial-card glass rounded-2xl p-5 sm:p-6 flex-shrink-0 flex flex-col">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex gap-1">
+          {Array.from({ length: tm.rating }).map((_, j) => (
+            <Star key={j} size={14} className="text-amber fill-amber" />
+          ))}
+        </div>
+        {tm.source && (
+          <span className="text-[9px] font-bold uppercase tracking-wider text-white/30 bg-white/5 px-2 py-0.5 rounded">
+            {tm.source}
+          </span>
+        )}
+      </div>
+      <p className="text-white/70 text-xs sm:text-sm mb-4 leading-relaxed">&quot;{tm.text}&quot;</p>
+
+      {tm.reply && (
+        <div className="border-l-2 border-brand/40 pl-3 py-1 mb-4 bg-brand/[0.03] rounded-r-md">
+          <p className="text-[10px] font-bold uppercase tracking-wider text-brand mb-1">
+            Réponse GoScaleStudio
+          </p>
+          <p className="text-white/55 text-[11px] sm:text-xs leading-relaxed italic">
+            {tm.reply}
+          </p>
+        </div>
+      )}
+
+      <div className="mt-auto">
+        <p className="font-bold text-sm">{tm.name}</p>
+        {tm.role && <p className="text-white/40 text-xs">{tm.role}</p>}
+      </div>
+    </div>
+  );
 }
 
 /* ── Component ─────────────────────────────────────── */
@@ -1345,18 +1383,7 @@ function HomePage() {
               <div className="mb-6 overflow-hidden">
                 <div className="marquee-left flex gap-6">
                   {[...row1, ...row1].map((tm, i) => (
-                    <div key={i} className="testimonial-card glass rounded-2xl p-5 sm:p-6 flex-shrink-0">
-                      <div className="flex gap-1 mb-3">
-                        {Array.from({ length: tm.rating }).map((_, j) => (
-                          <Star key={j} size={14} className="text-amber fill-amber" />
-                        ))}
-                      </div>
-                      <p className="text-white/70 text-xs sm:text-sm mb-4 leading-relaxed">&quot;{tm.text}&quot;</p>
-                      <div>
-                        <p className="font-bold text-sm">{tm.name}</p>
-                        {tm.role && <p className="text-white/40 text-xs">{tm.role}</p>}
-                      </div>
-                    </div>
+                    <TestimonialCard key={i} tm={tm} />
                   ))}
                 </div>
               </div>
@@ -1364,18 +1391,7 @@ function HomePage() {
                 <div className="overflow-hidden">
                   <div className="marquee-right flex gap-6">
                     {[...row2, ...row2].map((tm, i) => (
-                      <div key={i} className="testimonial-card glass rounded-2xl p-5 sm:p-6 flex-shrink-0">
-                        <div className="flex gap-1 mb-3">
-                          {Array.from({ length: tm.rating }).map((_, j) => (
-                            <Star key={j} size={14} className="text-amber fill-amber" />
-                          ))}
-                        </div>
-                        <p className="text-white/70 text-xs sm:text-sm mb-4 leading-relaxed">&quot;{tm.text}&quot;</p>
-                        <div>
-                          <p className="font-bold text-sm">{tm.name}</p>
-                          {tm.role && <p className="text-white/40 text-xs">{tm.role}</p>}
-                        </div>
-                      </div>
+                      <TestimonialCard key={i} tm={tm} />
                     ))}
                   </div>
                 </div>

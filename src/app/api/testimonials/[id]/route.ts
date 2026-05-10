@@ -48,6 +48,9 @@ export async function PUT(request: Request, context: Ctx) {
       rating: body.rating,
       status: body.status,
       sort_order: body.sort_order,
+      reply: body.reply,
+      review_date: body.review_date,
+      source: body.source,
     });
     return NextResponse.json(t);
   } catch (error) {

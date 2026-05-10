@@ -15,6 +15,8 @@ type Testimonial = {
   status: "pending" | "published" | "archived";
   source: string;
   email: string;
+  reply: string;
+  review_date: string | null;
   sort_order: number;
   created_at: string;
 };
@@ -27,11 +29,13 @@ type FormState = {
   email: string;
   status: "pending" | "published" | "archived";
   source: string;
+  reply: string;
+  review_date: string;
 };
 
 const emptyForm: FormState = {
   name: "", role: "", text: "", rating: 5, email: "",
-  status: "published", source: "manual",
+  status: "published", source: "manual", reply: "", review_date: "",
 };
 
 export default function TestimonialsAdminPage() {
@@ -84,6 +88,8 @@ export default function TestimonialsAdminPage() {
       email: t.email,
       status: t.status,
       source: t.source,
+      reply: t.reply || "",
+      review_date: t.review_date ? t.review_date.slice(0, 10) : "",
     });
     setError(null);
     setShowForm(true);
@@ -177,9 +183,31 @@ export default function TestimonialsAdminPage() {
           <h1 className="font-display text-2xl font-bold mb-1">Avis clients</h1>
           <p className="text-white/40 text-sm">G&eacute;rer les t&eacute;moignages publi&eacute;s sur le site</p>
         </div>
-        <button onClick={openNew} className="btn-primary px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2">
-          <Plus size={16} /> Ajouter un avis
-        </button>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={async () => {
+              if (!confirm("Importer 15 avis ComeUp pré-remplis (résumés) ? Vous pourrez tous les éditer ensuite.")) return;
+              try {
+                const res = await fetch("/api/testimonials/seed-comeup", { method: "POST" });
+                const d = await res.json();
+                if (res.ok) {
+                  alert(`${d.created} avis importés, ${d.skipped} déjà présents.`);
+                  refresh();
+                } else {
+                  alert(d.error || "Erreur");
+                }
+              } catch {
+                alert("Erreur réseau");
+              }
+            }}
+            className="btn-dark px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2"
+          >
+            <MessageSquare size={16} /> Importer mes avis ComeUp
+          </button>
+          <button onClick={openNew} className="btn-primary px-5 py-2.5 rounded-xl text-sm font-bold flex items-center gap-2">
+            <Plus size={16} /> Ajouter un avis
+          </button>
+        </div>
       </div>
 
       {/* Review link card */}
@@ -351,6 +379,27 @@ export default function TestimonialsAdminPage() {
                 placeholder="Texte de l'avis *" rows={6} className="input-field resize-none"
                 value={form.text} onChange={(e) => setForm({ ...form, text: e.target.value })}
               />
+
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-white/40 flex items-center gap-2">
+                  <span className="bg-brand/10 text-brand px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
+                    Réponse
+                  </span>
+                  Votre réponse (optionnelle, affichée sous l&apos;avis sur le site)
+                </label>
+                <textarea
+                  placeholder="Merci pour votre retour…" rows={3} className="input-field resize-none"
+                  value={form.reply} onChange={(e) => setForm({ ...form, reply: e.target.value })}
+                />
+              </div>
+
+              <div>
+                <label className="text-xs text-white/40 mb-1.5 block">Date de l&apos;avis (optionnelle)</label>
+                <input
+                  type="date" className="input-field"
+                  value={form.review_date} onChange={(e) => setForm({ ...form, review_date: e.target.value })}
+                />
+              </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
