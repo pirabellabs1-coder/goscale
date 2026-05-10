@@ -311,7 +311,6 @@ const toolsStack = [
       { name: "Vapi", initials: "Va", bg: "linear-gradient(135deg,#15B79E,#5EE5C2)" },
       { name: "Retell AI", initials: "Re", bg: "linear-gradient(135deg,#7C3AED,#C084FC)" },
       { name: "Twilio", initials: "Tw", bg: "linear-gradient(135deg,#F22F46,#FF6B7A)" },
-      { name: "Bland AI", initials: "Bl", bg: "linear-gradient(135deg,#1F1F1F,#404040)" },
       { name: "ElevenLabs", initials: "11", bg: "linear-gradient(135deg,#1F1F1F,#5C5C5C)" },
       { name: "WhatsApp Business", initials: "Wa", bg: "linear-gradient(135deg,#25D366,#128C7E)" },
     ],
@@ -1106,7 +1105,7 @@ function HomePage() {
                   <div className="absolute bottom-4 left-4 right-4 glass rounded-2xl px-4 py-3 backdrop-blur-xl">
                     <div className="flex items-center gap-2 text-xs">
                       <div className="w-2 h-2 rounded-full bg-emerald animate-pulse" />
-                      <span className="text-white/70 font-medium">Disponible pour vos projets</span>
+                      <span className="text-white/70 font-medium">{t({ fr: "Disponible pour vos projets", en: "Available for your projects" })}</span>
                     </div>
                   </div>
                 </div>
