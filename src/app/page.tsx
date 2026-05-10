@@ -150,9 +150,78 @@ const faqItems = [
     q: "Quels modèles d'IA utilisez-vous pour les chatbots et callbots ?",
     a: "Selon le besoin : GPT-4 et GPT-4o (OpenAI) pour les chatbots conversationnels, Claude (Anthropic) pour le contenu long et le raisonnement, Gemini pour les usages Google Workspace. Pour les callbots, nous utilisons les voix premium de Vapi, ElevenLabs et OpenAI TTS pour un rendu humain.",
   },
+
+  // ── Définitions / Glossaire (SEO long-tail) ──
+  {
+    cat: "Définitions",
+    q: "Qu'est-ce que l'automatisation no-code et comment ça fonctionne ?",
+    a: "L'automatisation no-code consiste à créer des séquences d'actions automatiques entre vos outils (CRM, email, agenda, e-commerce, réseaux sociaux...) sans écrire une seule ligne de code. À l'aide de plateformes comme Make, n8n ou Zapier, on connecte les API de vos applications pour qu'elles communiquent entre elles : un nouveau client arrive sur votre site, son email atterrit automatiquement dans votre CRM, une tâche est créée dans Notion, et un message WhatsApp de bienvenue est envoyé — le tout en quelques secondes, sans intervention humaine.",
+  },
+  {
+    cat: "Définitions",
+    q: "Qu'est-ce qu'un chatbot IA et qu'apporte-t-il à mon entreprise ?",
+    a: "Un chatbot IA est un assistant conversationnel propulsé par un modèle de langage (GPT-4, Claude, Gemini) qui comprend le langage naturel et répond comme le ferait un humain. Contrairement aux anciens chatbots à scénarios rigides, un chatbot IA s'adapte aux questions imprévues, accède à votre base de connaissances et peut effectuer des actions (prendre RDV, créer un devis, transmettre une demande). Bénéfices concrets : réponses 24/7, +35 % de conversions en moyenne, support client allégé.",
+  },
+  {
+    cat: "Définitions",
+    q: "Qu'est-ce qu'un callbot vocal IA et quelle différence avec un standard téléphonique ?",
+    a: "Un callbot vocal est un assistant téléphonique automatisé propulsé par une IA conversationnelle. À la différence d'un standard classique (SVI à touches), il comprend la voix naturelle, dialogue, prend des décisions et exécute des actions (prise de RDV, qualification de lead, envoi de SMS de confirmation). Outils utilisés : Vapi, Twilio, Bland AI pour la téléphonie, ElevenLabs et OpenAI TTS pour des voix humaines. Cas d'usage : cliniques, agences immobilières, services après-vente.",
+  },
+  {
+    cat: "Définitions",
+    q: "Qu'est-ce que le SEO (référencement naturel) et pourquoi c'est important ?",
+    a: "Le SEO (Search Engine Optimization) est l'ensemble des techniques visant à positionner un site en première page de Google et des autres moteurs de recherche, sans payer de publicité. Il combine SEO technique (vitesse, structure du code, indexation), SEO on-page (contenu, mots-clés, balises meta) et SEO off-page (netlinking, autorité). Un bon SEO multiplie le trafic organique par 5 en moyenne et génère des leads qualifiés sur le long terme — sans budget publicitaire récurrent.",
+  },
+  {
+    cat: "Définitions",
+    q: "Qu'est-ce qu'une maquette UI/UX et à quoi ça sert avant de développer ?",
+    a: "Une maquette UI/UX est une représentation visuelle et interactive d'un produit numérique (application, site, dashboard) avant son développement. UI = User Interface (l'apparence) ; UX = User Experience (la fluidité du parcours). Elle permet de valider le design, tester l'ergonomie auprès d'utilisateurs réels et convaincre des investisseurs avant d'engager des frais de développement. Avec Figma AI et v0.dev, nous livrons des prototypes cliquables en 48 à 72h.",
+  },
+  {
+    cat: "Définitions",
+    q: "Quelle différence entre Make, n8n et Zapier ?",
+    a: "Les trois sont des plateformes d'automatisation no-code. Zapier : la plus simple, idéale pour des automatisations linéaires (déclencheur → action), pricing à la tâche. Make (ex-Integromat) : plus puissant, supporte les boucles, les conditions complexes et les routeurs, pricing à l'opération (plus économique pour les volumes). n8n : open-source, auto-hébergeable, parfait pour la confidentialité et les besoins sur mesure. Nous choisissons le bon outil selon votre cas et votre budget.",
+  },
+  {
+    cat: "Définitions",
+    q: "Qu'est-ce qu'un workflow d'automatisation ?",
+    a: "Un workflow est une suite ordonnée d'étapes automatisées qui s'enchaînent suite à un déclencheur (trigger). Exemple : nouveau message WhatsApp → IA qualifie l'intention → si lead chaud, création dans HubSpot + tâche pour un commercial ; si question simple, réponse automatique de la FAQ. Un workflow bien conçu remplace plusieurs heures de travail manuel par une exécution instantanée et fiable.",
+  },
+  {
+    cat: "Définitions",
+    q: "C'est quoi GPT-4, Claude et la différence entre ces IA ?",
+    a: "GPT-4 (et GPT-4o) sont les modèles de langage d'OpenAI : excellents en conversation grand public, génération de contenu marketing, assistance client. Claude (par Anthropic) excelle dans le raisonnement complexe, l'analyse de longs documents et le respect strict des consignes — idéal pour les usages B2B sensibles. Gemini (Google) est performant pour l'intégration avec Google Workspace. Nous choisissons le modèle selon le cas d'usage, le budget et les exigences de confidentialité.",
+  },
+  {
+    cat: "Définitions",
+    q: "Qu'est-ce qu'un site WordPress optimisé SEO ?",
+    a: "Un site WordPress optimisé SEO combine un thème léger et rapide, une structure HTML propre, un plugin SEO professionnel (RankMath ou Yoast), des balises meta soignées, des URLs lisibles, une vitesse de chargement inférieure à 2 secondes, et une stratégie de contenu ciblée sur les bons mots-clés. C'est cette combinaison qui permet d'atteindre la première page de Google de manière durable, sans dépendre des publicités payantes.",
+  },
+  {
+    cat: "Définitions",
+    q: "C'est quoi WhatsApp Business API et comment l'utiliser pour mon business ?",
+    a: "WhatsApp Business API est l'interface professionnelle de WhatsApp permettant d'envoyer/recevoir des messages à grande échelle, d'intégrer un chatbot IA, et de gérer le service client de manière automatisée tout en respectant les règles de conformité de Meta. Cas d'usage : automatisation des relances panier, prise de RDV, support multilingue 24/7, campagnes promotionnelles personnalisées.",
+  },
+
+  // ── Localisation / Bénin ──
+  {
+    cat: "Localisation",
+    q: "Où est basée GoScaleStudio ?",
+    a: "GoScaleStudio est une agence digitale basée à Cotonou, au Bénin. Nous accompagnons des clients à travers tout le Bénin (Cotonou, Porto-Novo, Parakou, Abomey-Calavi), l'Afrique de l'Ouest (Côte d'Ivoire, Sénégal, Togo, Burkina Faso), la francophonie (France, Belgique, Suisse, Canada) et à l'international. Tout se fait à distance via Zoom, Google Meet ou WhatsApp.",
+  },
+  {
+    cat: "Localisation",
+    q: "Travaillez-vous avec des entreprises béninoises et africaines ?",
+    a: "Absolument — c'est même au cœur de notre mission. Nous accompagnons les PME, startups, e-commerces, cliniques et indépendants au Bénin et dans toute l'Afrique de l'Ouest qui veulent se digitaliser et automatiser leurs processus. Nos solutions sont adaptées aux réalités locales : Mobile Money, paiements XOF/USD/EUR, intégrations WhatsApp (utilisé partout en Afrique), et tarifs accessibles à partir de 15 €.",
+  },
+  {
+    cat: "Localisation",
+    q: "Acceptez-vous les paiements en FCFA / Mobile Money ?",
+    a: "Oui. Nous acceptons les paiements en FCFA (XOF) via virement bancaire, Mobile Money (MTN, Moov), et en euros via Stripe, PayPal ou Wise pour les clients hors zone CFA. Nos devis peuvent être libellés dans la monnaie qui vous arrange.",
+  },
 ];
 
-const faqCategories = ["Tous", "Tarifs", "Délais", "Services", "Après livraison", "Collaboration", "Sécurité", "IA"];
+const faqCategories = ["Tous", "Tarifs", "Délais", "Services", "Définitions", "Localisation", "Après livraison", "Collaboration", "Sécurité", "IA"];
 
 const techTools = [
   "Make", "n8n", "Zapier", "Botpress", "Voiceflow", "GPT-4",
@@ -729,7 +798,7 @@ export default function HomePage() {
               <h3 className="font-display text-2xl sm:text-3xl font-bold mb-2">
                 Fidah <span className="gradient-text">IMOROU BOUKARI</span>
               </h3>
-              <p className="text-white/40 text-sm mb-2">CEO de GoScaleStudio</p>
+              <p className="text-white/40 text-sm mb-2">CEO de GoScaleStudio &middot; Cotonou, B&eacute;nin</p>
               <p className="text-white/30 text-xs mb-6 flex items-center gap-2 flex-wrap">
                 <Sparkles size={11} className="text-brand" />
                 <span>
@@ -754,9 +823,11 @@ export default function HomePage() {
                   leur activité et d&apos;accélérer leur développement.
                 </p>
                 <p>
-                  Chez <span className="text-white font-semibold">GoScaleStudio</span>, notre mission est d&apos;aider
-                  les marques, entrepreneurs et entreprises à gagner du temps, optimiser leurs processus et scaler
-                  plus efficacement grâce à des solutions digitales modernes et intelligentes.
+                  Bas&eacute; &agrave; <span className="text-white font-semibold">Cotonou, au B&eacute;nin</span>, j&apos;ai fond&eacute;{" "}
+                  <span className="text-white font-semibold">GoScaleStudio</span> avec une mission claire&nbsp;:
+                  aider les marques, entrepreneurs et entreprises &mdash; au B&eacute;nin, dans toute l&apos;Afrique
+                  de l&apos;Ouest et au-del&agrave; &mdash; &agrave; gagner du temps, optimiser leurs processus
+                  et scaler plus efficacement gr&acirc;ce &agrave; des solutions digitales modernes et intelligentes.
                 </p>
                 <p>
                   Je suis aussi co-fondateur de{" "}
@@ -1215,7 +1286,7 @@ export default function HomePage() {
               {[
                 { icon: MessageSquare, label: "WhatsApp", value: "+229 01 68 24 28 66", href: "https://wa.me/2290168242866" },
                 { icon: Mail, label: "Email", value: "contact@goscalestudio.com", href: "mailto:contact@goscalestudio.com" },
-                { icon: MapPin, label: "Localisation", value: "Remote — France & International", href: undefined },
+                { icon: MapPin, label: "Localisation", value: "Cotonou, Bénin · Afrique & International", href: undefined },
                 { icon: Clock, label: "R\u00e9ponse", value: "Sous 24h garantie", href: undefined },
               ].map((c, i) => (
                 <a key={i} href={c.href || undefined} target={c.href?.startsWith("http") ? "_blank" : undefined} rel={c.href?.startsWith("http") ? "noopener noreferrer" : undefined} className="glass rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-brand/20 transition-all">

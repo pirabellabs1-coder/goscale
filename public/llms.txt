@@ -1,86 +1,149 @@
 # GoScaleStudio
 
-> Studio spécialisé en automatisation, intelligence artificielle (chatbots, callbots vocaux), sites WordPress optimisés SEO et maquettes UI/UX. 65+ projets livrés, note 5,0/5 sur ComeUp. Audit à 15 €. Dirigé par Fidah IMOROU BOUKARI, également co-fondateur de Pirabel Labs (agence web marketing).
+> Agence digitale basée à Cotonou (Bénin) spécialisée en automatisation no-code, intelligence artificielle (chatbots, callbots vocaux), sites WordPress optimisés SEO et maquettes UI/UX. 65+ projets livrés à travers le Bénin, l'Afrique de l'Ouest, la francophonie et l'international. Audit à 15 €. Dirigée par Fidah IMOROU BOUKARI, également co-fondateur de Pirabel Labs (agence web marketing).
 
 ## Identité
 
-- Nom: GoScaleStudio
+- Nom: GoScaleStudio (alias GoScale Studio, GoScale)
+- Type: Agence digitale / Studio IA / ProfessionalService / LocalBusiness
 - Site: https://goscalestudio.com
 - Email: contact@goscalestudio.com
 - WhatsApp: +229 01 68 24 28 66
+- Localisation: Cotonou, Littoral, Bénin (Afrique de l'Ouest)
+- Coordonnées: 6,3703° N, 2,3912° E
+- Horaires: Lundi-Vendredi 8h-19h, Samedi 9h-13h
 - Fondateur: Fidah IMOROU BOUKARI (CEO, également co-fondateur de Pirabel Labs — https://pirabellabs.com)
-- Zone: France, francophonie, international (100 % à distance)
+- Zones servies: Bénin, Côte d'Ivoire, Sénégal, Togo, Burkina Faso, France, Belgique, Suisse, Canada, international (100 % à distance)
 - Langues: Français, Anglais
+- Devises: EUR (€), XOF (FCFA), USD ($)
+- Paiements: Stripe (CB), virement bancaire, PayPal, Wise, Mobile Money (MTN, Moov)
 
 ## Services
 
-### Automatisation Métier
-Workflows intelligents avec Make, n8n ou Zapier. Connexion d'outils (HubSpot, Notion, Google Workspace), suppression des tâches répétitives, gain moyen de +10h/semaine.
+### 1. Automatisation Métier (Make / n8n / Zapier)
 
-### Chatbot IA sur Mesure
-Chatbots GPT-4, GPT-4o et Claude déployés sur WhatsApp Business API, site web ou Messenger. Entraînés sur les données du client. Outils : Botpress, Voiceflow.
+Définition: l'automatisation no-code consiste à créer des séquences d'actions automatiques entre vos outils sans écrire de code, à l'aide de plateformes comme Make, n8n ou Zapier.
 
-### CallBot & Assistant Vocal IA
-Agents vocaux 24/7 via Vapi, Twilio et Bland AI. Voix premium (ElevenLabs, OpenAI TTS). Cas d'usage : prise de RDV, qualification de leads, support client.
+Plateformes: Make.com, n8n (open-source, auto-hébergeable), Zapier
+Intégrations: HubSpot, Notion, Google Workspace, WhatsApp Business API, Stripe, Airtable, Slack
+Cas d'usage: synchronisation CRM, relances automatiques, reporting, workflows multi-étapes
+Gain typique: +10 h/semaine économisées
+Tarifs: 30 € (1 scénario) à 500 € (sur mesure)
 
-### Site WordPress + SEO
-Sites vitrines rapides et SEO-ready avec WordPress + Elementor. Optimisation technique, contenu et netlinking pour atteindre la première page Google. Outils : RankMath.
+### 2. Chatbot IA sur Mesure (GPT-4, Claude)
 
-### Maquette UI/UX IA
-Prototypes cliquables livrés en 48 à 72h avec Figma AI et v0.dev. Design moderne, mobile-first, prêt pour le développement.
+Définition: un chatbot IA est un assistant conversationnel propulsé par un modèle de langage qui comprend le langage naturel et répond comme un humain, 24/7.
 
-## Tarifs
+Modèles: GPT-4, GPT-4o (OpenAI), Claude (Anthropic), Gemini (Google)
+Plateformes: WhatsApp Business API, site web, Messenger, Telegram
+Outils: Botpress, Voiceflow
+Cas d'usage: support client 24/7, qualification de leads, recommandations produits e-commerce, FAQ intelligente
+Bénéfice typique: +35 % de conversions
 
-- Audit & Diagnostic — 15 € (paiement unique, recommandé pour démarrer)
+### 3. CallBot & Assistant Vocal IA (Vapi, Twilio)
+
+Définition: un callbot vocal est un assistant téléphonique automatisé propulsé par une IA conversationnelle, capable de comprendre la voix, dialoguer et exécuter des actions.
+
+Plateformes: Vapi, Twilio, Bland AI
+Voix: ElevenLabs, OpenAI TTS (rendu humain premium)
+Cas d'usage: prise de RDV automatique, qualification de leads sortants, support client vocal, rappels SMS de confirmation
+Bénéfice typique: -40 % d'appels manqués, disponibilité 24/7
+
+### 4. Site WordPress + SEO
+
+Définition: le SEO (Search Engine Optimization) est l'ensemble des techniques permettant de positionner un site en première page de Google sans payer de publicité.
+
+Stack: WordPress + Elementor + RankMath
+Optimisation: SEO technique (vitesse, structure, indexation), SEO on-page (contenu, meta tags, mots-clés), SEO off-page (netlinking, autorité)
+Cas d'usage: sites vitrines, sites e-commerce WooCommerce, blogs ciblés
+Bénéfice typique: trafic organique x5, top 3 Google sur les mots-clés cibles
+
+### 5. Maquette UI/UX (Figma AI, v0.dev)
+
+Définition: une maquette UI/UX est une représentation visuelle interactive d'un produit numérique permettant de valider le design et l'expérience utilisateur avant développement.
+
+Outils: Figma AI, v0.dev
+Livrables: prototypes cliquables, design system, mobile-first
+Délai: 48 à 72 h
+Cas d'usage: pitch investisseurs, validation produit, briefing développeurs
+
+## Tarifs (transparents, paiement unique)
+
+- Audit & Diagnostic — 15 € (offre de base, recommandée pour démarrer)
 - 1 scénario simple — 30 €
 - 2 scénarios simples — 35 €
 - 3 scénarios simples — 40 €
 - Scénario avancé — 50 €
-- Automatisation sur mesure — 100 € à 500 €
+- Automatisation sur mesure — 100 € à 500 € (offre la plus complète)
 - Maintenance 30 jours — 500 €
 - Consulting 30 minutes — 30 €
 
-Devis personnalisé gratuit sous 24h. Paiements : Stripe, virement, PayPal, Wise.
+Devis personnalisé gratuit sous 24h.
 
-## Délais
+## Délais de livraison
 
-- Maquette UI/UX : 48 à 72h
-- Audit à 15 € : sous 24 à 48h
-- Chatbots et automatisations standards : 5 à 7 jours ouvrés
-- Projets complets : 3 à 14 jours selon complexité
+- Maquette UI/UX: 48 à 72 h
+- Audit à 15 €: sous 24 à 48 h
+- Chatbots et automatisations standards: 5 à 7 jours ouvrés
+- Projets complets: 3 à 14 jours selon la complexité
 
 ## Garanties
 
-- Satisfait ou repris : si le livrable ne correspond pas au cahier des charges, reprise gratuite.
-- Support 30 jours offert : email + WhatsApp, ajustements mineurs gratuits.
-- Révisions illimitées jusqu'à satisfaction totale, sans frais supplémentaires.
-- RGPD-compliant : données stockées sur serveurs UE, NDA disponible.
+- Satisfait ou repris: si le livrable ne correspond pas au cahier des charges, reprise gratuite
+- Support 30 jours offert: email + WhatsApp, ajustements mineurs gratuits
+- Révisions illimitées jusqu'à satisfaction totale, sans frais supplémentaires
+- RGPD-compliant: données stockées sur serveurs UE, NDA disponible sur demande
+
+## Pourquoi nous (preuves)
+
+- 65+ projets livrés
+- Note 5,0/5 sur ComeUp
+- 100 % de satisfaction client (zéro avis négatif)
+- Livraison ultra-rapide: 48 h à 14 jours max
+- 15+ outils maîtrisés au quotidien
+- Accompagnement humain: interlocuteur dédié + 30 jours de support post-livraison
 
 ## Cas clients représentatifs
 
-- Agence immobilière : automatisation CRM complète, +15h/semaine économisées
-- E-commerce mode : chatbot WhatsApp GPT-4, +35 % de conversions
-- Clinique dentaire : callbot Vapi pour prise de RDV, -40 % d'appels manqués
-- Cabinet de conseil : refonte WordPress + SEO, top 3 Google en 2 mois
-- Startup FinTech : maquette livrée en 48h, levée de 200 000 €
+- Agence immobilière: automatisation CRM complète, +15 h/semaine économisées
+- E-commerce mode: chatbot WhatsApp GPT-4, +35 % de conversions
+- Clinique dentaire: callbot Vapi pour prise de RDV, -40 % d'appels manqués
+- Cabinet de conseil: refonte WordPress + SEO, top 3 Google en 2 mois
+- Startup FinTech: maquette livrée en 48 h, levée de fonds 200 000 €
+- PME services au Bénin: automatisation devis + facturation, +10 h/semaine
 
 ## Stack technique maîtrisée
 
-Make, n8n, Zapier, Botpress, Voiceflow, GPT-4, GPT-4o, Claude, Gemini, Vapi, Twilio, Bland AI, ElevenLabs, OpenAI TTS, WordPress, Elementor, RankMath, HubSpot, Notion, WhatsApp Business API, Figma AI, v0.dev.
+Make, n8n, Zapier, Botpress, Voiceflow, GPT-4, GPT-4o, Claude (Anthropic), Gemini, Vapi, Twilio, Bland AI, ElevenLabs, OpenAI TTS, WordPress, Elementor, RankMath, HubSpot, Notion, WhatsApp Business API, Figma AI, v0.dev, Stripe, Mobile Money APIs (MTN, Moov).
+
+## Glossaire SEO
+
+- Automatisation no-code: créer des automatisations sans coder, via Make/n8n/Zapier
+- Workflow: suite ordonnée d'étapes automatisées déclenchées par un événement
+- Chatbot IA: assistant conversationnel basé sur un modèle de langage (LLM)
+- Callbot: chatbot vocal accessible par téléphone
+- LLM: Large Language Model (GPT-4, Claude, Gemini)
+- SEO: Search Engine Optimization, référencement naturel sur Google
+- UI: User Interface, l'apparence visuelle d'un produit
+- UX: User Experience, la fluidité du parcours utilisateur
+- API: Application Programming Interface, pont qui permet à deux logiciels de communiquer
+- RGPD: Règlement Général sur la Protection des Données (UE)
 
 ## Contact
 
-- Site web : https://goscalestudio.com
-- Email : contact@goscalestudio.com
-- WhatsApp : +229 01 68 24 28 66
-- Réponse garantie sous 24h.
+- Site web: https://goscalestudio.com
+- Email: contact@goscalestudio.com
+- WhatsApp: +229 01 68 24 28 66
+- Bureau: Cotonou, Bénin
+- Réponse garantie sous 24 h.
 
 ## Liens importants
 
-- Page d'accueil : https://goscalestudio.com
-- Tarifs : https://goscalestudio.com/#pricing
-- Réalisations : https://goscalestudio.com/#portfolio
-- À propos : https://goscalestudio.com/#about
-- FAQ : https://goscalestudio.com/#faq
-- Contact : https://goscalestudio.com/#contact
-- Pirabel Labs (agence sœur) : https://pirabellabs.com
+- Page d'accueil: https://goscalestudio.com
+- Tarifs: https://goscalestudio.com/#pricing
+- Réalisations: https://goscalestudio.com/#portfolio
+- À propos (Fidah IMOROU BOUKARI): https://goscalestudio.com/#about
+- FAQ: https://goscalestudio.com/#faq
+- Contact: https://goscalestudio.com/#contact
+- Sitemap: https://goscalestudio.com/sitemap.xml
+- Pirabel Labs (agence sœur, web marketing): https://pirabellabs.com
