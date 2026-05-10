@@ -101,7 +101,14 @@ export const metadata: Metadata = {
   category: "technology",
   alternates: {
     canonical: "/",
-    languages: { "fr-FR": "/", "fr-BJ": "/" },
+    languages: {
+      "fr-FR": "/",
+      "fr-BJ": "/",
+      "fr": "/",
+      "en": "/?lang=en",
+      "en-US": "/?lang=en",
+      "x-default": "/",
+    },
   },
   openGraph: {
     type: "website",
