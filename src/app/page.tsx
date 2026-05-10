@@ -940,8 +940,8 @@ export default function HomePage() {
             {/* Hero offer card */}
             <div className="lg:col-span-5 anim fade-up">
               <div className="relative h-full">
-                <div className="absolute -inset-1 bg-gradient-to-br from-brand via-accent to-purple opacity-60 blur-xl rounded-3xl" />
-                <div className="relative glass rounded-3xl p-8 sm:p-10 h-full flex flex-col border-brand/30">
+                <div className="absolute -inset-[2px] bg-gradient-to-br from-brand via-accent to-purple opacity-25 blur-2xl rounded-3xl pointer-events-none" />
+                <div className="relative bg-dark-2 rounded-3xl p-8 sm:p-10 h-full flex flex-col border border-brand/40 shadow-2xl shadow-brand/10">
                   <div className="flex items-center gap-2 mb-5">
                     <span className="text-xs font-bold uppercase tracking-widest text-brand bg-brand/10 px-3 py-1.5 rounded-full">
                       Offre de base
