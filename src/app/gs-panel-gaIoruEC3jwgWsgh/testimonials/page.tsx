@@ -5,6 +5,7 @@ import {
   Star, Plus, Trash2, Eye, EyeOff, Archive, Check, X, Copy,
   ExternalLink, MessageSquare, Search, Edit3, AlertTriangle, Save,
 } from "lucide-react";
+import ConfirmModal from "@/components/admin/ConfirmModal";
 
 type Testimonial = {
   id: number;
@@ -137,10 +138,18 @@ export default function TestimonialsAdminPage() {
     refresh();
   };
 
-  const remove = async (id: number) => {
-    if (!confirm("Supprimer définitivement cet avis ?")) return;
-    await fetch(`/api/testimonials/${id}`, { method: "DELETE" });
-    refresh();
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const confirmDelete = async () => {
+    if (deleteId == null) return;
+    setDeleting(true);
+    try {
+      await fetch(`/api/testimonials/${deleteId}`, { method: "DELETE" });
+      setDeleteId(null);
+      refresh();
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const filtered = items.filter((t) => {
@@ -322,7 +331,7 @@ export default function TestimonialsAdminPage() {
                 <button onClick={() => openEdit(t)} className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-white/60 border border-white/10 hover:text-white flex items-center gap-1.5">
                   <Edit3 size={12} /> &Eacute;diter
                 </button>
-                <button onClick={() => remove(t.id)} className="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/15 flex items-center gap-1.5 ml-auto">
+                <button onClick={() => setDeleteId(t.id)} className="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/15 flex items-center gap-1.5 ml-auto">
                   <Trash2 size={12} />
                 </button>
               </div>
@@ -330,6 +339,17 @@ export default function TestimonialsAdminPage() {
           ))}
         </div>
       )}
+
+      <ConfirmModal
+        open={deleteId != null}
+        title="Supprimer cet avis ?"
+        description="Cette action est définitive."
+        confirmLabel="Supprimer"
+        tone="danger"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
 
       {/* Modal Form */}
       {showForm && (

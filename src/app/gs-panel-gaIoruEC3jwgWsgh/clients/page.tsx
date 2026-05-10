@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import {
   Plus, Trash2, X, Save, Users, Edit3, Search, AlertTriangle,
-  Mail, Phone, Building2, MessageSquare,
+  Mail, Phone, Building2,
 } from "lucide-react";
+import ConfirmModal from "@/components/admin/ConfirmModal";
 
 type Client = {
   id: number;
@@ -31,6 +32,8 @@ export default function ClientsAdminPage() {
   const [editId, setEditId] = useState<number | null>(null);
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState<string | null>(null);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
 
   const refresh = async () => {
     try {
@@ -78,10 +81,16 @@ export default function ClientsAdminPage() {
     }
   };
 
-  const remove = async (id: number) => {
-    if (!confirm("Supprimer ce client ?")) return;
-    await fetch(`/api/clients/${id}`, { method: "DELETE" });
-    refresh();
+  const confirmDelete = async () => {
+    if (deleteId == null) return;
+    setDeleting(true);
+    try {
+      await fetch(`/api/clients/${deleteId}`, { method: "DELETE" });
+      setDeleteId(null);
+      refresh();
+    } finally {
+      setDeleting(false);
+    }
   };
 
   const filtered = items.filter((c) =>
@@ -179,7 +188,7 @@ export default function ClientsAdminPage() {
                   <button onClick={() => openEdit(c)} className="text-xs px-2 py-1.5 rounded-lg bg-white/5 text-white/60 border border-white/10 hover:text-white">
                     <Edit3 size={11} />
                   </button>
-                  <button onClick={() => remove(c.id)} className="text-xs px-2 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/15">
+                  <button onClick={() => setDeleteId(c.id)} className="text-xs px-2 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/15">
                     <Trash2 size={11} />
                   </button>
                 </div>
@@ -188,6 +197,17 @@ export default function ClientsAdminPage() {
           ))}
         </div>
       )}
+
+      <ConfirmModal
+        open={deleteId != null}
+        title="Supprimer ce client ?"
+        description="Cette action est irréversible. Le client sera retiré de la liste."
+        confirmLabel="Supprimer"
+        tone="danger"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
 
       {showForm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">

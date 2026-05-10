@@ -240,6 +240,84 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       });
   }, [isPublicRoute]);
 
+  // ── Swipe-to-open/close gesture for the mobile sidebar ──
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const isMobile = () => window.innerWidth < 1024; // matches the lg: breakpoint
+
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+    let intent: "open" | "close" | null = null;
+
+    const onStart = (e: TouchEvent) => {
+      if (!isMobile()) return;
+      if (e.touches.length !== 1) return;
+      const t = e.touches[0];
+      startX = t.clientX;
+      startY = t.clientY;
+      tracking = true;
+      // Decide intent based on whether the sidebar is already open and where the touch started
+      if (sidebarOpen) {
+        // Any swipe inside the open sidebar can close it
+        intent = "close";
+      } else if (startX < 24) {
+        // Edge-swipe from the left edge opens the sidebar
+        intent = "open";
+      } else {
+        intent = null;
+      }
+    };
+
+    const onMove = (e: TouchEvent) => {
+      if (!tracking || !intent) return;
+      const t = e.touches[0];
+      const dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      // Require a horizontal swipe at least 60 px and dominantly horizontal
+      if (Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx)) return;
+
+      if (intent === "open" && dx > 60 && !sidebarOpen) {
+        setSidebarOpen(true);
+        tracking = false;
+      } else if (intent === "close" && dx < -60 && sidebarOpen) {
+        setSidebarOpen(false);
+        tracking = false;
+      }
+    };
+
+    const onEnd = () => {
+      tracking = false;
+      intent = null;
+    };
+
+    document.addEventListener("touchstart", onStart, { passive: true });
+    document.addEventListener("touchmove", onMove, { passive: true });
+    document.addEventListener("touchend", onEnd);
+    document.addEventListener("touchcancel", onEnd);
+    return () => {
+      document.removeEventListener("touchstart", onStart);
+      document.removeEventListener("touchmove", onMove);
+      document.removeEventListener("touchend", onEnd);
+      document.removeEventListener("touchcancel", onEnd);
+    };
+  }, [sidebarOpen]);
+
+  // Lock body scroll when the mobile sidebar is open
+  useEffect(() => {
+    if (typeof document === "undefined") return;
+    if (sidebarOpen) {
+      const prev = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => { document.body.style.overflow = prev; };
+    }
+  }, [sidebarOpen]);
+
+  // Close the sidebar automatically when navigating to a new page
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [pathname]);
+
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
@@ -276,7 +354,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </Link>
           <p className="text-xs text-white/30 mt-1">Administration</p>
         </div>
-        <nav className="flex-1 p-4 flex flex-col gap-1">
+        <nav className="flex-1 p-4 flex flex-col gap-1 overflow-y-auto">
           {sidebarLinks.map((l) => (
             <Link
               key={l.href}
@@ -305,18 +383,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
       </aside>
 
+      {/* Edge handle (mobile only) — visual hint that the menu can be swiped open from the left edge */}
+      {!sidebarOpen && (
+        <div
+          className="lg:hidden fixed top-1/2 -translate-y-1/2 left-0 z-40 w-1.5 h-16 bg-brand/40 rounded-r-full pointer-events-none"
+          aria-hidden="true"
+        />
+      )}
+
       {/* Mobile sidebar */}
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
           <div className="absolute inset-0 bg-black/60" onClick={() => setSidebarOpen(false)} />
-          <aside className="relative w-72 bg-dark-2 min-h-screen border-r border-border flex flex-col">
+          <aside className="relative w-72 max-w-[85vw] bg-dark-2 h-screen border-r border-border flex flex-col">
             <div className="p-6 border-b border-border flex items-center justify-between">
               <Link href="/" className="font-display text-xl font-bold">
                 <span className="gradient-text">GoScale</span>Studio
               </Link>
               <button onClick={() => setSidebarOpen(false)}><X size={20} /></button>
             </div>
-            <nav className="flex-1 p-4 flex flex-col gap-1">
+            <nav className="flex-1 p-4 flex flex-col gap-1 overflow-y-auto">
               {sidebarLinks.map((l) => (
                 <Link
                   key={l.href}

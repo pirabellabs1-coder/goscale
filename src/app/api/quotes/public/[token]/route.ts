@@ -46,10 +46,10 @@ export async function POST(request: Request, context: Ctx) {
       return NextResponse.json({ error: "Lien invalide" }, { status: 400 });
     }
     const body = await request.json();
+    const message = typeof body.message === "string" ? body.message : "";
     if (body.action === "accept") {
-      const q = await markQuoteAccepted(token);
+      const q = await markQuoteAccepted(token, message);
       if (!q) return NextResponse.json({ error: "Action impossible (déjà traité)" }, { status: 400 });
-      // Auto-promote the quote signer into the clients list
       try {
         await findOrCreateClientFromQuote({
           client_name: q.client_name,
@@ -60,12 +60,11 @@ export async function POST(request: Request, context: Ctx) {
         });
       } catch (err) {
         console.error("Auto-create client error:", err);
-        // Don't fail the accept if client creation hiccups
       }
       return NextResponse.json({ success: true, status: q.status });
     }
     if (body.action === "decline") {
-      const q = await markQuoteDeclined(token);
+      const q = await markQuoteDeclined(token, message);
       if (!q) return NextResponse.json({ error: "Action impossible (déjà traité)" }, { status: 400 });
       return NextResponse.json({ success: true, status: q.status });
     }

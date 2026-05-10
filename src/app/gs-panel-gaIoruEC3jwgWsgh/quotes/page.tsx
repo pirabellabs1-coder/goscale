@@ -5,6 +5,7 @@ import {
   Plus, Trash2, X, Save, FileText, Copy, Check,
   Edit3, Send, AlertTriangle, Search, Eye, Mail, MessageSquare,
 } from "lucide-react";
+import ConfirmModal from "@/components/admin/ConfirmModal";
 
 type QuoteItem = { description: string; qty: number; unit_price: number };
 
@@ -117,10 +118,44 @@ export default function QuotesAdminPage() {
     }
   };
 
-  const remove = async (id: number) => {
-    if (!confirm("Supprimer ce devis ?")) return;
-    await fetch(`/api/quotes/${id}`, { method: "DELETE" });
-    refresh();
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const [emailing, setEmailing] = useState<number | null>(null);
+  const [emailToast, setEmailToast] = useState<{ type: "ok" | "err"; text: string } | null>(null);
+
+  const confirmDelete = async () => {
+    if (deleteId == null) return;
+    setDeleting(true);
+    try {
+      await fetch(`/api/quotes/${deleteId}`, { method: "DELETE" });
+      setDeleteId(null);
+      refresh();
+    } finally {
+      setDeleting(false);
+    }
+  };
+
+  const sendEmail = async (id: number) => {
+    setEmailing(id);
+    setEmailToast(null);
+    try {
+      const res = await fetch(`/api/quotes/${id}/send-email`, { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        setEmailToast({ type: "ok", text: "Email envoyé au client !" });
+        refresh();
+      } else if (data.fallbackMailto) {
+        // Resend not configured — open the user's mail client as fallback
+        window.location.href = data.fallbackMailto;
+      } else {
+        setEmailToast({ type: "err", text: data.error || "Erreur" });
+      }
+    } catch {
+      setEmailToast({ type: "err", text: "Erreur réseau" });
+    } finally {
+      setEmailing(null);
+      setTimeout(() => setEmailToast(null), 5000);
+    }
   };
 
   const updateStatus = async (id: number, status: Quote["status"]) => {
@@ -238,17 +273,13 @@ export default function QuotesAdminPage() {
                     </a>
                   )}
                   {q.client_email && (
-                    <a
-                      href={(() => {
-                        const link = `${typeof window !== "undefined" ? window.location.origin : ""}/devis/${q.token}`;
-                        const subject = `Votre devis ${q.title || ""} - GoScaleStudio`;
-                        const body = `Bonjour ${q.client_name},\n\nVoici votre devis ${q.title ? `« ${q.title} »` : ""} :\n${link}\n\nIl est valable ${q.validity_days} jours. Vous pouvez le consulter, l'accepter ou le télécharger en PDF directement depuis ce lien.\n\nN'hésitez pas si vous avez la moindre question.\n\nCordialement,\nGoScaleStudio`;
-                        return `mailto:${q.client_email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                      })()}
-                      className="text-xs px-3 py-1.5 rounded-lg bg-blue/10 text-blue border border-blue/20 hover:bg-blue/15 flex items-center gap-1.5"
+                    <button
+                      onClick={() => sendEmail(q.id)}
+                      disabled={emailing === q.id}
+                      className="text-xs px-3 py-1.5 rounded-lg bg-blue/10 text-blue border border-blue/20 hover:bg-blue/15 flex items-center gap-1.5 disabled:opacity-50"
                     >
-                      <Mail size={12} /> Email
-                    </a>
+                      <Mail size={12} /> {emailing === q.id ? "Envoi..." : "Email"}
+                    </button>
                   )}
                   <a
                     href={`/devis/${q.token}`}
@@ -266,13 +297,35 @@ export default function QuotesAdminPage() {
                   <button onClick={() => openEdit(q)} className="text-xs px-3 py-1.5 rounded-lg bg-white/5 text-white/60 border border-white/10 hover:text-white flex items-center gap-1.5">
                     <Edit3 size={12} />
                   </button>
-                  <button onClick={() => remove(q.id)} className="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/15 flex items-center gap-1.5 ml-auto">
+                  <button onClick={() => setDeleteId(q.id)} className="text-xs px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/15 flex items-center gap-1.5 ml-auto">
                     <Trash2 size={12} />
                   </button>
                 </div>
               </div>
             );
           })}
+        </div>
+      )}
+
+      <ConfirmModal
+        open={deleteId != null}
+        title="Supprimer ce devis ?"
+        description="Cette action est définitive. Le lien client cessera de fonctionner."
+        confirmLabel="Supprimer"
+        tone="danger"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
+
+      {emailToast && (
+        <div className={`fixed bottom-6 right-6 z-50 px-4 py-3 rounded-xl text-sm flex items-center gap-2 shadow-2xl ${
+          emailToast.type === "ok"
+            ? "bg-emerald/15 border border-emerald/30 text-emerald"
+            : "bg-red-500/15 border border-red-500/30 text-red-400"
+        }`}>
+          {emailToast.type === "ok" ? <Check size={16} /> : <AlertTriangle size={16} />}
+          <span>{emailToast.text}</span>
         </div>
       )}
 

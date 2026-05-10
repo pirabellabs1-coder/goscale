@@ -7,6 +7,7 @@ import {
   ChevronLeft, ExternalLink, Video, Image as ImageIcon,
   Upload, AlertTriangle, Loader2,
 } from "lucide-react";
+import ConfirmModal from "@/components/admin/ConfirmModal";
 
 const categories = ["Tous", "Automatisation", "CallBot IA", "ChatBot IA", "WordPress + SEO", "Maquette UI/UX"];
 
@@ -92,8 +93,17 @@ export default function PortfolioPage() {
     setShowForm(false);
   };
 
-  const handleDelete = async (id: number) => {
-    if (confirm("Supprimer ce projet ?")) await deleteProject(id);
+  const [deleteId, setDeleteId] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState(false);
+  const confirmDelete = async () => {
+    if (deleteId == null) return;
+    setDeleting(true);
+    try {
+      await deleteProject(deleteId);
+      setDeleteId(null);
+    } finally {
+      setDeleting(false);
+    }
   };
 
   // ── Image upload (Vercel Blob via /api/upload) ──
@@ -308,7 +318,7 @@ export default function PortfolioPage() {
                   <button onClick={() => duplicateProject(p.id)} className="flex items-center gap-1.5 text-xs text-white/40 hover:text-blue transition-colors">
                     <Copy size={13} /> Dupliquer
                   </button>
-                  <button onClick={() => handleDelete(p.id)} className="flex items-center gap-1.5 text-xs text-white/40 hover:text-red-400 transition-colors ml-auto">
+                  <button onClick={() => setDeleteId(p.id)} className="flex items-center gap-1.5 text-xs text-white/40 hover:text-red-400 transition-colors ml-auto">
                     <Trash2 size={13} />
                   </button>
                 </div>
@@ -321,6 +331,17 @@ export default function PortfolioPage() {
       {filtered.length === 0 && (
         <p className="text-center text-white/30 py-12">Aucun projet trouv&eacute;.</p>
       )}
+
+      <ConfirmModal
+        open={deleteId != null}
+        title="Supprimer ce projet ?"
+        description="Le projet sera retiré de la base. Cette action est définitive."
+        confirmLabel="Supprimer"
+        tone="danger"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteId(null)}
+      />
 
       {/* Modal Form */}
       {showForm && (

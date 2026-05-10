@@ -465,9 +465,12 @@ async function ensureQuotesTable() {
       sent_at TIMESTAMPTZ,
       viewed_at TIMESTAMPTZ,
       accepted_at TIMESTAMPTZ,
-      declined_at TIMESTAMPTZ
+      declined_at TIMESTAMPTZ,
+      client_message TEXT NOT NULL DEFAULT ''
     )
   `;
+  // Idempotent migration for existing installs
+  await sql`ALTER TABLE quotes ADD COLUMN IF NOT EXISTS client_message TEXT NOT NULL DEFAULT ''`;
   _quotesEnsured = true;
 }
 
@@ -571,22 +574,24 @@ export async function markQuoteViewed(token: string) {
   `;
 }
 
-export async function markQuoteAccepted(token: string) {
+export async function markQuoteAccepted(token: string, message?: string) {
   await ensureQuotesTable();
+  const msg = (message || "").slice(0, 2000);
   const { rows } = await sql`
     UPDATE quotes
-    SET status = 'accepted', accepted_at = NOW()
+    SET status = 'accepted', accepted_at = NOW(), client_message = ${msg}
     WHERE token = ${token} AND status NOT IN ('accepted', 'declined')
     RETURNING *
   `;
   return rows[0] || null;
 }
 
-export async function markQuoteDeclined(token: string) {
+export async function markQuoteDeclined(token: string, message?: string) {
   await ensureQuotesTable();
+  const msg = (message || "").slice(0, 2000);
   const { rows } = await sql`
     UPDATE quotes
-    SET status = 'declined', declined_at = NOW()
+    SET status = 'declined', declined_at = NOW(), client_message = ${msg}
     WHERE token = ${token} AND status NOT IN ('accepted', 'declined')
     RETURNING *
   `;

@@ -31,6 +31,9 @@ export default function DevisPublicPage({ params }: { params: Promise<{ token: s
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [acting, setActing] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<"accept" | "decline" | null>(null);
+  const [clientMessage, setClientMessage] = useState("");
+  const [actionError, setActionError] = useState<string | null>(null);
 
   useEffect(() => {
     fetch(`/api/quotes/public/${token}`)
@@ -47,25 +50,33 @@ export default function DevisPublicPage({ params }: { params: Promise<{ token: s
       .finally(() => setLoading(false));
   }, [token]);
 
-  const act = async (action: "accept" | "decline") => {
-    if (!confirm(action === "accept"
-      ? "Confirmer l'acceptation de ce devis ?"
-      : "Confirmer le refus de ce devis ?")) return;
+  const openAction = (action: "accept" | "decline") => {
+    setConfirmAction(action);
+    setClientMessage("");
+    setActionError(null);
+  };
+
+  const submitAction = async () => {
+    if (!confirmAction) return;
     setActing(true);
+    setActionError(null);
     try {
       const res = await fetch(`/api/quotes/public/${token}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action }),
+        body: JSON.stringify({ action: confirmAction, message: clientMessage }),
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Erreur");
+        setActionError(data.error || "Erreur");
       } else {
-        // Reload to show new status
         const refreshed = await fetch(`/api/quotes/public/${token}`).then((r) => r.json());
         setQuote(refreshed);
+        setConfirmAction(null);
+        setClientMessage("");
       }
+    } catch {
+      setActionError("Erreur réseau");
     } finally {
       setActing(false);
     }
@@ -260,19 +271,96 @@ export default function DevisPublicPage({ params }: { params: Promise<{ token: s
         {!isDecided && !isExpired && (
           <div className="no-print flex flex-col sm:flex-row gap-3">
             <button
-              onClick={() => act("accept")}
-              disabled={acting}
-              className="btn-primary px-6 py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 flex-1 disabled:opacity-50"
+              onClick={() => openAction("accept")}
+              className="btn-primary px-6 py-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 flex-1"
             >
               <Check size={16} /> Accepter ce devis
             </button>
             <button
-              onClick={() => act("decline")}
-              disabled={acting}
-              className="btn-dark px-6 py-4 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+              onClick={() => openAction("decline")}
+              className="btn-dark px-6 py-4 rounded-xl text-sm flex items-center justify-center gap-2"
             >
               <X size={16} /> Refuser
             </button>
+          </div>
+        )}
+
+        {/* Confirmation modal — replaces native confirm() with branded UI + optional message */}
+        {confirmAction && (
+          <div
+            className="no-print fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+            onClick={() => !acting && setConfirmAction(null)}
+            role="dialog"
+            aria-modal="true"
+          >
+            <div
+              className="bg-dark-2 rounded-3xl border border-border w-full max-w-md p-6 sm:p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex items-center gap-3 mb-5">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                  confirmAction === "accept" ? "bg-emerald/15 text-emerald" : "bg-red-500/15 text-red-400"
+                }`}>
+                  {confirmAction === "accept" ? <CheckCircle2 size={22} /> : <XCircle size={22} />}
+                </div>
+                <div>
+                  <h3 className="font-display text-lg font-bold">
+                    {confirmAction === "accept" ? "Accepter ce devis" : "Refuser ce devis"}
+                  </h3>
+                  <p className="text-white/40 text-xs mt-0.5">
+                    {confirmAction === "accept"
+                      ? "Une action irréversible — l'agence sera notifiée."
+                      : "L'agence verra votre retour pour s'améliorer."}
+                  </p>
+                </div>
+              </div>
+
+              <label className="text-xs text-white/40 mb-1.5 block">
+                {confirmAction === "accept"
+                  ? "Instructions ou message (optionnel)"
+                  : "Raison du refus ou commentaire (optionnel)"}
+              </label>
+              <textarea
+                value={clientMessage}
+                onChange={(e) => setClientMessage(e.target.value)}
+                rows={4}
+                maxLength={2000}
+                placeholder={confirmAction === "accept"
+                  ? "Ex : démarrons la semaine prochaine, voici quelques précisions..."
+                  : "Ex : budget trop élevé, projet reporté, autre prestataire..."
+                }
+                className="input-field resize-none mb-2"
+              />
+              <div className="flex justify-end mb-4">
+                <span className="text-xs text-white/30">{clientMessage.length} / 2000</span>
+              </div>
+
+              {actionError && (
+                <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm px-4 py-3 rounded-xl mb-4 flex items-start gap-2">
+                  <AlertTriangle size={16} className="flex-shrink-0 mt-0.5" />
+                  <span>{actionError}</span>
+                </div>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={submitAction}
+                  disabled={acting}
+                  className={`px-6 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 flex-1 disabled:opacity-50 ${
+                    confirmAction === "accept" ? "btn-primary" : "bg-red-500/15 text-red-400 border border-red-500/30 hover:bg-red-500/20"
+                  }`}
+                >
+                  {acting ? "Envoi..." : (confirmAction === "accept" ? "Confirmer l'acceptation" : "Confirmer le refus")}
+                </button>
+                <button
+                  onClick={() => setConfirmAction(null)}
+                  disabled={acting}
+                  className="btn-dark px-6 py-3.5 rounded-xl text-sm disabled:opacity-50"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
