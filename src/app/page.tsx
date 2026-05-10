@@ -10,7 +10,7 @@ import {
   Target, BarChart3, MessageSquare, Lightbulb, Building2,
   ShoppingCart, Stethoscope, GraduationCap, Briefcase,
   ArrowUpRight, Rocket, Search, FileCheck, Settings, Handshake,
-  CircleCheck, XCircle, Heart, Award, Cpu, Eye,
+  CircleCheck, XCircle, Heart, Award, Cpu, Eye, Tag, Coins, User,
 } from "lucide-react";
 
 /* ── Data ──────────────────────────────────────────── */
@@ -128,6 +128,23 @@ const colorMap: Record<string, string> = {
 
 const portfolioTabs = ["Tous", "Automatisation", "CallBot IA", "ChatBot IA", "WordPress + SEO", "Maquette UI/UX"];
 
+const pricingFeatures = [
+  "Analyse complete de votre activite",
+  "Identification des automatisations possibles",
+  "Explication simple de votre systeme futur",
+  "Recommandations personnalisees",
+];
+
+const pricingOptions = [
+  { service: "1 scenario simple", price: "30 EUR", note: "Workflow basique" },
+  { service: "2 scenarios simples", price: "35 EUR", note: "Pack 2 workflows" },
+  { service: "3 scenarios simples", price: "40 EUR", note: "Pack 3 workflows" },
+  { service: "Scenario avance", price: "50 EUR", note: "Logique multi-etapes" },
+  { service: "Automatisation sur mesure", price: "100 - 500 EUR", note: "Projet complet adapte", highlight: true },
+  { service: "Maintenance 30 jours", price: "500 EUR", note: "Suivi & ajustements" },
+  { service: "Consulting 30 min", price: "30 EUR", note: "Appel strategique" },
+];
+
 /* ── Component ─────────────────────────────────────── */
 
 export default function HomePage() {
@@ -206,8 +223,9 @@ export default function HomePage() {
 
   const navLinks = [
     { label: "Services", id: "services" },
+    { label: "Tarifs", id: "pricing" },
     { label: "Realisations", id: "portfolio" },
-    { label: "Processus", id: "process" },
+    { label: "A propos", id: "about" },
     { label: "FAQ", id: "faq" },
     { label: "Contact", id: "contact" },
   ];
@@ -681,6 +699,212 @@ export default function HomePage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="divider max-w-4xl mx-auto" />
+
+      {/* ── About ── */}
+      <section id="about" className="py-16 sm:py-24 px-4 sm:px-6 bg-dark-2">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="anim fade-up section-badge mx-auto mb-4"><User size={12} /> A propos</div>
+            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+              Qui suis-<span className="gradient-text">je</span> ?
+            </h2>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-8 sm:gap-12 items-center">
+            {/* Photo */}
+            <div className="lg:col-span-5 anim fade-right">
+              <div className="relative max-w-sm mx-auto">
+                <div className="absolute -inset-4 bg-gradient-to-br from-brand/30 via-purple/20 to-emerald/20 rounded-3xl blur-2xl" />
+                <div className="relative glass rounded-3xl p-2 overflow-hidden">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src="https://i.postimg.cc/tR89Dwj9/Whats-App-Image-2026-05-10-at-01-30-44.jpg"
+                    alt="Fidah IMOROU BOUKARI - CEO GoScaleStudio"
+                    className="w-full aspect-[4/5] object-cover rounded-2xl"
+                  />
+                  <div className="absolute bottom-4 left-4 right-4 glass rounded-2xl px-4 py-3 backdrop-blur-xl">
+                    <div className="flex items-center gap-2 text-xs">
+                      <div className="w-2 h-2 rounded-full bg-emerald animate-pulse" />
+                      <span className="text-white/70 font-medium">Disponible pour vos projets</span>
+                    </div>
+                  </div>
+                </div>
+                <div className="absolute -top-3 -right-3 bg-gradient-to-br from-brand to-accent rounded-2xl p-3 shadow-lg shadow-brand/30">
+                  <Sparkles size={20} className="text-white" />
+                </div>
+              </div>
+            </div>
+
+            {/* Bio */}
+            <div className="lg:col-span-7 anim fade-left">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="h-px w-8 bg-brand" />
+                <span className="text-brand text-xs font-bold tracking-widest uppercase">CEO &amp; Fondateur</span>
+              </div>
+
+              <h3 className="font-display text-2xl sm:text-3xl font-bold mb-2">
+                Fidah <span className="gradient-text">IMOROU BOUKARI</span>
+              </h3>
+              <p className="text-white/40 text-sm mb-6">CEO de GoScaleStudio</p>
+
+              <div className="flex flex-col gap-4 text-sm sm:text-[15px] text-white/70 leading-relaxed">
+                <p>
+                  Passionne par l&apos;automatisation, l&apos;intelligence artificielle et la croissance digitale,
+                  j&apos;accompagne les entreprises dans la creation de systemes performants capables de simplifier
+                  leur activite et d&apos;accelerer leur developpement.
+                </p>
+                <p>
+                  Chez <span className="text-white font-semibold">GoScaleStudio</span>, notre mission est d&apos;aider
+                  les marques, entrepreneurs et entreprises a gagner du temps, optimiser leurs processus et scaler
+                  plus efficacement grace a des solutions digitales modernes et intelligentes.
+                </p>
+                <p>
+                  Nous concevons des automatisations sur mesure, des assistants IA, des workflows performants
+                  et des strategies digitales pensees pour ameliorer l&apos;experience client tout en augmentant
+                  la productivite et les resultats.
+                </p>
+              </div>
+
+              {/* Pillars */}
+              <div className="grid grid-cols-3 gap-3 mt-8">
+                {[
+                  { icon: Lightbulb, label: "Innovation" },
+                  { icon: Target, label: "Strategie" },
+                  { icon: TrendingUp, label: "Performance" },
+                ].map((p, i) => (
+                  <div key={i} className="glass rounded-xl p-4 text-center hover:border-brand/30 transition-colors">
+                    <p.icon size={18} className="text-brand mx-auto mb-2" />
+                    <span className="text-xs font-semibold text-white/80">{p.label}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex flex-wrap gap-3 mt-8">
+                <button onClick={() => scrollTo("contact")} className="btn-primary px-6 py-3 rounded-full text-sm flex items-center gap-2">
+                  Travaillons ensemble <ArrowRight size={16} />
+                </button>
+                <button onClick={() => scrollTo("portfolio")} className="btn-dark px-6 py-3 rounded-full text-sm">
+                  Voir mes realisations
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Pricing ── */}
+      <section id="pricing" className="py-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12 sm:mb-16">
+            <div className="anim fade-up section-badge mx-auto mb-4"><Tag size={12} /> Tarifs</div>
+            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+              Des prix <span className="gradient-text">transparents</span>, sans surprise
+            </h2>
+            <p className="anim fade-up delay-2 text-white/50 max-w-2xl mx-auto text-sm sm:text-base">
+              Commencez avec un audit a 15&nbsp;EUR pour clarifier votre besoin, puis choisissez les options
+              adaptees a votre projet.
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-6 sm:gap-8">
+            {/* Hero offer card */}
+            <div className="lg:col-span-5 anim fade-up">
+              <div className="relative h-full">
+                <div className="absolute -inset-1 bg-gradient-to-br from-brand via-accent to-purple opacity-60 blur-xl rounded-3xl" />
+                <div className="relative glass rounded-3xl p-8 sm:p-10 h-full flex flex-col border-brand/30">
+                  <div className="flex items-center gap-2 mb-5">
+                    <span className="text-xs font-bold uppercase tracking-widest text-brand bg-brand/10 px-3 py-1.5 rounded-full">
+                      Offre de base
+                    </span>
+                    <span className="text-xs text-white/40 bg-white/5 px-3 py-1.5 rounded-full">Recommande</span>
+                  </div>
+
+                  <h3 className="font-display text-xl sm:text-2xl font-bold mb-2">Audit &amp; Diagnostic</h3>
+                  <p className="text-white/50 text-sm mb-6">Le point de depart ideal si vous debutez et ne savez pas quoi automatiser.</p>
+
+                  <div className="flex items-baseline gap-2 mb-8">
+                    <span className="font-display text-5xl sm:text-6xl font-bold gradient-text">15</span>
+                    <span className="text-2xl font-display font-bold text-white/70">EUR</span>
+                    <span className="text-xs text-white/40 ml-2">paiement unique</span>
+                  </div>
+
+                  <ul className="flex flex-col gap-3 mb-8 flex-1">
+                    {pricingFeatures.map((f, i) => (
+                      <li key={i} className="flex items-start gap-3 text-sm text-white/80">
+                        <div className="w-5 h-5 rounded-full bg-emerald/15 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <CheckCircle size={12} className="text-emerald" />
+                        </div>
+                        <span>{f}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  <button onClick={() => scrollTo("contact")} className="btn-primary px-6 py-3.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 w-full">
+                    Reserver mon audit <ArrowRight size={16} />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Options table */}
+            <div className="lg:col-span-7 anim fade-left">
+              <div className="glass rounded-3xl p-6 sm:p-8 h-full">
+                <div className="flex items-center justify-between mb-6">
+                  <div>
+                    <h3 className="font-display text-lg sm:text-xl font-bold mb-1">Options &amp; Add-ons</h3>
+                    <p className="text-white/40 text-xs">A combiner librement avec votre offre de base</p>
+                  </div>
+                  <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center">
+                    <Coins size={18} className="text-brand" />
+                  </div>
+                </div>
+
+                <div className="flex flex-col">
+                  {pricingOptions.map((o, i) => (
+                    <div
+                      key={i}
+                      className={`flex items-center justify-between gap-3 py-4 ${
+                        i < pricingOptions.length - 1 ? "border-b border-border" : ""
+                      } ${o.highlight ? "bg-brand/5 -mx-3 px-3 rounded-xl my-1 border-y-0" : ""}`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                          o.highlight ? "bg-brand/15 text-brand" : "bg-white/5 text-white/40"
+                        }`}>
+                          <Tag size={14} />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold truncate">{o.service}</p>
+                          <p className="text-[11px] text-white/35">{o.note}</p>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <span className={`font-display text-base sm:text-lg font-bold ${
+                          o.highlight ? "gradient-text" : "text-white"
+                        }`}>
+                          {o.price}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-border flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+                  <p className="text-xs text-white/50 flex items-center gap-2">
+                    <Shield size={12} className="text-emerald" />
+                    Devis personnalise gratuit sous 24h
+                  </p>
+                  <button onClick={() => scrollTo("contact")} className="btn-dark px-5 py-2.5 rounded-full text-xs font-semibold">
+                    Demander un devis
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
