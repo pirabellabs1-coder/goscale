@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useProjects, Project } from "@/lib/ProjectContext";
 import {
   Plus, Search, Eye, EyeOff, Copy, Trash2, Edit3, X, Save,
   ChevronLeft, ExternalLink, Video, Image as ImageIcon,
+  Upload, AlertTriangle, Loader2,
 } from "lucide-react";
 
 const categories = ["Tous", "Automatisation", "CallBot IA", "ChatBot IA", "WordPress + SEO", "Maquette UI/UX"];
@@ -93,6 +94,35 @@ export default function PortfolioPage() {
 
   const handleDelete = async (id: number) => {
     if (confirm("Supprimer ce projet ?")) await deleteProject(id);
+  };
+
+  // ── Image upload (Vercel Blob via /api/upload) ──
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  const handleFilePick = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadError(null);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (!res.ok) {
+        setUploadError(data.error || "Échec de l'upload");
+      } else {
+        setForm((f) => ({ ...f, image_url: data.url }));
+      }
+    } catch {
+      setUploadError("Erreur réseau pendant l'upload");
+    } finally {
+      setUploading(false);
+      // Reset the file input so picking the same file twice still triggers onChange
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
   };
 
   const colorMap: Record<string, string> = {
@@ -363,13 +393,46 @@ export default function PortfolioPage() {
               <div className="border-t border-border pt-4 -mb-2">
                 <span className="text-xs text-white/40">M&eacute;dia</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-white/40 mb-1">
-                <ImageIcon size={14} /> Image
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <div className="flex items-center gap-2 text-xs text-white/40">
+                  <ImageIcon size={14} /> Image
+                </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                  hidden
+                  onChange={handleFilePick}
+                />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="text-xs flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand/10 text-brand hover:bg-brand/15 border border-brand/20 disabled:opacity-50"
+                >
+                  {uploading ? (
+                    <><Loader2 size={12} className="animate-spin" /> Upload en cours...</>
+                  ) : (
+                    <><Upload size={12} /> Uploader depuis la galerie</>
+                  )}
+                </button>
               </div>
               <input
-                type="text" placeholder="URL de l'image (ou collez un lien)" className="input-field"
+                type="text" placeholder="URL de l'image ou bouton Upload &uarr;" className="input-field"
                 value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })}
               />
+              {uploadError && (
+                <div className="flex items-start gap-2 text-xs text-red-400 bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
+                  <AlertTriangle size={12} className="flex-shrink-0 mt-0.5" />
+                  <span>{uploadError}</span>
+                </div>
+              )}
+              {form.image_url && (
+                <div className="rounded-lg border border-border overflow-hidden bg-dark-3">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={form.image_url} alt="Aperçu" className="w-full h-32 object-cover" />
+                </div>
+              )}
               <div className="flex items-center gap-2 text-xs text-white/40 mb-1">
                 <Video size={14} /> Vid&eacute;o (optionnel)
               </div>
