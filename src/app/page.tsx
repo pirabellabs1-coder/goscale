@@ -823,14 +823,14 @@ export default function HomePage() {
                   leur activité et d&apos;accélérer leur développement.
                 </p>
                 <p>
-                  Bas&eacute; &agrave; <span className="text-white font-semibold">Cotonou, au B&eacute;nin</span>, j&apos;ai fond&eacute;{" "}
-                  <span className="text-white font-semibold">GoScaleStudio</span> avec une mission claire&nbsp;:
-                  aider les marques, entrepreneurs et entreprises &mdash; au B&eacute;nin, dans toute l&apos;Afrique
-                  de l&apos;Ouest et au-del&agrave; &mdash; &agrave; gagner du temps, optimiser leurs processus
-                  et scaler plus efficacement gr&acirc;ce &agrave; des solutions digitales modernes et intelligentes.
+                  Basé à{" "}
+                  <span className="text-white font-semibold">Cotonou, au Bénin</span>
+                  {", j'ai fondé "}
+                  <span className="text-white font-semibold">GoScaleStudio</span>
+                  {" avec une mission claire : aider les marques, entrepreneurs et entreprises — au Bénin, dans toute l'Afrique de l'Ouest et au-delà — à gagner du temps, optimiser leurs processus et scaler plus efficacement grâce à des solutions digitales modernes et intelligentes."}
                 </p>
                 <p>
-                  Je suis aussi co-fondateur de{" "}
+                  {"Je suis aussi co-fondateur de "}
                   <a
                     href="https://pirabellabs.com"
                     target="_blank"
@@ -840,9 +840,7 @@ export default function HomePage() {
                     Pirabel Labs
                     <ArrowUpRight size={13} />
                   </a>
-                  , une agence web marketing spécialisée dans la croissance digitale, la stratégie de contenu
-                  et l&apos;acquisition client. Une double casquette qui me permet de combiner technologie,
-                  automatisation et marketing pour des résultats concrets.
+                  {", une agence web marketing spécialisée dans la croissance digitale, la stratégie de contenu et l'acquisition client. Une double casquette qui me permet de combiner technologie, automatisation et marketing pour des résultats concrets."}
                 </p>
               </div>
 
