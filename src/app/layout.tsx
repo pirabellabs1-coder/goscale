@@ -253,8 +253,8 @@ const jsonLdLocalBusiness = {
   ],
   areaServed: [
     // Villes principales servies (boost SEO local)
-    { "@type": "City", name: "Cotonou", "@id": "https://www.wikidata.org/wiki/Q3799" },
-    { "@type": "City", name: "Porto-Novo", "@id": "https://www.wikidata.org/wiki/Q3799-portonovo" },
+    { "@type": "City", name: "Cotonou" },
+    { "@type": "City", name: "Porto-Novo" },
     { "@type": "City", name: "Parakou" },
     { "@type": "City", name: "Abomey-Calavi" },
     { "@type": "City", name: "Dakar" },
@@ -389,7 +389,7 @@ const jsonLdServices = [
     provider: { "@id": `${SITE_URL}#organization` },
     description:
       "Workflows intelligents avec Make, n8n ou Zapier. Connexion d'outils (HubSpot, Notion, Google Workspace, WhatsApp), suppression des tâches répétitives, gain moyen de +10h/semaine. Définition : l'automatisation no-code consiste à créer des séquences d'actions automatiques entre vos outils sans écrire de code.",
-    areaServed: [{ "@type": "Country", name: "Benin" }, "Francophonie", "Worldwide"],
+    areaServed: [{ "@type": "Country", name: "Benin" }, { "@type": "Place", name: "Francophonie" }, { "@type": "Place", name: "Worldwide" }],
     offers: { "@type": "Offer", price: "30", priceCurrency: "EUR", url: `${SITE_URL}#pricing` },
   },
   {
@@ -400,7 +400,7 @@ const jsonLdServices = [
     provider: { "@id": `${SITE_URL}#organization` },
     description:
       "Chatbots GPT-4, GPT-4o et Claude déployés sur WhatsApp Business API, site web ou Messenger. Entraînés sur les données du client. Définition : un chatbot IA est un programme conversationnel qui comprend le langage naturel et répond aux questions ou guide les utilisateurs 24/7.",
-    areaServed: [{ "@type": "Country", name: "Benin" }, "Francophonie", "Worldwide"],
+    areaServed: [{ "@type": "Country", name: "Benin" }, { "@type": "Place", name: "Francophonie" }, { "@type": "Place", name: "Worldwide" }],
   },
   {
     "@context": "https://schema.org",
@@ -410,7 +410,7 @@ const jsonLdServices = [
     provider: { "@id": `${SITE_URL}#organization` },
     description:
       "Agents vocaux 24/7 via Vapi, Twilio et Bland AI avec voix premium ElevenLabs et OpenAI TTS. Définition : un callbot est un assistant téléphonique automatisé propulsé par une IA conversationnelle, capable de prendre des RDV, qualifier des leads et assister les clients.",
-    areaServed: [{ "@type": "Country", name: "Benin" }, "Francophonie", "Worldwide"],
+    areaServed: [{ "@type": "Country", name: "Benin" }, { "@type": "Place", name: "Francophonie" }, { "@type": "Place", name: "Worldwide" }],
   },
   {
     "@context": "https://schema.org",
@@ -420,7 +420,7 @@ const jsonLdServices = [
     provider: { "@id": `${SITE_URL}#organization` },
     description:
       "Sites vitrines rapides et SEO-ready avec WordPress + Elementor. Optimisation technique, contenu et netlinking. Définition : le SEO (Search Engine Optimization) regroupe les techniques pour positionner un site en première page des moteurs de recherche.",
-    areaServed: [{ "@type": "Country", name: "Benin" }, "Francophonie", "Worldwide"],
+    areaServed: [{ "@type": "Country", name: "Benin" }, { "@type": "Place", name: "Francophonie" }, { "@type": "Place", name: "Worldwide" }],
   },
   {
     "@context": "https://schema.org",
@@ -430,7 +430,7 @@ const jsonLdServices = [
     provider: { "@id": `${SITE_URL}#organization` },
     description:
       "Prototypes cliquables livrés en 48-72h avec Figma AI et v0.dev. Définition : une maquette UI/UX est une représentation visuelle interactive d'un produit numérique, permettant de valider le design et l'expérience utilisateur avant le développement.",
-    areaServed: [{ "@type": "Country", name: "Benin" }, "Francophonie", "Worldwide"],
+    areaServed: [{ "@type": "Country", name: "Benin" }, { "@type": "Place", name: "Francophonie" }, { "@type": "Place", name: "Worldwide" }],
   },
 ];
 
