@@ -1094,7 +1094,11 @@ function HomePage() {
               {t({ fr: "Pour chaque blocage, on a une solution concrète, déployée en moins de 14 jours.", en: "For every blocker, we have a concrete solution, deployed in less than 14 days." })}
             </p>
           </div>
-          {/* Format "achievement strip" — chiffre géant + contenu en ligne, gradient au survol */}
+          {/*
+            Format "achievement strip" :
+            - Mobile : stat compacte en chip top-right au-dessus du titre (n'écrase plus le contenu)
+            - Desktop (sm+) : grid 3 colonnes avec index minuscule à gauche, titre+desc au centre, stat géante à droite
+          */}
           <div className="max-w-5xl mx-auto flex flex-col">
             {solutions.map((s, i) => (
               <div
@@ -1106,9 +1110,31 @@ function HomePage() {
                 {/* Wash gradient qui apparaît au hover (de la gauche vers la droite) */}
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald/[0.08] via-emerald/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-                <div className="relative grid grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto] items-center gap-5 sm:gap-10 py-8 sm:py-10">
+                {/* MOBILE LAYOUT (caché sm+) — stat compacte en chip puis titre + desc en pleine largeur */}
+                <div className="relative sm:hidden py-7">
+                  <div className="flex items-center justify-between gap-3 mb-3">
+                    <span className="font-display text-[10px] font-bold tracking-widest text-emerald/50 uppercase">
+                      {String(i + 1).padStart(2, "0")} · {t({ fr: "Gain", en: "Gain" })}
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald bg-emerald/10 border border-emerald/20 px-2.5 py-1 rounded-full tabular-nums">
+                      {t(s.result)}
+                    </span>
+                  </div>
+                  <div className="flex items-start gap-2.5 mb-2">
+                    <s.icon size={17} className="text-emerald flex-shrink-0 mt-0.5" />
+                    <h3 className="font-display text-base font-bold leading-tight">
+                      {t(s.title)}
+                    </h3>
+                  </div>
+                  <p className="text-white/55 text-[13px] leading-relaxed pl-[26px]">
+                    {t(s.desc)}
+                  </p>
+                </div>
+
+                {/* DESKTOP LAYOUT (sm+) — grid 3 colonnes, stat géante à droite */}
+                <div className="relative hidden sm:grid sm:grid-cols-[auto_1fr_auto] items-center gap-10 py-10">
                   {/* Index minuscule */}
-                  <div className="hidden sm:flex flex-col items-center w-12">
+                  <div className="flex flex-col items-center w-12">
                     <span className="font-display text-[11px] font-bold tracking-widest text-emerald/40 uppercase">
                       {String(i + 1).padStart(2, "0")}
                     </span>
@@ -1117,23 +1143,23 @@ function HomePage() {
 
                   {/* Texte central */}
                   <div className="min-w-0">
-                    <div className="flex items-center gap-3 mb-2 sm:mb-3">
+                    <div className="flex items-center gap-3 mb-3">
                       <s.icon size={18} className="text-emerald flex-shrink-0" />
-                      <h3 className="font-display text-lg sm:text-2xl md:text-3xl font-bold leading-tight">
+                      <h3 className="font-display text-2xl md:text-3xl font-bold leading-tight">
                         {t(s.title)}
                       </h3>
                     </div>
-                    <p className="text-white/55 text-sm sm:text-base leading-relaxed sm:pl-7 max-w-2xl">
+                    <p className="text-white/55 text-base leading-relaxed pl-7 max-w-2xl">
                       {t(s.desc)}
                     </p>
                   </div>
 
-                  {/* Stat géante à droite */}
+                  {/* Stat géante à droite (desktop only) */}
                   <div className="text-right flex-shrink-0">
-                    <div className="font-display text-2xl sm:text-4xl md:text-5xl font-bold leading-none tabular-nums bg-gradient-to-br from-emerald to-emerald/40 bg-clip-text text-transparent transition-transform duration-300 group-hover:scale-105 origin-right">
+                    <div className="font-display text-4xl md:text-5xl font-bold leading-none tabular-nums bg-gradient-to-br from-emerald to-emerald/40 bg-clip-text text-transparent transition-transform duration-300 group-hover:scale-105 origin-right">
                       {t(s.result)}
                     </div>
-                    <div className="text-[9px] sm:text-[10px] uppercase tracking-widest text-emerald/50 font-bold mt-1 sm:mt-2">
+                    <div className="text-[10px] uppercase tracking-widest text-emerald/50 font-bold mt-2">
                       {t({ fr: "Gain", en: "Gain" })}
                     </div>
                   </div>

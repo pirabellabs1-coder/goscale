@@ -246,11 +246,16 @@ function ServiceInner({ slug }: { slug: string }) {
         <div className={`absolute top-10 -right-32 w-96 h-96 ${palette.bg} rounded-full blur-3xl opacity-40 pointer-events-none`} />
         <div className={`absolute -bottom-20 -left-40 w-80 h-80 ${palette.bg} rounded-full blur-3xl opacity-20 pointer-events-none`} />
 
-        <div className="relative max-w-6xl mx-auto grid lg:grid-cols-[1.1fr_1fr] gap-12 lg:gap-16 items-center">
-          {/* Colonne texte */}
-          <div>
+        {/*
+          Layout hero :
+          - Mobile : badge → H1 → subtitle → ILLUSTRATION → CTA → trust strip (ordre source)
+          - Desktop (lg+) : 2 colonnes. Gauche : badge + H1 + subtitle (haut) + CTA + trust (bas). Droite : illustration pleine hauteur.
+        */}
+        <div className="relative max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-[1.1fr_1fr] gap-6 lg:gap-x-16 lg:gap-y-6 lg:items-center">
+          {/* TOP TEXT — badge + h1 + subtitle */}
+          <div className="lg:col-start-1 lg:row-start-1 lg:self-end">
             {/* Badge */}
-            <div className="anim fade-up mb-5 flex items-center gap-3 flex-wrap">
+            <div className="anim fade-up mb-4 sm:mb-5 flex items-center gap-3 flex-wrap">
               <span className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full ${palette.bg} ${palette.border} border ${palette.text} text-[11px] font-bold uppercase tracking-widest`}>
                 <Icon size={11} /> {t(service.hero.badge)}
               </span>
@@ -259,7 +264,7 @@ function ServiceInner({ slug }: { slug: string }) {
             </div>
 
             {/* H1 — taille réduite mobile */}
-            <h1 className="anim fade-up delay-1 font-display text-[1.75rem] leading-[1.2] sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-5">
+            <h1 className="anim fade-up delay-1 font-display text-[1.625rem] leading-[1.2] sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-5">
               {t(service.hero.h1)}{" "}
               {service.hero.h1Highlight.fr && (
                 <span className="gradient-text">{t(service.hero.h1Highlight)}</span>
@@ -267,12 +272,23 @@ function ServiceInner({ slug }: { slug: string }) {
             </h1>
 
             {/* Subtitle */}
-            <p className="anim fade-up delay-2 text-sm sm:text-base lg:text-lg text-white/60 leading-relaxed mb-6 sm:mb-8 max-w-xl">
+            <p className="anim fade-up delay-2 text-[13px] sm:text-base lg:text-lg text-white/60 leading-relaxed max-w-xl">
               {t(service.hero.subtitle)}
             </p>
+          </div>
 
+          {/* ILLUSTRATION — entre subtitle et CTA sur mobile, colonne droite pleine hauteur sur desktop */}
+          <div className="anim fade-up delay-3 lg:col-start-2 lg:row-start-1 lg:row-span-2 lg:self-center my-2 lg:my-0">
+            <HeroIllustration
+              variant={service.heroIllustration || "icon-halo"}
+              color={service.color}
+            />
+          </div>
+
+          {/* BOTTOM TEXT — CTAs + trust strip */}
+          <div className="lg:col-start-1 lg:row-start-2 lg:self-start">
             {/* CTA */}
-            <div className="anim fade-up delay-3 flex flex-col sm:flex-row gap-3 mb-10">
+            <div className="anim fade-up delay-3 flex flex-col sm:flex-row gap-3 mb-6 sm:mb-8">
               <Link
                 href={linkToContact}
                 className="btn-primary px-6 py-3.5 rounded-full text-sm font-bold flex items-center justify-center gap-2"
@@ -288,26 +304,18 @@ function ServiceInner({ slug }: { slug: string }) {
             </div>
 
             {/* Trust strip */}
-            <div className="anim fade-up delay-4 flex flex-wrap items-center gap-x-6 gap-y-3 pt-2">
+            <div className="anim fade-up delay-4 flex flex-wrap items-center gap-x-5 sm:gap-x-6 gap-y-3 pt-1">
               {service.hero.trustStrip.map((item, i) => (
-                <div key={i} className="flex items-baseline gap-2">
-                  <span className="font-display text-xl sm:text-2xl font-bold gradient-text tabular-nums leading-none">
+                <div key={i} className="flex items-baseline gap-1.5 sm:gap-2">
+                  <span className="font-display text-lg sm:text-2xl font-bold gradient-text tabular-nums leading-none">
                     {item.value}
                   </span>
-                  <span className="text-xs text-white/50 uppercase tracking-wider font-medium">
+                  <span className="text-[10px] sm:text-xs text-white/50 uppercase tracking-wider font-medium">
                     {t(item.label)}
                   </span>
                 </div>
               ))}
             </div>
-          </div>
-
-          {/* Colonne illustration — texte d'abord sur mobile/tablet, illustration ensuite */}
-          <div className="anim fade-left delay-2 mt-4 lg:mt-0">
-            <HeroIllustration
-              variant={service.heroIllustration || "icon-halo"}
-              color={service.color}
-            />
           </div>
         </div>
       </section>
