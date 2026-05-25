@@ -303,16 +303,21 @@ function ServiceInner({ slug }: { slug: string }) {
               </Link>
             </div>
 
-            {/* Trust strip */}
-            <div className="anim fade-up delay-4 flex flex-wrap items-center gap-x-5 sm:gap-x-6 gap-y-3 pt-1">
+            {/* Trust strip — design éditorial : grid 3 cols, dividers verticaux, sans cards */}
+            <div className="anim fade-up delay-4 grid grid-cols-3 mt-1 sm:mt-2 max-w-md lg:max-w-lg">
               {service.hero.trustStrip.map((item, i) => (
-                <div key={i} className="flex items-baseline gap-1.5 sm:gap-2">
-                  <span className="font-display text-lg sm:text-2xl font-bold gradient-text tabular-nums leading-none">
+                <div
+                  key={i}
+                  className={`flex flex-col items-start pl-3 sm:pl-4 pr-2 sm:pr-3 py-1 ${
+                    i > 0 ? "border-l border-white/10" : ""
+                  } ${i === 0 ? "pl-0 sm:pl-0" : ""}`}
+                >
+                  <div className="font-display text-base sm:text-xl lg:text-2xl font-bold gradient-text tabular-nums leading-none mb-1 sm:mb-1.5">
                     {item.value}
-                  </span>
-                  <span className="text-[10px] sm:text-xs text-white/50 uppercase tracking-wider font-medium">
+                  </div>
+                  <div className="text-[10px] sm:text-[11px] text-white/45 uppercase tracking-wider font-medium leading-tight">
                     {t(item.label)}
-                  </span>
+                  </div>
                 </div>
               ))}
             </div>
