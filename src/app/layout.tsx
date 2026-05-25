@@ -37,19 +37,39 @@ export const metadata: Metadata = {
     "Agence digitale basée à Cotonou (Bénin) spécialisée en automatisation Make / n8n / Zapier, chatbots IA (GPT-4, Claude), callbots vocaux (Vapi, Twilio), sites WordPress optimisés SEO et maquettes UI/UX. 65+ projets livrés à travers l'Afrique de l'Ouest, la francophonie et l'international. Audit à 15 €.",
   applicationName: "GoScaleStudio",
   keywords: [
-    // Géo / local SEO
+    // Géo / local SEO — villes Bénin
     "agence digitale Bénin",
     "agence digitale Cotonou",
+    "agence digitale Porto-Novo",
+    "agence digitale Parakou",
+    "agence digitale Abomey-Calavi",
     "automatisation Bénin",
     "automatisation Cotonou",
+    "automatisation Porto-Novo",
     "chatbot IA Bénin",
+    "chatbot IA Cotonou",
+    "callbot IA Bénin",
+    "site web Bénin",
+    "site WordPress Cotonou",
+    // Géo — Afrique de l'Ouest francophone
+    "agence digitale Côte d'Ivoire",
+    "agence digitale Abidjan",
+    "agence digitale Sénégal",
+    "agence digitale Dakar",
+    "agence digitale Togo",
+    "agence digitale Lomé",
+    "agence digitale Burkina Faso",
+    "agence digitale Ouagadougou",
     "agence IA Afrique",
     "agence IA Afrique de l'Ouest",
+    "agence IA francophone",
     "studio digital Bénin",
     "agence web Bénin",
     "agence marketing digital Cotonou",
     "expert automatisation Bénin",
     "consultant IA Bénin",
+    "freelance automatisation Afrique",
+    "agence chatbot Afrique francophone",
     // Services
     "automatisation",
     "automatisation entreprise",
@@ -228,8 +248,24 @@ const jsonLdLocalBusiness = {
   sameAs: [
     "https://pirabellabs.com",
     "https://comeup.com/",
+    "https://www.linkedin.com/in/fidah-imorou-boukari/",
+    "https://github.com/pirabellabs1-coder",
   ],
   areaServed: [
+    // Villes principales servies (boost SEO local)
+    { "@type": "City", name: "Cotonou", "@id": "https://www.wikidata.org/wiki/Q3799" },
+    { "@type": "City", name: "Porto-Novo", "@id": "https://www.wikidata.org/wiki/Q3799-portonovo" },
+    { "@type": "City", name: "Parakou" },
+    { "@type": "City", name: "Abomey-Calavi" },
+    { "@type": "City", name: "Dakar" },
+    { "@type": "City", name: "Abidjan" },
+    { "@type": "City", name: "Lomé" },
+    { "@type": "City", name: "Ouagadougou" },
+    { "@type": "City", name: "Paris" },
+    { "@type": "City", name: "Lyon" },
+    { "@type": "City", name: "Montréal" },
+    { "@type": "City", name: "Bruxelles" },
+    // Pays
     { "@type": "Country", name: "Benin" },
     { "@type": "Country", name: "France" },
     { "@type": "Country", name: "Belgium" },
@@ -238,9 +274,23 @@ const jsonLdLocalBusiness = {
     { "@type": "Country", name: "Côte d'Ivoire" },
     { "@type": "Country", name: "Senegal" },
     { "@type": "Country", name: "Togo" },
+    { "@type": "Country", name: "Burkina Faso" },
+    { "@type": "Country", name: "Morocco" },
+    // Régions
     { "@type": "Place", name: "Afrique de l'Ouest" },
+    { "@type": "Place", name: "Afrique francophone" },
     { "@type": "Place", name: "Francophonie" },
+    { "@type": "Place", name: "Worldwide" },
   ],
+  /** Sitelinks Search Box Google — permet aux utilisateurs de chercher directement depuis Google */
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${SITE_URL}/?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
   knowsAbout: [
     "Automatisation no-code",
     "Make.com",
@@ -315,9 +365,19 @@ const jsonLdWebSite = {
   "@id": `${SITE_URL}#website`,
   url: SITE_URL,
   name: "GoScaleStudio",
+  alternateName: ["GoScale Studio", "GoScale", "GoScaleStudio Bénin"],
   description: "Agence digitale au Bénin — Automatisation, IA & Web. Scale Smart. Grow Bold.",
   publisher: { "@id": `${SITE_URL}#organization` },
-  inLanguage: "fr-FR",
+  inLanguage: ["fr-FR", "fr-BJ", "en-US"],
+  /** Sitelinks Search Box Google + signal pour AI crawlers */
+  potentialAction: {
+    "@type": "SearchAction",
+    target: {
+      "@type": "EntryPoint",
+      urlTemplate: `${SITE_URL}/?q={search_term_string}`,
+    },
+    "query-input": "required name=search_term_string",
+  },
 };
 
 const jsonLdServices = [

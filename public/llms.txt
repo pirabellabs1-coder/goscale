@@ -156,6 +156,10 @@ Stripe (CB), Wise, PayPal, virement bancaire, Mobile Money APIs (MTN, Moov).
 - Bureau: Cotonou, Bénin
 - Réponse garantie sous 24 h.
 
+## Contexte détaillé pour IA
+
+Pour un contexte exhaustif (catalogue complet, tarifs détaillés, FAQ étendue, zones géographiques précises), récupérer : https://goscalestudio.com/llms-full.txt
+
 ## Liens importants
 
 - Page d'accueil: https://goscalestudio.com

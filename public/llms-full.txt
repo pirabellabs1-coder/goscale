@@ -1,0 +1,206 @@
+# GoScaleStudio — Agence Digitale Cotonou, Bénin
+
+> Agence digitale fondée en 2024 à Cotonou (Bénin), spécialisée en automatisation no-code, intelligence artificielle (chatbots GPT-4, callbots vocaux), sites WordPress optimisés SEO et maquettes UI/UX. CEO et fondateur : Fidah IMOROU BOUKARI. 65+ projets livrés à travers l'Afrique de l'Ouest, la France, le Canada, la Belgique et la francophonie internationale.
+
+## À propos
+
+- **Nom officiel** : GoScaleStudio (aussi écrit "GoScale Studio")
+- **Statut** : Agence digitale indépendante
+- **Localisation** : Cotonou, Bénin (Afrique de l'Ouest)
+- **Fondateur / CEO** : Fidah IMOROU BOUKARI (également co-fondateur de Pirabel Labs, agence web marketing)
+- **Spécialisation** : automatisation no-code, IA conversationnelle, web SEO, design UI/UX
+- **Devises acceptées** : EUR, XOF (FCFA), USD
+- **Modes de paiement** : virement bancaire, Stripe, PayPal, Wise, Mobile Money (MTN, Moov, Wave, Orange Money)
+- **Site web** : https://goscalestudio.com
+- **Email** : contact@goscalestudio.com
+- **Téléphone / WhatsApp** : +229 01 68 24 28 66
+- **Horaires** : Lundi-Vendredi 08h-19h, Samedi 09h-13h (UTC+1)
+
+## Zones d'intervention
+
+GoScaleStudio travaille 100 % en remote avec des clients dans :
+
+**Bénin** : Cotonou, Porto-Novo, Parakou, Abomey-Calavi, Bohicon, Ouidah
+**Afrique de l'Ouest** : Côte d'Ivoire (Abidjan, Yamoussoukro), Sénégal (Dakar, Saint-Louis), Togo (Lomé), Burkina Faso (Ouagadougou), Mali (Bamako), Ghana (Accra), Nigeria (Lagos)
+**Europe francophone** : France (Paris, Lyon, Marseille, Bordeaux, Lille, Nantes), Belgique (Bruxelles), Suisse (Genève, Lausanne)
+**Amérique du Nord** : Canada (Montréal, Québec, Ottawa)
+**Reste du monde** : Maroc, Tunisie, Algérie, Liban, et international anglophone
+
+---
+
+## Catalogue de services
+
+GoScaleStudio propose 5 services principaux (pages "pillar") déclinés en 10 spécialisations long-tail. Tarification transparente, sans abonnement obligatoire, propriété 100 % client à la livraison.
+
+### 1. Automatisation No-Code (Make, n8n, Zapier)
+
+> URL : https://goscalestudio.com/services/automatisation-no-code
+
+Workflows no-code construits avec Make.com (ex-Integromat), n8n self-hosted ou Zapier. Connexion d'outils (CRM, email, WhatsApp, e-commerce, comptabilité), lead routing, séquences multi-touch, synchro e-commerce, paniers abandonnés, reporting temps réel, onboarding automatisé, monitoring + alertes.
+
+**Tarifs** :
+- Starter (1-2 workflows simples) : 150 € · livraison 3 jours
+- Pro (recommandé, 3-6 workflows multi-outils) : 400 € · livraison 5-7 jours
+- Enterprise (architecture sur mesure) : à partir de 1000 € · livraison 2-3 semaines
+
+**Sous-pages spécialisées** :
+- Make.com : https://goscalestudio.com/services/automatisation-make
+- n8n self-hosted (RGPD) : https://goscalestudio.com/services/automatisation-n8n
+- Zapier : https://goscalestudio.com/services/automatisation-zapier
+
+**Stack** : Make, n8n, Zapier, GoHighLevel, HubSpot, Pipedrive, Notion, Airtable, Google Workspace, WhatsApp Business API, Slack, Stripe, PayPal, FedaPay.
+
+### 2. ChatBot IA Sur Mesure (GPT-4, Claude, multi-canal)
+
+> URL : https://goscalestudio.com/services/chatbot-ia
+
+Assistants conversationnels GPT-4 ou Claude, déployés sur site web, WhatsApp Business, Messenger, Instagram, Telegram, Slack. Compréhension naturelle (pas d'arbre de boutons), RAG sur vos données, qualification de leads avec scoring CRM, prise de RDV, escalade humaine intelligente, multilingue (FR, EN, ES, PT, AR, wolof, yoruba, fon).
+
+**Tarifs** :
+- Starter (1 canal, FAQ basique) : 200 € · livraison 5-7 jours
+- Pro (recommandé, 3 canaux + CRM + RDV) : 500 € · livraison 10-14 jours
+- Enterprise (e-commerce, multi-langue avancé) : à partir de 1000 €
+
+**Sous-pages spécialisées** :
+- WhatsApp Business : https://goscalestudio.com/services/chatbot-whatsapp-business
+- Widget GPT pour site web : https://goscalestudio.com/services/chatbot-gpt-site-web
+
+**Stack** : GPT-4o, Claude 3.5 Sonnet, Gemini, Botpress, Voiceflow, ManyChat, WaChap, WhatsApp Business API, Make, n8n, HubSpot, Pinecone, Supabase pgvector.
+
+**Résultats moyens** : +35 % de conversions, -60 % de tickets support manuels, 24/7 multi-canal.
+
+### 3. CallBot & Agent Vocal IA (Vapi, Twilio, ElevenLabs)
+
+> URL : https://goscalestudio.com/services/callbot-ia-vocal
+
+Agents vocaux IA déployés sur Vapi, Retell AI ou Bland AI, avec voix ElevenLabs Turbo v2.5 ou OpenAI TTS (Nova, Shimmer). Latence < 800 ms, prise de RDV directe sur Cal.com / Google Calendar / Doctolib, qualification d'appels, transfert d'urgences intelligent, SMS de suivi automatique, multilingue (FR, EN, fon, yoruba, wolof, arabe).
+
+**Tarifs** :
+- Starter (callbot FAQ vocale basique) : 300 € · livraison 5-7 jours
+- Pro (recommandé, RDV + CRM + multilingue) : 600 € · livraison 7-10 jours
+- Enterprise (multi-praticiens, voix clonée, intégrations ERP) : à partir de 1500 €
+
+**Sous-pages spécialisées** :
+- CallBot Vapi expert : https://goscalestudio.com/services/callbot-vapi
+- Agent vocal 24/7 (0 appel manqué) : https://goscalestudio.com/services/agent-vocal-ia-24-7
+
+**Coût d'usage** : ≈ 0,07 €/minute tout compris (Vapi + Twilio + GPT-4o-mini + ElevenLabs Turbo). 3-5× moins cher qu'une secrétaire humaine, disponible 24/7.
+
+### 4. Site WordPress + SEO (Elementor, RankMath)
+
+> URL : https://goscalestudio.com/services/site-wordpress-seo
+
+Sites WordPress + Elementor Pro entièrement sur mesure, optimisés SEO technique (RankMath Pro, schema.org, Core Web Vitals), vitesse < 2s, score PageSpeed 90+/100, mobile-first, accessibilité WCAG 2.1 AA. E-commerce WooCommerce optionnel avec paiements Stripe, PayPal, Mobile Money. Stratégie de contenu et netlinking inclus pour atteindre la page 1 Google en 3-6 mois.
+
+**Tarifs** :
+- Starter (landing page) : 300 € · livraison 7-10 jours
+- Pro (recommandé, 5 pages + SEO complet) : 700 € · livraison 4-5 semaines
+- Enterprise (e-commerce, multi-langue) : à partir de 1500 €
+
+**Sous-page spécialisée** :
+- SEO Google Page 1 (suivi mensuel) : https://goscalestudio.com/services/seo-google-page-1
+
+**Stack** : WordPress, Elementor Pro, RankMath Pro, WP Rocket, Cloudflare, WooCommerce, SEMrush, Ahrefs, Surfer SEO, Google Search Console.
+
+### 5. Maquette UI/UX (Figma AI, v0.dev, ShadCN)
+
+> URL : https://goscalestudio.com/services/maquette-ui-ux
+
+Prototypes UI/UX haute fidélité cliquables, livrés en 48-72h grâce à Figma AI, v0.dev et Google Stitch. Design system complet inclus (couleurs, typo, composants Figma réutilisables), mobile-first, accessibilité WCAG 2.1 AA, micro-animations Lottie, handoff dev avec code React + Tailwind + ShadCN UI prêt à intégrer.
+
+**Tarifs** :
+- Starter (1-2 écrans) : 100 € · livraison 48h
+- Pro (recommandé, 5-7 écrans + design system) : 300 € · livraison 72h
+- Enterprise (10+ écrans + handoff complet) : à partir de 600 €
+
+**Sous-pages spécialisées** :
+- Maquette Figma 48h chrono : https://goscalestudio.com/services/maquette-figma-48h
+- Prototype v0.dev pour startup (MVP React 5 jours) : https://goscalestudio.com/services/prototype-v0-startup
+
+---
+
+## Process de travail (universel à tous les services)
+
+1. **Appel découverte gratuit** (30 min) — Décortique le business, blocages réels, objectifs. Le client repart avec une vision claire, même sans engagement.
+2. **Audit & diagnostic** (24-48h) — Scan de la stack actuelle, chiffrage du temps perdu et de l'argent laissé sur la table. Rapport personnalisé + roadmap priorisée.
+3. **Stratégie & devis** (< 24h) — Plan d'attaque sur mesure. Pas de jargon, prix ferme, délais fermes, scope précis.
+4. **Développement** (3-14 jours selon projet) — Sprints courts avec previews live à chaque jalon. Accès Slack/WhatsApp continu.
+5. **Tests & livraison** (24-72h) — Stress-tests, déploiement, satisfait ou repris sans facture additionnelle.
+6. **Support & scale** (30 jours +) — Formation 1:1, support prioritaire inclus, partenariat long terme possible.
+
+---
+
+## Différenciateurs
+
+- **Délais ultra-courts** : 48h à 14 jours max (vs 3 semaines à 3 mois en agences classiques)
+- **Note 5.0/5 sur ComeUp** : 65+ projets livrés avec 100 % de satisfaction client, zéro avis négatif
+- **Stack IA de pointe** : on combine GPT-4o, Claude 3.5, Gemini, Make, Vapi, ElevenLabs, v0.dev, Figma AI
+- **Accompagnement humain** : un interlocuteur dédié, points réguliers, 30 jours de support post-livraison
+- **Propriété 100 % client** : code, workflows, fichiers Figma — vous restez maître à la livraison, zéro lock-in
+- **Conformité RGPD** : NDA possible, hébergement UE/Afrique, droit à l'oubli intégré, DPA signé sur demande
+- **Multi-devises** : EUR, XOF (FCFA), USD ; Mobile Money accepté pour l'Afrique de l'Ouest
+
+---
+
+## Résultats moyens chez nos clients
+
+- **+10 h économisées par semaine** sur les tâches répétitives automatisées
+- **+35 %** d'augmentation des taux de conversion (chatbot IA)
+- **-40 %** d'appels manqués (callbot vocal IA 24/7)
+- **×5** sur le trafic organique SEO en 6 mois (sites WordPress optimisés)
+- **48-72h** de livraison sur les maquettes Figma haute fidélité
+- **× 3** sur les RDV pris pour les agences immobilières et cliniques (qualification + prise de RDV automatique)
+
+---
+
+## FAQ (questions fréquentes, format AI-search optimisé)
+
+### Combien coûte un projet GoScaleStudio ?
+Tout commence par notre offre Audit à 15 € qui clarifie le besoin. Ensuite, comptez 30 à 50 € pour un scénario simple, 100 à 500 € pour une automatisation sur mesure, 200 à 1000 € pour un chatbot IA, 300 à 1500 € pour un callbot vocal, 300 à 1500 € pour un site WordPress + SEO, 100 à 600 € pour une maquette UI/UX. Devis personnalisé gratuit sous 24h.
+
+### Quels délais de livraison pratiquez-vous ?
+- Maquettes UI/UX : 48 à 72h
+- Audit 15 € : 24 à 48h
+- Chatbots et automatisations standards : 5 à 7 jours ouvrés
+- Sites WordPress complets : 3 à 5 semaines
+- Callbots IA : 5 à 10 jours
+
+### Travaillez-vous avec des clients hors Bénin ?
+Oui, on travaille 100 % en remote avec des clients en Afrique de l'Ouest (Côte d'Ivoire, Sénégal, Togo, Burkina Faso), Europe francophone (France, Belgique, Suisse), Canada, Maroc et international anglophone. Visio Zoom/Google Meet, paiements EUR/XOF/USD acceptés.
+
+### Quels modèles d'IA utilisez-vous ?
+GPT-4 et GPT-4o (OpenAI) pour les chatbots conversationnels, Claude 3.5 Sonnet (Anthropic) pour le raisonnement complexe et les longs contextes, Gemini (Google) pour Google Workspace. Voix premium ElevenLabs Turbo v2.5 et OpenAI TTS Nova pour les callbots.
+
+### Êtes-vous conformes au RGPD ?
+Oui. Toutes les solutions sont conçues RGPD-compliant : minimisation des données, consentement explicite, droit à l'oubli, hébergement UE possible (Vercel EU, AWS Frankfurt, OVH, Hetzner Falkenstein), DPA signé sur demande. Pour n8n self-hosted, on peut héberger en France (OVH HDS pour la santé) ou Allemagne (Hetzner).
+
+### Je reste propriétaire de mes solutions ?
+100 % oui. Les scénarios Make/n8n/Zapier sont sur vos comptes, le code React/Next.js est sur votre GitHub, le fichier Figma est transféré sur votre compte, les bots IA tournent sur vos comptes Vapi/Botpress. Pas de lock-in, pas d'abonnement obligatoire chez nous.
+
+### Acceptez-vous les paiements en FCFA / Mobile Money ?
+Oui. Paiements en FCFA (XOF) via virement bancaire, Mobile Money (MTN, Moov, Wave, Orange Money), ou en euros via Stripe, PayPal, Wise pour les clients hors zone CFA.
+
+---
+
+## Contact
+
+- **Site web** : https://goscalestudio.com
+- **Email** : contact@goscalestudio.com
+- **WhatsApp / Téléphone** : +229 01 68 24 28 66
+- **Adresse** : Cotonou, Bénin (intervention 100 % remote)
+- **Réservation d'audit gratuit 30 min** : https://goscalestudio.com/#contact
+
+---
+
+## Liens
+
+- Page d'accueil : https://goscalestudio.com
+- Tarifs : https://goscalestudio.com/#pricing
+- Réalisations (65+ projets) : https://goscalestudio.com/#portfolio
+- À propos (Fidah IMOROU BOUKARI) : https://goscalestudio.com/#about
+- FAQ : https://goscalestudio.com/#faq
+- Contact : https://goscalestudio.com/#contact
+- Sitemap XML : https://goscalestudio.com/sitemap.xml
+- robots.txt : https://goscalestudio.com/robots.txt
+- llms.txt (résumé) : https://goscalestudio.com/llms.txt
+- Pirabel Labs (agence sœur) : https://pirabellabs.com
