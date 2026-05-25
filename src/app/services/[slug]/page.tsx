@@ -177,6 +177,7 @@ export default async function ServicePage({ params }: Props) {
       "@type": "Organization",
       "@id": `${SITE_URL}#organization`,
       name: "GoScaleStudio",
+      url: SITE_URL,
       logo: {
         "@type": "ImageObject",
         url: `${SITE_URL}/logo.jpg`,
@@ -266,13 +267,15 @@ export default async function ServicePage({ params }: Props) {
   const jsonLdBreadcrumb = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
+    "@id": `${SITE_URL}/services/${slug}#breadcrumb`,
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Accueil", item: SITE_URL },
       { "@type": "ListItem", position: 2, name: "Services", item: `${SITE_URL}/#services` },
       {
         "@type": "ListItem",
         position: 3,
-        name: service.hero.h1.fr,
+        // Breadcrumb name = label court (badge), pas le H1 complet
+        name: service.hero.badge.fr,
         item: `${SITE_URL}/services/${slug}`,
       },
     ],
