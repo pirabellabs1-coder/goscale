@@ -1,0 +1,27 @@
+{
+  "name": "GoScaleStudio — Agence Automatisation, IA & Web (Bénin)",
+  "short_name": "GoScaleStudio",
+  "description": "Agence digitale à Cotonou : automatisation no-code, chatbots IA, callbots vocaux, sites WordPress + SEO, maquettes UI/UX.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "orientation": "portrait-primary",
+  "lang": "fr-FR",
+  "categories": ["business", "productivity", "developer"],
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}

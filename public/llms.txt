@@ -166,3 +166,26 @@ Stripe (CB), Wise, PayPal, virement bancaire, Mobile Money APIs (MTN, Moov).
 - Contact: https://goscalestudio.com/#contact
 - Sitemap: https://goscalestudio.com/sitemap.xml
 - Pirabel Labs (agence sœur, web marketing): https://pirabellabs.com
+
+## Pages services dédiées (contenu détaillé ~2200 mots par page)
+
+### Pages pillar (5 services principaux)
+
+- Automatisation No-Code (Make / n8n / Zapier): https://goscalestudio.com/services/automatisation-no-code
+- ChatBot IA Sur Mesure (GPT-4 / Claude · multi-canal): https://goscalestudio.com/services/chatbot-ia
+- CallBot & Agent Vocal IA (Vapi / Twilio · voix premium): https://goscalestudio.com/services/callbot-ia-vocal
+- Site WordPress + SEO (Elementor / RankMath · page 1 Google): https://goscalestudio.com/services/site-wordpress-seo
+- Maquette UI/UX IA (Figma AI / v0.dev · livrée en 48-72h): https://goscalestudio.com/services/maquette-ui-ux
+
+### Pages long-tail (10 mots-clés SEO ciblés)
+
+- Automatisation Make (Integromat) — agence experte: https://goscalestudio.com/services/automatisation-make
+- Automatisation n8n self-hosted (RGPD, souveraineté): https://goscalestudio.com/services/automatisation-n8n
+- Automatisation Zapier — Zaps fiables 24-48h: https://goscalestudio.com/services/automatisation-zapier
+- Chatbot WhatsApp Business (GPT-4, déployé en 48h): https://goscalestudio.com/services/chatbot-whatsapp-business
+- Chatbot GPT pour site web (widget custom React): https://goscalestudio.com/services/chatbot-gpt-site-web
+- CallBot Vapi — voix ElevenLabs, latence < 800ms: https://goscalestudio.com/services/callbot-vapi
+- Agent Vocal IA 24/7 — 0 appel manqué: https://goscalestudio.com/services/agent-vocal-ia-24-7
+- SEO Google Page 1 — stratégie complète 3-6 mois: https://goscalestudio.com/services/seo-google-page-1
+- Maquette Figma en 48h chrono: https://goscalestudio.com/services/maquette-figma-48h
+- Prototype v0.dev pour startup (MVP React en 5 jours): https://goscalestudio.com/services/prototype-v0-startup

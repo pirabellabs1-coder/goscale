@@ -381,6 +381,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${jakarta.variable} ${sora.variable} scroll-smooth`}>
+      <head>
+        {/* Performance hints — preconnect aux origines tierces critiques */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+        <link rel="dns-prefetch" href="https://i.postimg.cc" />
+        {/* Manifest pour PWA / install prompt */}
+        <link rel="manifest" href="/manifest.json" />
+        {/* Couleur d'accent navigateur mobile */}
+        <meta name="theme-color" content="#0a0a0a" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="format-detection" content="telephone=no" />
+      </head>
       <body className="font-sans antialiased">
         <script
           type="application/ld+json"

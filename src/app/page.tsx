@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { useProjects } from "@/lib/ProjectContext";
 import { categoryColors } from "@/lib/data";
 import { useT, useLang, useSyncHtmlLang } from "@/lib/i18n";
@@ -20,42 +21,90 @@ import {
 /* ── Data ──────────────────────────────────────────── */
 
 const services = [
-  { icon: Zap, color: "emerald",
+  { slug: "automatisation-no-code", icon: Zap, color: "emerald",
     title: { fr: "Automatisation Métier", en: "Business Automation" },
     desc: { fr: "Workflows intelligents avec Make, n8n ou Zapier. On connecte vos outils, on supprime les tâches répétitives, on vous rend +10h/semaine.", en: "Smart workflows with Make, n8n or Zapier. We connect your tools, eliminate repetitive tasks, and give you back 10+ hours every week." } },
-  { icon: Phone, color: "blue",
+  { slug: "callbot-ia-vocal", icon: Phone, color: "blue",
     title: { fr: "CallBot & Assistant Vocal IA", en: "AI Voice Agent & Callbot" },
     desc: { fr: "Agents vocaux 24/7 via Vapi, Twilio ou Bland AI. Prise de RDV, qualification de leads, support client — sans intervention humaine.", en: "24/7 voice agents powered by Vapi, Twilio or Bland AI. Appointment booking, lead qualification, customer support — no human touch needed." } },
-  { icon: Bot, color: "brand",
+  { slug: "chatbot-ia", icon: Bot, color: "brand",
     title: { fr: "ChatBot IA sur Mesure", en: "Custom AI Chatbot" },
     desc: { fr: "Chatbots GPT-4 déployés sur WhatsApp, site web ou Messenger. Entraînés sur vos données, ils convertissent et assistent vos clients.", en: "GPT-4 chatbots deployed on WhatsApp, your website or Messenger. Trained on your data — they convert and assist your customers." } },
-  { icon: Globe, color: "purple",
+  { slug: "site-wordpress-seo", icon: Globe, color: "purple",
     title: { fr: "Site WordPress + SEO", en: "WordPress Site + SEO" },
     desc: { fr: "Sites vitrines rapides et SEO-ready avec WordPress + Elementor. Optimisation technique, contenu et netlinking pour atteindre la page 1.", en: "Fast, SEO-ready sites built with WordPress + Elementor. Technical optimization, content and link-building to reach page one." } },
-  { icon: Palette, color: "amber",
+  { slug: "maquette-ui-ux", icon: Palette, color: "amber",
     title: { fr: "Maquette UI/UX IA", en: "AI-Powered UI/UX Mockups" },
     desc: { fr: "Prototypes cliquables livrés en 48-72h avec Figma AI et v0.dev. Design moderne, mobile-first, prêt pour le développement.", en: "Clickable prototypes delivered in 48-72h with Figma AI and v0.dev. Modern, mobile-first design, ready for development." } },
 ];
 
 const processSteps = [
-  { num: "01", icon: Search,
+  {
+    num: "01", icon: Search,
     title: { fr: "Appel Découverte", en: "Discovery Call" },
-    desc: { fr: "On écoute votre business, vos blocages et vos objectifs en 30 min.", en: "We listen to your business, blockers and goals in 30 minutes." } },
-  { num: "02", icon: Eye,
+    desc: {
+      fr: "On décortique votre business, vos vrais points de blocage et ce qui vous fera changer d'échelle. Vous repartez avec une vision claire — même si on ne travaille pas ensemble.",
+      en: "We unpack your business, your real blockers and what will help you scale. You leave with a clear vision — even if we don't end up working together.",
+    },
+    duration: { fr: "30 min", en: "30 min" },
+    deliverable: { fr: "Diagnostic verbal + 3 quick wins", en: "Verbal diagnosis + 3 quick wins" },
+    tag: { fr: "100 % gratuit · Zéro engagement", en: "100% free · No commitment" },
+  },
+  {
+    num: "02", icon: Eye,
     title: { fr: "Audit & Diagnostic", en: "Audit & Diagnosis" },
-    desc: { fr: "Analyse de vos processus actuels et identification des opportunités.", en: "Analysis of your current processes and identification of opportunities." } },
-  { num: "03", icon: FileCheck,
+    desc: {
+      fr: "On scanne votre stack, vos workflows et vos points de friction. On chiffre concrètement le temps perdu, les leads qui passent à travers et l'argent laissé sur la table.",
+      en: "We scan your stack, workflows and friction points. We put a concrete number on the time you lose, the leads that slip through and the money left on the table.",
+    },
+    duration: { fr: "24 - 48h", en: "24 - 48h" },
+    deliverable: { fr: "Rapport personnalisé + roadmap priorisée", en: "Tailored report + prioritized roadmap" },
+    tag: { fr: "Insights chiffrés", en: "Numbers-backed insights" },
+  },
+  {
+    num: "03", icon: FileCheck,
     title: { fr: "Stratégie & Devis", en: "Strategy & Quote" },
-    desc: { fr: "Plan d'action clair, timeline et devis transparent sous 24h.", en: "Clear action plan, timeline and transparent quote within 24h." } },
-  { num: "04", icon: Settings,
+    desc: {
+      fr: "Un plan d'attaque sur mesure livré sous 24h. Pas de jargon, pas de surprises — juste le scope précis, les délais fermes et un prix sans extras cachés.",
+      en: "A tailored game plan delivered within 24h. No jargon, no surprises — just the exact scope, firm timeline and a price with no hidden extras.",
+    },
+    duration: { fr: "< 24h", en: "< 24h" },
+    deliverable: { fr: "Roadmap + devis ferme + planning", en: "Roadmap + firm quote + schedule" },
+    tag: { fr: "Prix transparent · Pas de surprises", en: "Transparent price · No surprises" },
+  },
+  {
+    num: "04", icon: Settings,
     title: { fr: "Développement", en: "Development" },
-    desc: { fr: "Exécution agile avec points réguliers et previews à chaque étape.", en: "Agile execution with regular check-ins and previews at every step." } },
-  { num: "05", icon: Rocket,
+    desc: {
+      fr: "On construit votre solution en sprints courts. Vous voyez des previews concrètes à chaque jalon, vous validez à votre rythme — et vous restez maître de la direction.",
+      en: "We build your solution in short sprints. You see real previews at every milestone, validate at your own pace — and stay in control of the direction.",
+    },
+    duration: { fr: "3 - 14 jours", en: "3 - 14 days" },
+    deliverable: { fr: "Previews live + accès Slack/WhatsApp", en: "Live previews + Slack/WhatsApp access" },
+    tag: { fr: "Vous gardez la main", en: "You stay in control" },
+  },
+  {
+    num: "05", icon: Rocket,
     title: { fr: "Tests & Livraison", en: "Testing & Delivery" },
-    desc: { fr: "Tests complets, ajustements et livraison du projet finalisé.", en: "Full testing, adjustments and delivery of the finalized project." } },
-  { num: "06", icon: Handshake,
+    desc: {
+      fr: "On stress-test l'ensemble, on peaufine les détails, on met en production. Si quelque chose cloche après le go-live, on reprend — sans facture additionnelle, sans débat.",
+      en: "We stress-test everything, polish the details, ship to production. If anything breaks after go-live, we fix it — at no extra cost, no debate.",
+    },
+    duration: { fr: "24 - 72h", en: "24 - 72h" },
+    deliverable: { fr: "Solution en production + documentation", en: "Live solution + documentation" },
+    tag: { fr: "Satisfait ou repris", en: "Satisfied or redone" },
+  },
+  {
+    num: "06", icon: Handshake,
     title: { fr: "Support & Scale", en: "Support & Scale" },
-    desc: { fr: "Formation, suivi 30 jours et accompagnement pour scaler.", en: "Training, 30-day follow-up and support to help you scale." } },
+    desc: {
+      fr: "Formation prise en main, 30 jours de support prioritaire offerts, et un partenaire long-terme pour faire grandir votre setup au rythme de votre croissance.",
+      en: "Onboarding training, 30 days of priority support included, and a long-term partner to grow your setup alongside your business.",
+    },
+    duration: { fr: "30 jours +", en: "30 days +" },
+    deliverable: { fr: "Formation 1:1 + support prioritaire", en: "1:1 training + priority support" },
+    tag: { fr: "Partenaire long-terme", en: "Long-term partner" },
+  },
 ];
 
 const stats = [
@@ -886,15 +935,16 @@ function HomePage() {
     <div className="bg-dark text-white min-h-screen overflow-x-hidden">
       {/* ── Navbar ── */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-dark/90 backdrop-blur-lg border-b border-border" : ""}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
-          <button onClick={() => scrollTo("hero")} className="flex items-center gap-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+          <button onClick={() => scrollTo("hero")} className="flex items-center gap-2 shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.jpg" alt={fullName} className="h-8 w-8 rounded-lg object-cover" />
-            <span className="font-display text-xl font-bold"><span className="gradient-text">{brandPrefix}</span>{brandSuffix}</span>
+            <span className="font-display text-base sm:text-xl font-bold"><span className="gradient-text">{brandPrefix}</span>{brandSuffix}</span>
           </button>
-          <div className="hidden md:flex items-center gap-6 lg:gap-8">
+          {/* Desktop nav (lg+ pour éviter le débordement à 6 liens + 2 controls) */}
+          <div className="hidden lg:flex items-center gap-5 xl:gap-7">
             {navLinks.map((l) => (
-              <button key={l.id} onClick={() => scrollTo(l.id)} className="text-sm text-white/60 hover:text-white transition-colors">
+              <button key={l.id} onClick={() => scrollTo(l.id)} className="text-sm text-white/60 hover:text-white transition-colors whitespace-nowrap">
                 {t(l.label)}
               </button>
             ))}
@@ -908,24 +958,34 @@ function HomePage() {
               <span className="text-white/20">/</span>
               <span className={lang === "en" ? "text-brand" : ""}>EN</span>
             </button>
-            <button onClick={() => scrollTo("contact")} className="btn-primary px-5 py-2 rounded-full text-sm">
+            <button onClick={() => scrollTo("contact")} className="btn-primary px-5 py-2 rounded-full text-sm whitespace-nowrap">
               {t({ fr: "Démarrer un projet", en: "Start a project" })}
             </button>
           </div>
-          <button className="md:hidden text-white" onClick={() => setMobileMenu(!mobileMenu)}>
-            {mobileMenu ? <X size={24} /> : <Menu size={24} />}
-          </button>
+
+          {/* CTA compact + burger (mobile + tablet) */}
+          <div className="flex items-center gap-2 lg:hidden">
+            <button
+              onClick={() => scrollTo("contact")}
+              className="hidden sm:flex btn-primary px-4 py-2 rounded-full text-xs items-center gap-1.5 whitespace-nowrap"
+            >
+              {t({ fr: "Démarrer", en: "Start" })}
+            </button>
+            <button className="text-white p-2" onClick={() => setMobileMenu(!mobileMenu)} aria-label="Menu">
+              {mobileMenu ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
         {mobileMenu && (
-          <div className="md:hidden bg-dark-2 border-t border-border px-6 py-6 flex flex-col gap-4">
+          <div className="lg:hidden bg-dark-2 border-t border-border px-6 py-6 flex flex-col gap-2 max-h-[calc(100vh-4rem)] overflow-y-auto">
             {navLinks.map((l) => (
-              <button key={l.id} onClick={() => scrollTo(l.id)} className="text-left text-white/70 hover:text-white">
+              <button key={l.id} onClick={() => scrollTo(l.id)} className="text-left text-white/70 hover:text-white py-3 px-2 hover:bg-white/5 rounded-lg transition-colors">
                 {t(l.label)}
               </button>
             ))}
             <button
               onClick={toggleLang}
-              className="text-left text-xs font-bold text-white/60 hover:text-brand transition-colors flex items-center gap-1.5"
+              className="text-left text-xs font-bold text-white/60 hover:text-brand transition-colors flex items-center gap-1.5 px-2 py-2 mt-2"
             >
               <Globe size={12} />
               <span className={lang === "fr" ? "text-brand" : ""}>FR</span>
@@ -991,14 +1051,30 @@ function HomePage() {
               {t({ fr: "Ces problèmes vous parlent ? Vous n'êtes pas seul. 90 % de nos clients vivaient la même chose avant de nous contacter.", en: "Sound familiar? You're not alone. 90% of our clients were going through the exact same thing before reaching out." })}
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+          {/* Liste éditoriale (manifesto) — pas de cards */}
+          <div className="max-w-3xl mx-auto flex flex-col">
             {painPoints.map((p, i) => (
-              <div key={i} className={`anim fade-up delay-${i + 1} glass rounded-2xl p-6 sm:p-8 hover:border-red-500/20 transition-all duration-300 group border-l-2 border-l-red-500/30`}>
-                <div className="w-11 h-11 rounded-xl bg-red-500/10 flex items-center justify-center mb-4 group-hover:bg-red-500/20 transition-colors">
-                  <p.icon size={20} className="text-red-400" />
+              <div
+                key={i}
+                className={`anim fade-up delay-${i + 1} group relative grid grid-cols-[auto_1fr] gap-5 sm:gap-8 py-6 sm:py-8 ${
+                  i < painPoints.length - 1 ? "border-b border-white/5" : ""
+                }`}
+              >
+                <div className="flex flex-col items-start gap-3">
+                  <span className="font-display text-3xl sm:text-5xl font-bold text-red-500/30 leading-none tabular-nums">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <p.icon size={18} className="text-red-400/70 group-hover:text-red-400 transition-colors" />
                 </div>
-                <h3 className="font-display text-base sm:text-lg font-bold mb-2">{t(p.title)}</h3>
-                <p className="text-white/50 text-xs sm:text-sm leading-relaxed">{t(p.desc)}</p>
+                <div className="pt-1">
+                  <h3 className="font-display text-base sm:text-xl font-bold mb-2 group-hover:text-red-300 transition-colors">
+                    {t(p.title)}
+                  </h3>
+                  <p className="text-white/50 text-sm sm:text-base leading-relaxed max-w-xl">
+                    {t(p.desc)}
+                  </p>
+                </div>
+                <div className="absolute left-0 top-6 sm:top-8 bottom-6 sm:bottom-8 w-px bg-gradient-to-b from-red-500/30 via-red-500/10 to-transparent" />
               </div>
             ))}
           </div>
@@ -1018,17 +1094,50 @@ function HomePage() {
               {t({ fr: "Pour chaque blocage, on a une solution concrète, déployée en moins de 14 jours.", en: "For every blocker, we have a concrete solution, deployed in less than 14 days." })}
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+          {/* Format "achievement strip" — chiffre géant + contenu en ligne, gradient au survol */}
+          <div className="max-w-5xl mx-auto flex flex-col">
             {solutions.map((s, i) => (
-              <div key={i} className={`anim fade-up delay-${i + 1} glass rounded-2xl p-6 sm:p-8 hover:border-brand/20 transition-all duration-300 group border-l-2 border-l-emerald/30`}>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-11 h-11 rounded-xl bg-emerald/10 flex items-center justify-center group-hover:bg-emerald/20 transition-colors">
-                    <s.icon size={20} className="text-emerald" />
+              <div
+                key={i}
+                className={`anim fade-up delay-${i + 1} group relative overflow-hidden ${
+                  i < solutions.length - 1 ? "border-b border-white/8" : ""
+                }`}
+              >
+                {/* Wash gradient qui apparaît au hover (de la gauche vers la droite) */}
+                <div className="absolute inset-0 bg-gradient-to-r from-emerald/[0.08] via-emerald/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+                <div className="relative grid grid-cols-[auto_1fr_auto] sm:grid-cols-[auto_1fr_auto] items-center gap-5 sm:gap-10 py-8 sm:py-10">
+                  {/* Index minuscule */}
+                  <div className="hidden sm:flex flex-col items-center w-12">
+                    <span className="font-display text-[11px] font-bold tracking-widest text-emerald/40 uppercase">
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <div className="w-px h-12 bg-gradient-to-b from-emerald/30 to-transparent mt-3" />
                   </div>
-                  <span className="text-xs font-bold text-emerald bg-emerald/10 px-3 py-1 rounded-full">{t(s.result)}</span>
+
+                  {/* Texte central */}
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-3 mb-2 sm:mb-3">
+                      <s.icon size={18} className="text-emerald flex-shrink-0" />
+                      <h3 className="font-display text-lg sm:text-2xl md:text-3xl font-bold leading-tight">
+                        {t(s.title)}
+                      </h3>
+                    </div>
+                    <p className="text-white/55 text-sm sm:text-base leading-relaxed sm:pl-7 max-w-2xl">
+                      {t(s.desc)}
+                    </p>
+                  </div>
+
+                  {/* Stat géante à droite */}
+                  <div className="text-right flex-shrink-0">
+                    <div className="font-display text-2xl sm:text-4xl md:text-5xl font-bold leading-none tabular-nums bg-gradient-to-br from-emerald to-emerald/40 bg-clip-text text-transparent transition-transform duration-300 group-hover:scale-105 origin-right">
+                      {t(s.result)}
+                    </div>
+                    <div className="text-[9px] sm:text-[10px] uppercase tracking-widest text-emerald/50 font-bold mt-1 sm:mt-2">
+                      {t({ fr: "Gain", en: "Gain" })}
+                    </div>
+                  </div>
                 </div>
-                <h3 className="font-display text-base sm:text-lg font-bold mb-2">{t(s.title)}</h3>
-                <p className="text-white/50 text-xs sm:text-sm leading-relaxed">{t(s.desc)}</p>
               </div>
             ))}
           </div>
@@ -1050,17 +1159,76 @@ function HomePage() {
               {t({ fr: "5 expertises complémentaires pour automatiser, convertir et dominer votre marché.", en: "5 complementary specialties to automate, convert and dominate your market." })}
             </p>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {/* Bento asymétrique — 1 hero + 4 tuiles variées, gradients francs */}
+          <div className="grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-12 gap-3 sm:gap-4 auto-rows-[minmax(180px,auto)]">
             {services.map((s, i) => {
-              const cls = colorMap[s.color] || colorMap.brand;
+              // Layout : 0 = hero large (lg:col-span-7, row-span-2), 1-4 = tuiles variées
+              const layouts = [
+                "sm:col-span-6 lg:col-span-7 lg:row-span-2 min-h-[280px] sm:min-h-[360px]",
+                "sm:col-span-3 lg:col-span-5 min-h-[180px]",
+                "sm:col-span-3 lg:col-span-5 min-h-[180px]",
+                "sm:col-span-3 lg:col-span-6 min-h-[180px]",
+                "sm:col-span-3 lg:col-span-6 min-h-[180px]",
+              ];
+              const palettes: Record<string, { from: string; to: string; ring: string; icon: string }> = {
+                emerald: { from: "from-emerald/20", to: "to-emerald/5", ring: "border-emerald/30", icon: "text-emerald" },
+                blue: { from: "from-blue/20", to: "to-blue/5", ring: "border-blue/30", icon: "text-blue" },
+                brand: { from: "from-brand/25", to: "to-accent/10", ring: "border-brand/40", icon: "text-brand" },
+                purple: { from: "from-purple/20", to: "to-purple/5", ring: "border-purple/30", icon: "text-purple" },
+                amber: { from: "from-amber/20", to: "to-amber/5", ring: "border-amber/30", icon: "text-amber" },
+              };
+              const p = palettes[s.color] || palettes.brand;
+              const isHero = i === 0;
+              const serviceHref = `/services/${s.slug}${lang === "en" ? "?lang=en" : ""}`;
               return (
-                <div key={i} className={`anim scale-in delay-${i + 1} glass rounded-2xl p-6 sm:p-8 hover:border-brand/20 transition-all duration-300 group hover:-translate-y-1`}>
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-5 border ${cls}`}>
-                    <s.icon size={22} />
+                <Link
+                  key={i}
+                  href={serviceHref}
+                  className={`anim scale-in delay-${i + 1} group relative ${layouts[i] || "sm:col-span-3 lg:col-span-4 min-h-[180px]"} rounded-3xl overflow-hidden border ${p.ring} bg-gradient-to-br ${p.from} ${p.to} hover:scale-[1.01] transition-transform duration-300 block`}
+                >
+                  {/* Motif décoratif */}
+                  <div className="absolute inset-0 opacity-30 pointer-events-none" style={{
+                    backgroundImage: "radial-gradient(circle at 80% 20%, rgba(255,255,255,0.08) 0%, transparent 50%), radial-gradient(circle at 20% 80%, rgba(255,255,255,0.05) 0%, transparent 50%)",
+                  }} />
+                  {/* Grosse icône en watermark sur la tuile hero */}
+                  {isHero && (
+                    <s.icon
+                      size={220}
+                      className={`absolute -right-12 -bottom-12 ${p.icon} opacity-[0.07] pointer-events-none`}
+                      strokeWidth={1.2}
+                    />
+                  )}
+
+                  <div className={`relative h-full flex flex-col ${isHero ? "p-8 sm:p-10" : "p-6"} justify-between`}>
+                    <div>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className={`w-11 h-11 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center ${p.icon}`}>
+                          <s.icon size={isHero ? 24 : 20} />
+                        </div>
+                        {isHero && (
+                          <span className="text-[10px] font-bold uppercase tracking-widest text-white/70 bg-white/10 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                            {t({ fr: "Service phare", en: "Flagship service" })}
+                          </span>
+                        )}
+                      </div>
+                      <h3 className={`font-display font-bold mb-2 leading-tight ${isHero ? "text-2xl sm:text-3xl" : "text-base sm:text-lg"}`}>
+                        {t(s.title)}
+                      </h3>
+                      <p className={`text-white/65 leading-relaxed ${isHero ? "text-sm sm:text-base max-w-md" : "text-xs sm:text-sm line-clamp-3"}`}>
+                        {t(s.desc)}
+                      </p>
+                    </div>
+                    {/* CTA "Découvrir" sur toutes les tuiles */}
+                    <div className={`flex items-center gap-2 ${isHero ? "mt-6 text-sm" : "mt-4 text-xs"} font-semibold text-white/80 group-hover:text-white transition-colors`}>
+                      <span>
+                        {isHero
+                          ? t({ fr: "Explorer ce service", en: "Explore this service" })
+                          : t({ fr: "Découvrir", en: "Learn more" })}
+                      </span>
+                      <ArrowRight size={isHero ? 16 : 13} className="group-hover:translate-x-1 transition-transform" />
+                    </div>
                   </div>
-                  <h3 className="font-display text-base sm:text-lg font-bold mb-3">{t(s.title)}</h3>
-                  <p className="text-white/50 text-xs sm:text-sm leading-relaxed">{t(s.desc)}</p>
-                </div>
+                </Link>
               );
             })}
           </div>
@@ -1161,25 +1329,181 @@ function HomePage() {
       {/* ── Process (6 etapes) ── */}
       <section id="process" className="py-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12 sm:mb-16">
-            <div className="anim fade-up section-badge mx-auto mb-4"><BarChart3 size={12} /> {t({ fr: "Notre Processus", en: "Our Process" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-              {t({ fr: "De l'idée au ", en: "From idea to " })}
-              <span className="gradient-text">{t({ fr: "résultat", en: "result" })}</span>
-              {t({ fr: " en 6 étapes", en: " in 6 steps" })}
+          <div className="text-center mb-14 sm:mb-20">
+            <div className="anim fade-up section-badge mx-auto mb-4"><BarChart3 size={12} /> {t({ fr: "Comment on bosse", en: "How we work" })}</div>
+            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-5xl font-bold mb-5 leading-tight">
+              {t({ fr: "De votre première idée à un système qui ", en: "From your first idea to a system that " })}
+              <span className="gradient-text">{t({ fr: "tourne tout seul", en: "runs itself" })}</span>
             </h2>
+            <p className="anim fade-up delay-2 text-white/55 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed">
+              {t({
+                fr: "Un process en 6 étapes rodé par 65+ projets — clair, rapide et sans mauvaise surprise. Vous savez exactement ce qui se passe, quand, et combien ça coûte.",
+                en: "A 6-step process battle-tested across 65+ projects — clear, fast and without nasty surprises. You always know what's happening, when, and how much it costs.",
+              })}
+            </p>
+
+            {/* Trust strip — chiffres clés du process */}
+            <div className="anim fade-up delay-3 mt-8 inline-flex flex-wrap items-center justify-center gap-x-6 gap-y-3 text-xs sm:text-sm">
+              <span className="flex items-center gap-2 text-white/60">
+                <CheckCircle size={14} className="text-emerald" />
+                <span><span className="font-bold text-white">48h</span> {t({ fr: "à 14 jours", en: "to 14 days" })}</span>
+              </span>
+              <span className="w-px h-4 bg-white/15" />
+              <span className="flex items-center gap-2 text-white/60">
+                <CheckCircle size={14} className="text-emerald" />
+                <span><span className="font-bold text-white">65+</span> {t({ fr: "projets livrés", en: "projects shipped" })}</span>
+              </span>
+              <span className="w-px h-4 bg-white/15" />
+              <span className="flex items-center gap-2 text-white/60">
+                <CheckCircle size={14} className="text-emerald" />
+                <span><span className="font-bold text-white">100 %</span> {t({ fr: "satisfaction", en: "satisfaction" })}</span>
+              </span>
+            </div>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
-            {processSteps.map((s, i) => (
-              <div key={i} className={`anim fade-up delay-${Math.min(i + 1, 6)} relative glass rounded-2xl p-4 sm:p-7 text-center group hover:-translate-y-1 transition-all duration-300`}>
-                <div className="text-xl sm:text-3xl font-display font-bold text-brand/20 mb-2 sm:mb-3">{s.num}</div>
-                <div className="w-11 h-11 sm:w-14 sm:h-14 rounded-2xl bg-brand/10 flex items-center justify-center mx-auto mb-3 sm:mb-4">
-                  <s.icon size={20} className="text-brand" />
-                </div>
-                <h3 className="font-display text-sm sm:text-lg font-bold mb-1 sm:mb-2">{t(s.title)}</h3>
-                <p className="text-white/50 text-xs sm:text-sm">{t(s.desc)}</p>
+
+          {/* Timeline verticale zigzag — ligne centrale, étapes alternées gauche/droite */}
+          <div className="relative max-w-5xl mx-auto">
+            {/* Ligne centrale pleine + gradient */}
+            <div className="absolute top-4 bottom-4 left-7 sm:left-1/2 sm:-translate-x-px w-px bg-gradient-to-b from-brand/60 via-brand/30 to-brand/5" />
+            {/* Point de départ */}
+            <div className="hidden sm:flex absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 rounded-full bg-brand items-center justify-center shadow-lg shadow-brand/40">
+              <div className="w-1.5 h-1.5 rounded-full bg-white" />
+            </div>
+
+            <ol className="flex flex-col gap-12 sm:gap-16 pt-6">
+              {processSteps.map((s, i) => {
+                const isRight = i % 2 === 0;
+                const StepContent = (
+                  <div className={`max-w-md ${isRight ? "sm:ml-auto sm:text-left" : "sm:mr-auto sm:text-right"}`}>
+                    {/* Header — numéro + durée */}
+                    <div className={`flex items-center gap-2 mb-3 ${isRight ? "" : "sm:justify-end"}`}>
+                      <span className="font-display text-xs font-bold uppercase tracking-widest text-brand">
+                        {s.num} · {t({ fr: "Étape", en: "Step" })}
+                      </span>
+                      <span className="w-1 h-1 rounded-full bg-white/30" />
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-amber bg-amber/10 border border-amber/20 px-2 py-0.5 rounded-full">
+                        <Clock size={10} /> {t(s.duration)}
+                      </span>
+                    </div>
+
+                    {/* Titre + desc */}
+                    <h3 className="font-display text-xl sm:text-2xl font-bold mb-3 leading-tight group-hover:text-brand transition-colors">
+                      {t(s.title)}
+                    </h3>
+                    <p className="text-white/55 text-sm sm:text-[15px] leading-relaxed mb-5">
+                      {t(s.desc)}
+                    </p>
+
+                    {/* Livrable — bloc deliverable */}
+                    <div className={`flex items-start gap-2.5 mb-4 ${isRight ? "" : "sm:justify-end sm:text-right"}`}>
+                      <FileCheck size={15} className={`text-emerald flex-shrink-0 mt-0.5 ${isRight ? "" : "sm:order-2"}`} />
+                      <div className={isRight ? "" : "sm:order-1"}>
+                        <div className="text-[10px] font-bold uppercase tracking-widest text-white/40 mb-0.5">
+                          {t({ fr: "Vous repartez avec", en: "You walk away with" })}
+                        </div>
+                        <div className="text-sm font-semibold text-white/85">{t(s.deliverable)}</div>
+                      </div>
+                    </div>
+
+                    {/* Objection killer — chip mise en avant */}
+                    <div className={`flex ${isRight ? "" : "sm:justify-end"}`}>
+                      <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-emerald bg-emerald/10 border border-emerald/20 px-2.5 py-1 rounded-md">
+                        <Sparkles size={11} /> {t(s.tag)}
+                      </span>
+                    </div>
+                  </div>
+                );
+
+                return (
+                  <li
+                    key={i}
+                    className={`anim ${isRight ? "fade-left" : "fade-right"} delay-${Math.min(i + 1, 6)} group relative grid grid-cols-[auto_1fr] sm:grid-cols-2 sm:gap-0 items-start`}
+                  >
+                    {/* Desktop : contenu à gauche pour étapes paires */}
+                    {!isRight && (
+                      <div className="hidden sm:block sm:col-start-1 pr-16">
+                        {StepContent}
+                      </div>
+                    )}
+
+                    {/* Nœud central */}
+                    <div className="relative flex-shrink-0 sm:absolute sm:left-1/2 sm:-translate-x-1/2 sm:top-0 z-10">
+                      <div className="absolute inset-0 bg-brand/40 rounded-full blur-xl group-hover:bg-brand/60 transition-colors" />
+                      <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-dark border-2 border-brand/70 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <s.icon size={22} className="text-brand" />
+                      </div>
+                      <span className="absolute -top-1 -right-1 text-[10px] font-display font-bold bg-brand text-white w-6 h-6 rounded-full flex items-center justify-center tabular-nums shadow-lg shadow-brand/40 ring-2 ring-dark">
+                        {i + 1}
+                      </span>
+                    </div>
+
+                    {/* Mobile : contenu toujours à droite du nœud */}
+                    <div className="sm:hidden pt-1 pl-3">
+                      <div className={`max-w-md text-left`}>
+                        <div className="flex items-center gap-2 mb-3 flex-wrap">
+                          <span className="font-display text-xs font-bold uppercase tracking-widest text-brand">
+                            {s.num} · {t({ fr: "Étape", en: "Step" })}
+                          </span>
+                          <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-amber bg-amber/10 border border-amber/20 px-2 py-0.5 rounded-full">
+                            <Clock size={10} /> {t(s.duration)}
+                          </span>
+                        </div>
+                        <h3 className="font-display text-base font-bold mb-2 leading-tight">{t(s.title)}</h3>
+                        <p className="text-white/55 text-sm leading-relaxed mb-4">{t(s.desc)}</p>
+                        <div className="flex items-start gap-2 mb-3">
+                          <FileCheck size={14} className="text-emerald flex-shrink-0 mt-0.5" />
+                          <div>
+                            <div className="text-[9px] font-bold uppercase tracking-widest text-white/40">
+                              {t({ fr: "Vous repartez avec", en: "You walk away with" })}
+                            </div>
+                            <div className="text-xs font-semibold text-white/85">{t(s.deliverable)}</div>
+                          </div>
+                        </div>
+                        <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald bg-emerald/10 border border-emerald/20 px-2 py-0.5 rounded-md">
+                          <Sparkles size={10} /> {t(s.tag)}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Desktop : contenu à droite pour étapes impaires */}
+                    {isRight && (
+                      <div className="hidden sm:block sm:col-start-2 pl-16">
+                        {StepContent}
+                      </div>
+                    )}
+                  </li>
+                );
+              })}
+            </ol>
+
+            {/* Point d'arrivée + mini-CTA */}
+            <div className="relative mt-12 sm:mt-16">
+              <div className="hidden sm:flex absolute -top-8 left-1/2 -translate-x-1/2 w-5 h-5 rounded-full bg-gradient-to-br from-emerald to-emerald/60 items-center justify-center shadow-lg shadow-emerald/40">
+                <CheckCircle size={12} className="text-white" />
               </div>
-            ))}
+              <div className="anim fade-up text-center max-w-2xl mx-auto pt-6 sm:pt-10">
+                <p className="text-white/60 text-sm sm:text-base mb-5 leading-relaxed">
+                  {t({
+                    fr: "L'étape 1 est ",
+                    en: "Step 1 is ",
+                  })}
+                  <span className="text-white font-bold">{t({ fr: "100 % gratuite", en: "100% free" })}</span>
+                  {t({
+                    fr: " et vous repartez avec des recommandations actionnables — même si vous décidez de ne pas continuer.",
+                    en: " and you walk away with actionable recommendations — even if you decide not to continue.",
+                  })}
+                </p>
+                <button
+                  onClick={() => scrollTo("contact")}
+                  className="btn-primary px-8 py-3.5 rounded-full text-sm font-bold inline-flex items-center gap-2"
+                >
+                  {t({ fr: "Démarrer par l'étape 01", en: "Start with step 01" })} <ArrowRight size={16} />
+                </button>
+                <p className="text-[11px] text-white/35 mt-3">
+                  {t({ fr: "Aucune carte requise · Réponse sous 24h · Zéro engagement", en: "No card required · Reply within 24h · No commitment" })}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1206,15 +1530,29 @@ function HomePage() {
               {t({ fr: " concrets", en: "" })}
             </h2>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
-            {stats.map((s, i) => (
-              <div key={i} className={`anim scale-in delay-${i + 1} glass rounded-2xl p-4 sm:p-8 text-center`}>
-                <div className="text-xl sm:text-3xl md:text-4xl font-display font-bold gradient-text mb-1 sm:mb-2">
-                  {counters[i]}{s.suffix}
+          {/* Bandeau de chiffres — dividers verticaux, pas de cards */}
+          <div className="anim scale-in relative">
+            {/* Halo gradient subtil */}
+            <div className="absolute inset-0 -inset-x-6 bg-gradient-to-r from-transparent via-brand/[0.04] to-transparent rounded-3xl" />
+            <div className="relative grid grid-cols-2 md:grid-cols-4 py-8 sm:py-12">
+              {stats.map((s, i) => (
+                <div
+                  key={i}
+                  className={`px-4 sm:px-6 text-center ${
+                    i > 0 ? "md:border-l border-white/10" : ""
+                  } ${i === 2 ? "border-l md:border-l border-white/10" : ""} ${
+                    i >= 2 ? "mt-8 md:mt-0 pt-8 md:pt-0 border-t md:border-t-0 border-white/10" : ""
+                  }`}
+                >
+                  <div className="text-3xl sm:text-4xl md:text-5xl font-display font-bold gradient-text mb-2 sm:mb-3 tabular-nums leading-none">
+                    {counters[i]}{s.suffix}
+                  </div>
+                  <p className="text-white/50 text-xs sm:text-sm uppercase tracking-wider font-medium">
+                    {t(s.label)}
+                  </p>
                 </div>
-                <p className="text-white/50 text-xs sm:text-sm">{t(s.label)}</p>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -1553,14 +1891,23 @@ function HomePage() {
               <span className="gradient-text">{t({ fr: "différence", en: "difference" })}</span>
             </h2>
           </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+          {/* Big numbers + texte aligné, pas de cards */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-10 sm:gap-y-12">
             {whyUs.map((w, i) => (
-              <div key={i} className={`anim scale-in delay-${i + 1} glass rounded-2xl p-6 sm:p-8 text-center hover:border-brand/20 transition-all duration-300 hover:-translate-y-1`}>
-                <div className="w-14 h-14 rounded-2xl bg-brand/10 flex items-center justify-center mx-auto mb-4">
-                  <w.icon size={24} className="text-brand" />
+              <div
+                key={i}
+                className={`anim scale-in delay-${i + 1} group relative`}
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <w.icon size={20} className="text-brand" />
+                  <div className="flex-1 h-px bg-gradient-to-r from-brand/40 to-transparent" />
                 </div>
-                <div className="text-lg sm:text-xl md:text-2xl font-display font-bold gradient-text mb-1 break-words">{w.value}</div>
-                <h3 className="font-display text-sm sm:text-base font-bold mb-2">{t(w.title)}</h3>
+                <div className="font-display text-3xl sm:text-4xl font-bold gradient-text mb-3 leading-none tabular-nums break-words">
+                  {w.value}
+                </div>
+                <h3 className="font-display text-sm sm:text-base font-bold mb-2 uppercase tracking-wide">
+                  {t(w.title)}
+                </h3>
                 <p className="text-white/50 text-xs sm:text-sm leading-relaxed">{t(w.desc)}</p>
               </div>
             ))}
@@ -1578,14 +1925,30 @@ function HomePage() {
               <span className="gradient-text">{t({ fr: "100 % confiance", en: "100% trust" })}</span>
             </h2>
           </div>
-          <div className="grid sm:grid-cols-3 gap-4 sm:gap-6">
+          {/* Feature strip — lignes horizontales, pas de cards */}
+          <div className="max-w-3xl mx-auto flex flex-col">
             {guarantees.map((g, i) => (
-              <div key={i} className={`anim fade-up delay-${i + 1} glass rounded-2xl p-6 sm:p-8 text-center hover:border-brand/20 transition-all duration-300`}>
-                <div className="w-14 h-14 rounded-2xl bg-brand/10 flex items-center justify-center mx-auto mb-5">
-                  <g.icon size={24} className="text-brand" />
+              <div
+                key={i}
+                className={`anim fade-up delay-${i + 1} group flex items-start gap-5 sm:gap-7 py-6 sm:py-8 ${
+                  i < guarantees.length - 1 ? "border-b border-white/5" : ""
+                }`}
+              >
+                <div className="relative flex-shrink-0">
+                  <div className="absolute inset-0 bg-brand/20 rounded-2xl blur-md opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-gradient-to-br from-brand/15 to-brand/5 border border-brand/20 flex items-center justify-center">
+                    <g.icon size={26} className="text-brand" />
+                  </div>
                 </div>
-                <h3 className="font-display text-base sm:text-lg font-bold mb-2">{t(g.title)}</h3>
-                <p className="text-white/50 text-xs sm:text-sm leading-relaxed">{t(g.desc)}</p>
+                <div className="flex-1 pt-1">
+                  <div className="flex items-baseline gap-3 mb-2 flex-wrap">
+                    <h3 className="font-display text-lg sm:text-xl font-bold">{t(g.title)}</h3>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-brand/70 bg-brand/10 px-2 py-0.5 rounded">
+                      {String(i + 1).padStart(2, "0")} / {String(guarantees.length).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <p className="text-white/55 text-sm sm:text-base leading-relaxed">{t(g.desc)}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -1930,43 +2293,109 @@ function HomePage() {
                 const email = settings?.contact_email || "contact@goscalestudio.com";
                 const addr = settings?.contact_address || "Cotonou, Bénin · Afrique & International";
                 const waHref = `https://wa.me/${wa.replace(/[^0-9]/g, "")}`;
-                return [
+                const items = [
                 { icon: MessageSquare, label: { fr: "WhatsApp", en: "WhatsApp" }, value: { fr: wa, en: wa }, href: waHref },
                 { icon: Mail, label: { fr: "Email", en: "Email" }, value: { fr: email, en: email }, href: `mailto:${email}` },
                 { icon: MapPin, label: { fr: "Localisation", en: "Location" }, value: { fr: addr, en: addr }, href: undefined },
                 { icon: Clock, label: { fr: "R\u00e9ponse", en: "Response" }, value: { fr: "Sous 24h garantie", en: "Within 24h guaranteed" }, href: undefined },
               ];
-              })().map((c, i) => (
-                <a key={i} href={c.href || undefined} target={c.href?.startsWith("http") ? "_blank" : undefined} rel={c.href?.startsWith("http") ? "noopener noreferrer" : undefined} className="glass rounded-xl p-4 sm:p-5 flex items-center gap-4 hover:border-brand/20 transition-all">
-                  <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-brand/10 flex items-center justify-center flex-shrink-0">
-                    <c.icon size={18} className="text-brand" />
+              return items.map((c, i) => {
+                const inner = (
+                  <div className={`group flex items-center gap-5 py-5 ${i < items.length - 1 ? "border-b border-white/5" : ""}`}>
+                    <c.icon size={20} className="text-brand flex-shrink-0 group-hover:scale-110 transition-transform" />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[10px] uppercase tracking-widest text-white/35 font-bold mb-1">
+                        {t(c.label)}
+                      </div>
+                      <div className="font-display text-base sm:text-lg font-bold truncate group-hover:text-brand transition-colors">
+                        {t(c.value)}
+                      </div>
+                    </div>
+                    {c.href && (
+                      <ArrowUpRight size={16} className="text-white/30 group-hover:text-brand group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all flex-shrink-0" />
+                    )}
                   </div>
-                  <div>
-                    <p className="text-white/40 text-xs">{t(c.label)}</p>
-                    <p className="font-semibold text-xs sm:text-sm">{t(c.value)}</p>
-                  </div>
-                </a>
-              ))}
+                );
+                return c.href ? (
+                  <a
+                    key={i}
+                    href={c.href}
+                    target={c.href.startsWith("http") ? "_blank" : undefined}
+                    rel={c.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                  >
+                    {inner}
+                  </a>
+                ) : (
+                  <div key={i}>{inner}</div>
+                );
+              });
+              })()}
             </div>
           </div>
         </div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-border py-10 sm:py-12 px-4 sm:px-6">
+      <footer className="border-t border-border py-10 sm:py-14 px-4 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-6">
-            <div className="font-display text-lg font-bold">
-              <span className="gradient-text">GoScale</span>Studio
+          {/* Sections de liens (Brand + Nav + Services) — identique aux pages services */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1.2fr] gap-8 sm:gap-10 lg:gap-12 mb-8 sm:mb-10">
+            {/* Brand + tagline (full width sur sm pour respirer) */}
+            <div className="sm:col-span-2 lg:col-span-1">
+              <div className="font-display text-lg font-bold mb-3">
+                <span className="gradient-text">GoScale</span>Studio
+              </div>
+              <p className="text-white/40 text-sm leading-relaxed max-w-sm">
+                {t({
+                  fr: "Agence digitale à Cotonou — Automatisation, IA, sites web & maquettes. 65+ projets livrés à travers l'Afrique, la francophonie et l'international.",
+                  en: "Digital agency in Cotonou — Automation, AI, websites & mockups. 65+ projects delivered across Africa, the francophone world and internationally.",
+                })}
+              </p>
             </div>
-            <div className="flex flex-wrap justify-center gap-4 sm:gap-8 text-sm text-white/40">
-              {navLinks.map((l) => (
-                <button key={l.id} onClick={() => scrollTo(l.id)} className="hover:text-white transition-colors">
-                  {t(l.label)}
-                </button>
-              ))}
+
+            {/* Navigation */}
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-3">
+                {t({ fr: "Navigation", en: "Navigation" })}
+              </div>
+              <div className="flex flex-col gap-2 text-sm text-white/60">
+                {navLinks.map((l) => (
+                  <button
+                    key={l.id}
+                    onClick={() => scrollTo(l.id)}
+                    className="text-left hover:text-brand transition-colors"
+                  >
+                    {t(l.label)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Services (lien vers les 5 pillar pages) */}
+            <div>
+              <div className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-3">
+                {t({ fr: "Nos services", en: "Our services" })}
+              </div>
+              <div className="flex flex-col gap-2 text-sm text-white/60">
+                {[
+                  { slug: "automatisation-no-code", label: { fr: "Automatisation No-Code", en: "No-Code Automation" } },
+                  { slug: "chatbot-ia", label: { fr: "ChatBot IA", en: "AI ChatBot" } },
+                  { slug: "callbot-ia-vocal", label: { fr: "CallBot & Agent Vocal IA", en: "AI CallBot & Voice Agent" } },
+                  { slug: "site-wordpress-seo", label: { fr: "Site WordPress + SEO", en: "WordPress Site + SEO" } },
+                  { slug: "maquette-ui-ux", label: { fr: "Maquette UI/UX", en: "UI/UX Mockup" } },
+                ].map((s) => (
+                  <Link
+                    key={s.slug}
+                    href={`/services/${s.slug}${lang === "en" ? "?lang=en" : ""}`}
+                    className="hover:text-brand transition-colors"
+                  >
+                    {t(s.label)}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
+
           <div className="divider mb-6" />
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/30">
             <p>&copy; {new Date().getFullYear()} GoScaleStudio. {t({ fr: "Tous droits réservés.", en: "All rights reserved." })}</p>
