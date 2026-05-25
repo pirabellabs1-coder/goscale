@@ -196,19 +196,31 @@ const jsonLdLocalBusiness = {
   name: "GoScaleStudio",
   alternateName: ["GoScale Studio", "GoScale"],
   url: SITE_URL,
-  logo: `${SITE_URL}/logo.jpg`,
-  image: `${SITE_URL}/logo.jpg`,
+  logo: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/logo.jpg`,
+    width: 512,
+    height: 512,
+  },
+  image: {
+    "@type": "ImageObject",
+    url: `${SITE_URL}/logo.jpg`,
+    width: 512,
+    height: 512,
+  },
   description:
     "Studio digital basé à Cotonou (Bénin) spécialisé en automatisation, intelligence artificielle (chatbots, callbots vocaux), sites WordPress optimisés SEO et maquettes UI/UX. Au service des entreprises africaines, francophones et internationales.",
   email: "contact@goscalestudio.com",
   telephone: "+229 01 68 24 28 66",
-  priceRange: "15 € – 500 €",
+  priceRange: "€€",
   currenciesAccepted: "EUR, XOF, USD",
-  paymentAccepted: ["Stripe", "Virement bancaire", "PayPal", "Wise"],
+  paymentAccepted: ["Stripe", "Virement bancaire", "PayPal", "Wise", "Mobile Money"],
   address: {
     "@type": "PostalAddress",
+    streetAddress: "Cotonou — intervention 100 % remote",
     addressLocality: "Cotonou",
     addressRegion: "Littoral",
+    postalCode: "01 BP",
     addressCountry: "BJ",
   },
   geo: {
@@ -216,6 +228,7 @@ const jsonLdLocalBusiness = {
     latitude: 6.3703,
     longitude: 2.3912,
   },
+  hasMap: "https://maps.google.com/?q=Cotonou,Benin",
   openingHoursSpecification: [
     {
       "@type": "OpeningHoursSpecification",
@@ -236,8 +249,12 @@ const jsonLdLocalBusiness = {
     name: "Fidah IMOROU BOUKARI",
     jobTitle: "CEO & Fondateur",
     worksFor: { "@id": `${SITE_URL}#organization` },
-    image: "https://i.postimg.cc/tR89Dwj9/Whats-App-Image-2026-05-10-at-01-30-44.jpg",
-    nationality: "Benin",
+    image: {
+      "@type": "ImageObject",
+      url: "https://i.postimg.cc/tR89Dwj9/Whats-App-Image-2026-05-10-at-01-30-44.jpg",
+      width: 800,
+      height: 1000,
+    },
     affiliation: {
       "@type": "Organization",
       name: "Pirabel Labs",
