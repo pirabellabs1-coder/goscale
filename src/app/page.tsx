@@ -1557,8 +1557,8 @@ function HomePage() {
             </h2>
           </div>
           {/* Bandeau de chiffres — dividers verticaux, pas de cards */}
-          <div className="anim scale-in relative">
-            {/* Halo gradient subtil */}
+          <div className="anim scale-in relative overflow-hidden rounded-3xl">
+            {/* Halo gradient subtil (clipped par overflow-hidden du parent) */}
             <div className="absolute inset-0 -inset-x-6 bg-gradient-to-r from-transparent via-brand/[0.04] to-transparent rounded-3xl" />
             <div className="relative grid grid-cols-2 md:grid-cols-4 py-8 sm:py-12">
               {stats.map((s, i) => (
@@ -2327,18 +2327,18 @@ function HomePage() {
               ];
               return items.map((c, i) => {
                 const inner = (
-                  <div className={`group flex items-center gap-5 py-5 ${i < items.length - 1 ? "border-b border-white/5" : ""}`}>
+                  <div className={`group flex items-center gap-3 sm:gap-5 py-4 sm:py-5 ${i < items.length - 1 ? "border-b border-white/5" : ""}`}>
                     <c.icon size={20} className="text-brand flex-shrink-0 group-hover:scale-110 transition-transform" />
                     <div className="flex-1 min-w-0">
                       <div className="text-[10px] uppercase tracking-widest text-white/35 font-bold mb-1">
                         {t(c.label)}
                       </div>
-                      <div className="font-display text-base sm:text-lg font-bold truncate group-hover:text-brand transition-colors">
+                      <div className="font-display text-sm sm:text-base lg:text-lg font-bold truncate group-hover:text-brand transition-colors">
                         {t(c.value)}
                       </div>
                     </div>
                     {c.href && (
-                      <ArrowUpRight size={16} className="text-white/30 group-hover:text-brand group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all flex-shrink-0" />
+                      <ArrowUpRight size={14} className="text-white/30 group-hover:text-brand group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all flex-shrink-0" />
                     )}
                   </div>
                 );
