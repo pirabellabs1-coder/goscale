@@ -493,11 +493,22 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "FAQPage",
-              mainEntity: faqItems.map((f) => ({
+              "@id": `${SITE_URL}#faq`,
+              name: "FAQ GoScaleStudio — Tarifs, délais, services, sécurité",
+              description: "Questions fréquentes sur les services GoScaleStudio : automatisation, chatbots IA, callbots vocaux, sites WordPress, maquettes UI/UX. Tarifs, délais, méthodologie, sécurité RGPD.",
+              inLanguage: "fr",
+              isPartOf: { "@id": `${SITE_URL}#website` },
+              mainEntity: faqItems.map((f, i) => ({
                 "@type": "Question",
+                "@id": `${SITE_URL}#faq-${i + 1}`,
                 name: f.q.fr,
                 inLanguage: "fr",
-                acceptedAnswer: { "@type": "Answer", text: f.a.fr, inLanguage: "fr" },
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: f.a.fr,
+                  inLanguage: "fr",
+                  author: { "@id": `${SITE_URL}#organization` },
+                },
               })),
             }),
           }}

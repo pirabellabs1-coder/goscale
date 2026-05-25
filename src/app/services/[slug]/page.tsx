@@ -217,16 +217,26 @@ export default async function ServicePage({ params }: Props) {
     })),
   };
 
-  /** FAQ FR — Google indexe la langue principale */
+  /** FAQ FR — Google indexe la langue principale. Toutes les Questions nommées + answers avec author. */
   const jsonLdFaq = service.faq.length > 0 && {
     "@context": "https://schema.org",
     "@type": "FAQPage",
+    "@id": `${SITE_URL}/services/${slug}#faq`,
+    name: `FAQ — ${service.metaTitle.fr}`,
+    description: `Questions fréquentes sur ${service.metaTitle.fr}`,
     inLanguage: "fr",
-    mainEntity: service.faq.map((f) => ({
+    isPartOf: { "@id": `${SITE_URL}/services/${slug}#webpage` },
+    mainEntity: service.faq.map((f, i) => ({
       "@type": "Question",
+      "@id": `${SITE_URL}/services/${slug}#faq-${i + 1}`,
       name: f.q.fr,
       inLanguage: "fr",
-      acceptedAnswer: { "@type": "Answer", text: f.a.fr, inLanguage: "fr" },
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: f.a.fr,
+        inLanguage: "fr",
+        author: { "@id": `${SITE_URL}#organization` },
+      },
     })),
   };
 
@@ -234,13 +244,22 @@ export default async function ServicePage({ params }: Props) {
   const jsonLdFaqEn = service.faq.length > 0 && {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    inLanguage: "en",
     "@id": `${SITE_URL}/services/${slug}?lang=en#faq`,
-    mainEntity: service.faq.map((f) => ({
+    name: `FAQ — ${service.metaTitle.en}`,
+    description: `Frequently asked questions about ${service.metaTitle.en}`,
+    inLanguage: "en",
+    isPartOf: { "@id": `${SITE_URL}/services/${slug}#webpage` },
+    mainEntity: service.faq.map((f, i) => ({
       "@type": "Question",
+      "@id": `${SITE_URL}/services/${slug}?lang=en#faq-${i + 1}`,
       name: f.q.en,
       inLanguage: "en",
-      acceptedAnswer: { "@type": "Answer", text: f.a.en, inLanguage: "en" },
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: f.a.en,
+        inLanguage: "en",
+        author: { "@id": `${SITE_URL}#organization` },
+      },
     })),
   };
 
