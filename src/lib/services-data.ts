@@ -1016,7 +1016,7 @@ const automatisationNoCode: ServicePage = {
     tiers: [
       {
         name: { fr: "Starter", en: "Starter" },
-        price: "50 €",
+        price: "300 €",
         priceNote: { fr: "1 à 2 workflows simples", en: "1 to 2 simple workflows" },
         features: [
           { fr: "Audit éclair 60 min de votre stack", en: "60-min express audit of your stack" },
@@ -1028,7 +1028,7 @@ const automatisationNoCode: ServicePage = {
       },
       {
         name: { fr: "Pro (recommandé)", en: "Pro (recommended)" },
-        price: "150 €",
+        price: "700 €",
         priceNote: { fr: "Pack automatisation business", en: "Business automation pack" },
         features: [
           { fr: "Tout du plan Starter", en: "Everything in Starter" },
@@ -1042,7 +1042,7 @@ const automatisationNoCode: ServicePage = {
       },
       {
         name: { fr: "Enterprise", en: "Enterprise" },
-        price: "à partir de 500 €",
+        price: "à partir de 1 800 €",
         priceNote: { fr: "Architecture sur mesure", en: "Custom architecture" },
         features: [
           { fr: "Tout du plan Pro", en: "Everything in Pro" },
@@ -2202,15 +2202,15 @@ const automatisationMake: ServicePage = {
       en: "Three tiers based on the number and complexity of scenarios. Pricing in EUR (also accepted in XOF and USD, Mobile Money OK). You own your Make workspace — we charge zero commission on your operations.",
     },
     tiers: [
-      { name: { fr: "Starter", en: "Starter" }, price: "40 €", priceNote: { fr: "1 scénario simple", en: "1 simple scenario" },
+      { name: { fr: "Starter", en: "Starter" }, price: "250 €", priceNote: { fr: "1 scénario Make solide", en: "1 solid Make scenario" },
         features: [
           { fr: "1 scénario Make jusqu'à 5 modules", en: "1 Make scenario up to 5 modules" },
           { fr: "Connexion à 2 outils (CRM, email, etc.)", en: "Connection to 2 tools (CRM, email, etc.)" },
-          { fr: "Filtres et formatage des données", en: "Data filters and formatting" },
+          { fr: "Filtres, formatage et error handler", en: "Filters, formatting and error handler" },
           { fr: "Documentation Notion fournie", en: "Notion documentation provided" },
           { fr: "Livraison en 48-72h · Support 14 jours", en: "Delivered in 48-72h · 14-day support" },
         ] },
-      { name: { fr: "Pro (recommandé)", en: "Pro (recommended)" }, price: "120 €", priceNote: { fr: "Stack Make complète", en: "Full Make stack" }, highlight: true,
+      { name: { fr: "Pro (recommandé)", en: "Pro (recommended)" }, price: "600 €", priceNote: { fr: "Stack Make complète", en: "Full Make stack" }, highlight: true,
         features: [
           { fr: "3 à 5 scénarios avancés avec routeurs et itérateurs", en: "3 to 5 advanced scenarios with routers and iterators" },
           { fr: "Error handlers + notifications Slack/email", en: "Error handlers + Slack/email notifications" },
@@ -2219,7 +2219,7 @@ const automatisationMake: ServicePage = {
           { fr: "Formation équipe (2h visio) + documentation complète", en: "Team training (2h video) + full documentation" },
           { fr: "Livraison en 5-10 jours · Support 30 jours", en: "Delivered in 5-10 days · 30-day support" },
         ] },
-      { name: { fr: "Enterprise", en: "Enterprise" }, price: "à partir de 400 €", priceNote: { fr: "Migration & architectures complexes", en: "Migration & complex architectures" },
+      { name: { fr: "Enterprise", en: "Enterprise" }, price: "à partir de 1 500 €", priceNote: { fr: "Migration & architectures complexes", en: "Migration & complex architectures" },
         features: [
           { fr: "Audit complet d'un workspace Make existant", en: "Full audit of an existing Make workspace" },
           { fr: "10+ scénarios interconnectés avec data stores", en: "10+ interconnected scenarios with data stores" },
@@ -2415,7 +2415,7 @@ const automatisationN8n: ServicePage = {
       en: "Three tiers depending on your criticality level. Server cost (€6 to €40/mo at Hetzner or OVH) is extra and paid directly by you to the host. Pay in EUR, XOF or USD, upfront or 50/50.",
     },
     tiers: [
-      { name: { fr: "Starter", en: "Starter" }, price: "80 €", priceNote: { fr: "Installation & setup", en: "Install & setup" },
+      { name: { fr: "Starter", en: "Starter" }, price: "350 €", priceNote: { fr: "Installation & setup", en: "Install & setup" },
         features: [
           { fr: "Provisioning serveur Hetzner CX22 (6 €/mois)", en: "Hetzner CX22 server provisioning (€6/mo)" },
           { fr: "Installation n8n + PostgreSQL en Docker Compose", en: "n8n + PostgreSQL Docker Compose install" },
@@ -2424,7 +2424,7 @@ const automatisationN8n: ServicePage = {
           { fr: "Documentation runbook + accès admin", en: "Runbook documentation + admin access" },
           { fr: "Livraison en 3 jours · Support 14 jours", en: "Delivered in 3 days · 14-day support" },
         ] },
-      { name: { fr: "Pro (recommandé)", en: "Pro (recommended)" }, price: "250 €", priceNote: { fr: "Setup + 5 workflows complets", en: "Setup + 5 full workflows" }, highlight: true,
+      { name: { fr: "Pro (recommandé)", en: "Pro (recommended)" }, price: "850 €", priceNote: { fr: "Setup + 5 workflows complets", en: "Setup + 5 full workflows" }, highlight: true,
         features: [
           { fr: "Tout du plan Starter", en: "Everything in Starter" },
           { fr: "Mode queue (Redis) pour exécutions parallèles", en: "Queue mode (Redis) for parallel executions" },
@@ -2434,7 +2434,7 @@ const automatisationN8n: ServicePage = {
           { fr: "Formation équipe (2 demi-journées)", en: "Team training (2 half-days)" },
           { fr: "Livraison en 7-10 jours · Support 30 jours", en: "Delivered in 7-10 days · 30-day support" },
         ] },
-      { name: { fr: "Enterprise", en: "Enterprise" }, price: "dès 600 €", priceNote: { fr: "Architecture haute dispo & custom", en: "HA architecture & custom" },
+      { name: { fr: "Enterprise", en: "Enterprise" }, price: "dès 2 000 €", priceNote: { fr: "Architecture haute dispo & custom", en: "HA architecture & custom" },
         features: [
           { fr: "Tout du plan Pro", en: "Everything in Pro" },
           { fr: "Architecture haute disponibilité (multi-worker, failover)", en: "High-availability architecture (multi-worker, failover)" },
@@ -2632,7 +2632,7 @@ const automatisationZapier: ServicePage = {
       en: "Three tiers based on the depth of your needs. You stay the owner of the Zapier account and every delivered Zap. The Zapier subscription (Starter, Pro, Team) is paid by you directly, separately — we advise the right plan from the audit.",
     },
     tiers: [
-      { name: { fr: "Starter", en: "Starter" }, price: "30 €", priceNote: { fr: "Premier Zap en 24h", en: "First Zap in 24h" },
+      { name: { fr: "Starter", en: "Starter" }, price: "200 €", priceNote: { fr: "Premier Zap en 24h", en: "First Zap in 24h" },
         features: [
           { fr: "1 Zap multi-step (jusqu'à 5 étapes)", en: "1 multi-step Zap (up to 5 steps)" },
           { fr: "Filtres, formatter et alertes basiques", en: "Filters, formatter and basic alerts" },
@@ -2640,7 +2640,7 @@ const automatisationZapier: ServicePage = {
           { fr: "Documentation Notion + vidéo Loom de passation", en: "Notion docs + Loom handover video" },
           { fr: "Livraison en 24h · Support 15 jours", en: "Delivered in 24h · 15-day support" },
         ] },
-      { name: { fr: "Pro (recommandé)", en: "Pro (recommended)" }, price: "100 €", priceNote: { fr: "Pack 3 Zaps connectés", en: "Pack of 3 connected Zaps" }, highlight: true,
+      { name: { fr: "Pro (recommandé)", en: "Pro (recommended)" }, price: "450 €", priceNote: { fr: "Pack 3 Zaps connectés", en: "Pack of 3 connected Zaps" }, highlight: true,
         features: [
           { fr: "3 Zaps multi-step avec paths conditionnels", en: "3 multi-step Zaps with conditional paths" },
           { fr: "Formatter, Code by Zapier, AI by Zapier", en: "Formatter, Code by Zapier, AI by Zapier" },
@@ -2649,7 +2649,7 @@ const automatisationZapier: ServicePage = {
           { fr: "Dashboard de monitoring tasks & runs", en: "Tasks & runs monitoring dashboard" },
           { fr: "Livraison en 48h · Support 30 jours", en: "Delivered in 48h · 30-day support" },
         ] },
-      { name: { fr: "Enterprise", en: "Enterprise" }, price: "à partir de 300 €", priceNote: { fr: "Refonte complète de compte Zapier", en: "Full Zapier account overhaul" },
+      { name: { fr: "Enterprise", en: "Enterprise" }, price: "à partir de 1 100 €", priceNote: { fr: "Refonte complète de compte Zapier", en: "Full Zapier account overhaul" },
         features: [
           { fr: "Audit complet du compte Zapier existant", en: "Full audit of your existing Zapier account" },
           { fr: "Refactor des Zaps redondants ou cassés", en: "Refactor of redundant or broken Zaps" },

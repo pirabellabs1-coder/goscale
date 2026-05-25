@@ -935,7 +935,7 @@ function HomePage() {
     <div className="bg-dark text-white min-h-screen overflow-x-hidden">
       {/* ── Navbar ── */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? "bg-dark/90 backdrop-blur-lg border-b border-border" : ""}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3">
+        <div className="max-w-7xl mx-auto px-5 sm:px-6 py-4 flex items-center justify-between gap-3">
           <button onClick={() => scrollTo("hero")} className="flex items-center gap-2 shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.jpg" alt={fullName} className="h-8 w-8 rounded-lg object-cover" />
@@ -1002,11 +1002,11 @@ function HomePage() {
       {/* ── Hero ── */}
       <section id="hero" className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(232,92,26,0.08)_0%,transparent_60%)]" />
-        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 text-center">
+        <div className="relative max-w-5xl mx-auto px-5 sm:px-6 text-center">
           <div className="anim fade-up section-badge mx-auto mb-8">
             <Sparkles size={12} /> {t({ fr: "Studio IA & Automatisation", en: "AI & Automation Studio" })}
           </div>
-          <h1 className="anim fade-up delay-1 font-display text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-6">
+          <h1 className="anim fade-up delay-1 font-display text-[1.875rem] sm:text-4xl md:text-5xl font-bold leading-[1.15] mb-5 sm:mb-6">
             {t({ fr: "Automatisez. Déployez. ", en: "Automate. Deploy. " })}
             <span className="gradient-text">{t({ fr: "Scalez.", en: "Scale." })}</span>
           </h1>
@@ -1039,11 +1039,11 @@ function HomePage() {
       </section>
 
       {/* ── Pain Points (Problemes du prospect) ── */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6">
+      <section className="py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><XCircle size={12} /> {t({ fr: "Le Problème", en: "The Problem" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Vous perdez du temps, de l'argent et des clients ", en: "You lose time, money and customers " })}
               <span className="gradient-text">{t({ fr: "chaque jour", en: "every single day" })}</span>
             </h2>
@@ -1082,11 +1082,11 @@ function HomePage() {
       </section>
 
       {/* ── NEW: La Solution ── */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-dark-2">
+      <section className="py-16 sm:py-24 px-5 sm:px-6 bg-dark-2">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><Lightbulb size={12} /> {t({ fr: "La Solution", en: "The Solution" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "On transforme vos problèmes en ", en: "We turn your problems into " })}
               <span className="gradient-text">{t({ fr: "avantages compétitifs", en: "competitive advantages" })}</span>
             </h2>
@@ -1147,28 +1147,28 @@ function HomePage() {
       <div className="divider max-w-4xl mx-auto" />
 
       {/* ── Services ── */}
-      <section id="services" className="py-16 sm:py-24 px-4 sm:px-6">
+      <section id="services" className="py-12 sm:py-20 lg:py-24 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12 sm:mb-16">
-            <div className="anim fade-up section-badge mx-auto mb-4"><Zap size={12} /> {t({ fr: "Nos Services", en: "Our Services" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+          <div className="text-center mb-8 sm:mb-12 lg:mb-16">
+            <div className="anim fade-up section-badge mx-auto mb-3 sm:mb-4"><Zap size={12} /> {t({ fr: "Nos Services", en: "Our Services" })}</div>
+            <h2 className="anim fade-up delay-1 font-display text-lg sm:text-2xl md:text-4xl font-bold mb-3 sm:mb-4 leading-tight">
               {t({ fr: "Tout ce qu'il faut pour ", en: "Everything you need to " })}
               <span className="gradient-text">{t({ fr: "scaler", en: "scale" })}</span>
             </h2>
-            <p className="anim fade-up delay-2 text-white/50 max-w-xl mx-auto text-sm sm:text-base">
+            <p className="anim fade-up delay-2 text-white/50 max-w-xl mx-auto text-xs sm:text-sm lg:text-base px-2">
               {t({ fr: "5 expertises complémentaires pour automatiser, convertir et dominer votre marché.", en: "5 complementary specialties to automate, convert and dominate your market." })}
             </p>
           </div>
           {/* Bento asymétrique — 1 hero + 4 tuiles variées, gradients francs */}
-          <div className="grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-12 gap-3 sm:gap-4 auto-rows-[minmax(180px,auto)]">
+          <div className="grid grid-cols-1 sm:grid-cols-6 lg:grid-cols-12 gap-3 sm:gap-4 auto-rows-[minmax(150px,auto)] sm:auto-rows-[minmax(180px,auto)]">
             {services.map((s, i) => {
               // Layout : 0 = hero large (lg:col-span-7, row-span-2), 1-4 = tuiles variées
               const layouts = [
-                "sm:col-span-6 lg:col-span-7 lg:row-span-2 min-h-[280px] sm:min-h-[360px]",
-                "sm:col-span-3 lg:col-span-5 min-h-[180px]",
-                "sm:col-span-3 lg:col-span-5 min-h-[180px]",
-                "sm:col-span-3 lg:col-span-6 min-h-[180px]",
-                "sm:col-span-3 lg:col-span-6 min-h-[180px]",
+                "sm:col-span-6 lg:col-span-7 lg:row-span-2 min-h-[220px] sm:min-h-[360px]",
+                "sm:col-span-3 lg:col-span-5 min-h-[150px] sm:min-h-[180px]",
+                "sm:col-span-3 lg:col-span-5 min-h-[150px] sm:min-h-[180px]",
+                "sm:col-span-3 lg:col-span-6 min-h-[150px] sm:min-h-[180px]",
+                "sm:col-span-3 lg:col-span-6 min-h-[150px] sm:min-h-[180px]",
               ];
               const palettes: Record<string, { from: string; to: string; ring: string; icon: string }> = {
                 emerald: { from: "from-emerald/20", to: "to-emerald/5", ring: "border-emerald/30", icon: "text-emerald" },
@@ -1199,33 +1199,33 @@ function HomePage() {
                     />
                   )}
 
-                  <div className={`relative h-full flex flex-col ${isHero ? "p-8 sm:p-10" : "p-6"} justify-between`}>
+                  <div className={`relative h-full flex flex-col ${isHero ? "p-5 sm:p-8 lg:p-10" : "p-4 sm:p-6"} justify-between`}>
                     <div>
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className={`w-11 h-11 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center ${p.icon}`}>
-                          <s.icon size={isHero ? 24 : 20} />
+                      <div className="flex items-center gap-2 sm:gap-3 mb-3 sm:mb-4 flex-wrap">
+                        <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white/10 backdrop-blur-sm flex items-center justify-center ${p.icon}`}>
+                          <s.icon size={isHero ? 20 : 18} />
                         </div>
                         {isHero && (
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-white/70 bg-white/10 px-2.5 py-1 rounded-full backdrop-blur-sm">
+                          <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-white/70 bg-white/10 px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full backdrop-blur-sm">
                             {t({ fr: "Service phare", en: "Flagship service" })}
                           </span>
                         )}
                       </div>
-                      <h3 className={`font-display font-bold mb-2 leading-tight ${isHero ? "text-2xl sm:text-3xl" : "text-base sm:text-lg"}`}>
+                      <h3 className={`font-display font-bold mb-2 leading-tight ${isHero ? "text-lg sm:text-2xl lg:text-3xl" : "text-sm sm:text-base lg:text-lg"}`}>
                         {t(s.title)}
                       </h3>
-                      <p className={`text-white/65 leading-relaxed ${isHero ? "text-sm sm:text-base max-w-md" : "text-xs sm:text-sm line-clamp-3"}`}>
+                      <p className={`text-white/65 leading-relaxed ${isHero ? "text-xs sm:text-sm lg:text-base max-w-md" : "text-[11px] sm:text-xs lg:text-sm line-clamp-3"}`}>
                         {t(s.desc)}
                       </p>
                     </div>
                     {/* CTA "Découvrir" sur toutes les tuiles */}
-                    <div className={`flex items-center gap-2 ${isHero ? "mt-6 text-sm" : "mt-4 text-xs"} font-semibold text-white/80 group-hover:text-white transition-colors`}>
+                    <div className={`flex items-center gap-2 ${isHero ? "mt-4 sm:mt-6 text-xs sm:text-sm" : "mt-3 sm:mt-4 text-[11px] sm:text-xs"} font-semibold text-white/80 group-hover:text-white transition-colors`}>
                       <span>
                         {isHero
                           ? t({ fr: "Explorer ce service", en: "Explore this service" })
                           : t({ fr: "Découvrir", en: "Learn more" })}
                       </span>
-                      <ArrowRight size={isHero ? 16 : 13} className="group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight size={isHero ? 14 : 12} className="group-hover:translate-x-1 transition-transform" />
                     </div>
                   </div>
                 </Link>
@@ -1236,11 +1236,11 @@ function HomePage() {
       </section>
 
       {/* ── Stack & Outils maîtrisés ── */}
-      <section id="stack" className="py-16 sm:py-24 px-4 sm:px-6 bg-dark-2">
+      <section id="stack" className="py-16 sm:py-24 px-5 sm:px-6 bg-dark-2">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><Cpu size={12} /> {t({ fr: "Stack Technique", en: "Tech Stack" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Les ", en: "The " })}
               <span className="gradient-text">{t({ fr: "outils", en: "tools" })}</span>
               {t({ fr: " qu'on maîtrise pour vous", en: " we've mastered for you" })}
@@ -1303,11 +1303,11 @@ function HomePage() {
       </section>
 
       {/* ── NEW: Pour Qui ── */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-dark-2">
+      <section className="py-16 sm:py-24 px-5 sm:px-6 bg-dark-2">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><Users size={12} /> {t({ fr: "Pour Qui ?", en: "For Who?" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "On accompagne ceux qui veulent ", en: "We work with people who want to " })}
               <span className="gradient-text">{t({ fr: "aller plus vite", en: "move faster" })}</span>
             </h2>
@@ -1327,11 +1327,11 @@ function HomePage() {
       </section>
 
       {/* ── Process (6 etapes) ── */}
-      <section id="process" className="py-16 sm:py-24 px-4 sm:px-6">
+      <section id="process" className="py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-14 sm:mb-20">
             <div className="anim fade-up section-badge mx-auto mb-4"><BarChart3 size={12} /> {t({ fr: "Comment on bosse", en: "How we work" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-5xl font-bold mb-5 leading-tight">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-5xl font-bold mb-5 leading-tight">
               {t({ fr: "De votre première idée à un système qui ", en: "From your first idea to a system that " })}
               <span className="gradient-text">{t({ fr: "tourne tout seul", en: "runs itself" })}</span>
             </h2>
@@ -1509,7 +1509,7 @@ function HomePage() {
       </section>
 
       {/* ── CTA intermediaire ── */}
-      <section className="py-14 sm:py-20 px-4 sm:px-6 bg-dark-2">
+      <section className="py-14 sm:py-20 px-5 sm:px-6 bg-dark-2">
         <div className="anim scale-in max-w-3xl mx-auto text-center glass rounded-3xl p-8 sm:p-12 border-brand/10">
           <h3 className="font-display text-xl sm:text-2xl font-bold mb-3">{t({ fr: "Vous avez un projet en tête ?", en: "Got a project in mind?" })}</h3>
           <p className="text-white/50 text-sm mb-6">{t({ fr: "Discutons-en gratuitement. Réponse garantie sous 24h.", en: "Let's talk — free of charge. Response guaranteed within 24h." })}</p>
@@ -1520,11 +1520,11 @@ function HomePage() {
       </section>
 
       {/* ── Stats ── */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6" ref={statsRef}>
+      <section className="py-16 sm:py-24 px-5 sm:px-6" ref={statsRef}>
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><TrendingUp size={12} /> {t({ fr: "Chiffres Clés", en: "Key Numbers" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold">
               {t({ fr: "Des ", en: "Real " })}
               <span className="gradient-text">{t({ fr: "résultats", en: "results" })}</span>
               {t({ fr: " concrets", en: "" })}
@@ -1538,7 +1538,7 @@ function HomePage() {
               {stats.map((s, i) => (
                 <div
                   key={i}
-                  className={`px-4 sm:px-6 text-center ${
+                  className={`px-5 sm:px-6 text-center ${
                     i > 0 ? "md:border-l border-white/10" : ""
                   } ${i === 2 ? "border-l md:border-l border-white/10" : ""} ${
                     i >= 2 ? "mt-8 md:mt-0 pt-8 md:pt-0 border-t md:border-t-0 border-white/10" : ""
@@ -1558,11 +1558,11 @@ function HomePage() {
       </section>
 
       {/* ── NEW: Avant / Apres ── */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-dark-2">
+      <section className="py-16 sm:py-24 px-5 sm:px-6 bg-dark-2">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><ArrowUpRight size={12} /> {t({ fr: "Transformation", en: "Transformation" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Avant ", en: "Before " })}
               <span className="text-white/30">vs</span>{" "}
               <span className="gradient-text">{t({ fr: "Après", en: "After" })}</span>
@@ -1592,11 +1592,11 @@ function HomePage() {
       <div className="divider max-w-4xl mx-auto" />
 
       {/* ── Portfolio (onglets par categorie) ── */}
-      <section id="portfolio" className="py-16 sm:py-24 px-4 sm:px-6">
+      <section id="portfolio" className="py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><Sparkles size={12} /> {t({ fr: "Réalisations", en: "Work" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Nos derniers ", en: "Our latest " })}
               <span className="gradient-text">{t({ fr: "projets", en: "projects" })}</span>
             </h2>
@@ -1716,11 +1716,11 @@ function HomePage() {
       </section>
 
       {/* ── About ── */}
-      <section id="about" className="py-16 sm:py-24 px-4 sm:px-6">
+      <section id="about" className="py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><User size={12} /> {t({ fr: "À propos", en: "About" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Qui suis-", en: "Who am " })}
               <span className="gradient-text">{t({ fr: "je", en: "I" })}</span>
               {t({ fr: " ?", en: "?" })}
@@ -1833,9 +1833,9 @@ function HomePage() {
 
       {/* ── Testimonials ── */}
       <section className="py-16 sm:py-24 bg-dark-2 overflow-hidden">
-        <div className="text-center mb-12 sm:mb-16 px-4 sm:px-6">
+        <div className="text-center mb-12 sm:mb-16 px-5 sm:px-6">
           <div className="anim fade-up section-badge mx-auto mb-4"><Star size={12} /> {t({ fr: "Avis Clients", en: "Client Reviews" })}</div>
-          <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+          <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
             {t({ fr: "Ce que disent nos ", en: "What our " })}
             <span className="gradient-text">{t({ fr: "clients", en: "clients say" })}</span>
           </h2>
@@ -1882,11 +1882,11 @@ function HomePage() {
       </section>
 
       {/* ── NEW: Pourquoi Nous ── */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6">
+      <section className="py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><Award size={12} /> {t({ fr: "Pourquoi Nous", en: "Why Us" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Ce qui fait la ", en: "What makes the " })}
               <span className="gradient-text">{t({ fr: "différence", en: "difference" })}</span>
             </h2>
@@ -1916,11 +1916,11 @@ function HomePage() {
       </section>
 
       {/* ── Guarantees ── */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-dark-2">
+      <section className="py-16 sm:py-24 px-5 sm:px-6 bg-dark-2">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><Shield size={12} /> {t({ fr: "Nos Garanties", en: "Our Guarantees" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold">
               {t({ fr: "Zéro risque, ", en: "Zero risk, " })}
               <span className="gradient-text">{t({ fr: "100 % confiance", en: "100% trust" })}</span>
             </h2>
@@ -1956,11 +1956,11 @@ function HomePage() {
       </section>
 
       {/* ── NEW: Resultats Concrets (barres) ── */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6">
+      <section className="py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><BarChart3 size={12} /> {t({ fr: "Impact Réel", en: "Real Impact" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Les ", en: "The average " })}
               <span className="gradient-text">{t({ fr: "résultats", en: "results" })}</span>
               {t({ fr: " moyens de nos clients", en: " from our clients" })}
@@ -1993,11 +1993,11 @@ function HomePage() {
       <div className="divider max-w-4xl mx-auto" />
 
       {/* ── Pricing ── */}
-      <section id="pricing" className="py-16 sm:py-24 px-4 sm:px-6">
+      <section id="pricing" className="py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><Tag size={12} /> {t({ fr: "Tarifs", en: "Pricing" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Des prix ", en: "Prices that are " })}
               <span className="gradient-text">{t({ fr: "transparents", en: "transparent" })}</span>
               {t({ fr: ", sans surprise", en: ", with no surprises" })}
@@ -2108,7 +2108,7 @@ function HomePage() {
       <div className="divider max-w-4xl mx-auto" />
 
       {/* ── FAQ ── */}
-      <section id="faq" className="py-16 sm:py-24 px-4 sm:px-6">
+      <section id="faq" className="py-16 sm:py-24 px-5 sm:px-6">
         {/* FAQPage structured data for Google rich snippets and AI assistants — emits both languages */}
         <script
           type="application/ld+json"
@@ -2127,7 +2127,7 @@ function HomePage() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10 sm:mb-12">
             <div className="anim fade-up section-badge mx-auto mb-4"><MessageSquare size={12} /> FAQ</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Questions ", en: "Frequently asked " })}
               <span className="gradient-text">{t({ fr: "fréquentes", en: "questions" })}</span>
             </h2>
@@ -2191,9 +2191,9 @@ function HomePage() {
       </section>
 
       {/* ── CTA Final ── */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-dark-2">
+      <section className="py-16 sm:py-24 px-5 sm:px-6 bg-dark-2">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="anim fade-up font-display text-2xl sm:text-3xl md:text-5xl font-bold mb-6">
+          <h2 className="anim fade-up font-display text-xl sm:text-2xl md:text-5xl font-bold mb-6">
             {t({ fr: "Prêt à ", en: "Ready to " })}
             <span className="gradient-text">{t({ fr: "scaler", en: "scale" })}</span>
             {t({ fr: " votre business ?", en: " your business?" })}
@@ -2213,11 +2213,11 @@ function HomePage() {
       </section>
 
       {/* ── Contact ── */}
-      <section id="contact" className="py-16 sm:py-24 px-4 sm:px-6">
+      <section id="contact" className="py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12 sm:mb-16">
             <div className="anim fade-up section-badge mx-auto mb-4"><Mail size={12} /> Contact</div>
-            <h2 className="anim fade-up delay-1 font-display text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
+            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl md:text-4xl font-bold mb-4">
               {t({ fr: "Lancez votre ", en: "Launch your " })}
               <span className="gradient-text">{t({ fr: "projet", en: "project" })}</span>
             </h2>
@@ -2336,7 +2336,7 @@ function HomePage() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-border py-10 sm:py-14 px-4 sm:px-6">
+      <footer className="border-t border-border py-10 sm:py-14 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           {/* Sections de liens (Brand + Nav + Services) — identique aux pages services */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1.2fr] gap-8 sm:gap-10 lg:gap-12 mb-8 sm:mb-10">

@@ -142,9 +142,13 @@ function ServiceInner({ slug }: { slug: string }) {
           scrolled ? "bg-dark/90 backdrop-blur-xl border-b border-white/5" : "bg-transparent"
         }`}
       >
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-3">
-          <Link href={`/?lang=${lang}`} className="font-display text-base sm:text-lg font-bold flex items-center gap-2 shrink-0">
-            <span className="gradient-text">GoScale</span>Studio
+        <div className="max-w-6xl mx-auto px-5 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-3">
+          <Link href={`/?lang=${lang}`} className="flex items-center gap-2 shrink-0" aria-label="GoScaleStudio — Accueil">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.jpg" alt="GoScaleStudio" className="h-8 w-8 rounded-lg object-cover" />
+            <span className="font-display text-base sm:text-xl font-bold">
+              <span className="gradient-text">GoScale</span>Studio
+            </span>
           </Link>
           {/* Desktop nav (lg+ pour éviter le débordement à 6 liens) */}
           <div className="hidden lg:flex items-center gap-5 xl:gap-7 text-sm">
@@ -222,7 +226,7 @@ function ServiceInner({ slug }: { slug: string }) {
       </nav>
 
       {/* ── Breadcrumb ── */}
-      <div className="pt-24 sm:pt-28 px-4 sm:px-6">
+      <div className="pt-24 sm:pt-28 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto flex items-center gap-2 text-xs text-white/40 flex-wrap">
           <Link href={`/?lang=${lang}`} className="hover:text-brand transition-colors flex items-center gap-1">
             <Home size={11} /> {t({ fr: "Accueil", en: "Home" })}
@@ -237,7 +241,7 @@ function ServiceInner({ slug }: { slug: string }) {
       </div>
 
       {/* ══════ HERO — 2 colonnes texte + illustration ══════ */}
-      <section className="relative pt-8 sm:pt-12 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden">
+      <section className="relative pt-8 sm:pt-12 pb-16 sm:pb-24 px-5 sm:px-6 overflow-hidden">
         {/* Halos décoratifs très diffus */}
         <div className={`absolute top-10 -right-32 w-96 h-96 ${palette.bg} rounded-full blur-3xl opacity-40 pointer-events-none`} />
         <div className={`absolute -bottom-20 -left-40 w-80 h-80 ${palette.bg} rounded-full blur-3xl opacity-20 pointer-events-none`} />
@@ -254,8 +258,8 @@ function ServiceInner({ slug }: { slug: string }) {
               <span className="text-xs text-white/40">{service.category}</span>
             </div>
 
-            {/* H1 — taille réduite */}
-            <h1 className="anim fade-up delay-1 font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-[1.15] mb-5">
+            {/* H1 — taille réduite mobile */}
+            <h1 className="anim fade-up delay-1 font-display text-[1.75rem] leading-[1.2] sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-5">
               {t(service.hero.h1)}{" "}
               {service.hero.h1Highlight.fr && (
                 <span className="gradient-text">{t(service.hero.h1Highlight)}</span>
@@ -263,7 +267,7 @@ function ServiceInner({ slug }: { slug: string }) {
             </h1>
 
             {/* Subtitle */}
-            <p className="anim fade-up delay-2 text-base sm:text-lg text-white/60 leading-relaxed mb-8 max-w-xl">
+            <p className="anim fade-up delay-2 text-sm sm:text-base lg:text-lg text-white/60 leading-relaxed mb-6 sm:mb-8 max-w-xl">
               {t(service.hero.subtitle)}
             </p>
 
@@ -298,8 +302,8 @@ function ServiceInner({ slug }: { slug: string }) {
             </div>
           </div>
 
-          {/* Colonne illustration */}
-          <div className="anim fade-left delay-2 order-first lg:order-last">
+          {/* Colonne illustration — texte d'abord sur mobile/tablet, illustration ensuite */}
+          <div className="anim fade-left delay-2 mt-4 lg:mt-0">
             <HeroIllustration
               variant={service.heroIllustration || "icon-halo"}
               color={service.color}
@@ -310,10 +314,10 @@ function ServiceInner({ slug }: { slug: string }) {
 
       {/* ══════ PAIN POINTS ══════ */}
       {service.painPoints.items.length > 0 && (
-        <section className="py-14 sm:py-20 px-4 sm:px-6 bg-dark-2">
+        <section className="py-14 sm:py-20 px-5 sm:px-6 bg-dark-2">
           <div className="max-w-4xl mx-auto">
             <div className="anim fade-up section-badge mb-5"><span>×</span> {t({ fr: "Le problème", en: "The problem" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl lg:text-3xl font-bold mb-5 leading-tight">
+            <h2 className="anim fade-up delay-1 font-display text-lg sm:text-xl lg:text-3xl font-bold mb-5 leading-tight">
               {t({ fr: "Ce qui vous coûte du temps et de l'argent", en: "What's costing you time and money" })}
             </h2>
             <p className="anim fade-up delay-2 text-white/55 text-sm sm:text-base leading-relaxed mb-10 max-w-3xl">
@@ -352,10 +356,10 @@ function ServiceInner({ slug }: { slug: string }) {
 
       {/* ══════ SOLUTION ══════ */}
       {service.solution.features.length > 0 && (
-        <section className="py-14 sm:py-20 px-4 sm:px-6">
+        <section className="py-14 sm:py-20 px-5 sm:px-6">
           <div className="max-w-5xl mx-auto">
             <div className="anim fade-up section-badge mb-5"><CheckCircle size={12} /> {t({ fr: "La solution", en: "The solution" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl lg:text-3xl font-bold mb-5 leading-tight">
+            <h2 className="anim fade-up delay-1 font-display text-lg sm:text-xl lg:text-3xl font-bold mb-5 leading-tight">
               {t(service.solution.headline)}
             </h2>
             <p className="anim fade-up delay-2 text-white/55 text-sm sm:text-base leading-relaxed mb-12 max-w-3xl">
@@ -384,11 +388,11 @@ function ServiceInner({ slug }: { slug: string }) {
 
       {/* ══════ HOW IT WORKS — Timeline zigzag ══════ */}
       {service.howItWorks.steps.length > 0 && (
-        <section className="py-14 sm:py-20 px-4 sm:px-6 bg-dark-2">
+        <section className="py-14 sm:py-20 px-5 sm:px-6 bg-dark-2">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12 sm:mb-16">
               <div className="anim fade-up section-badge mx-auto mb-5"><Clock size={12} /> {t({ fr: "Comment ça marche", en: "How it works" })}</div>
-              <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
+              <h2 className="anim fade-up delay-1 font-display text-lg sm:text-xl lg:text-3xl font-bold leading-tight">
                 {t(service.howItWorks.headline)}
               </h2>
             </div>
@@ -440,7 +444,7 @@ function ServiceInner({ slug }: { slug: string }) {
 
       {/* ══════ STATS — Bandeau ══════ */}
       {service.stats.length > 0 && (
-        <section className="py-10 sm:py-14 px-4 sm:px-6">
+        <section className="py-10 sm:py-14 px-5 sm:px-6">
           <div className="max-w-5xl mx-auto">
             <div className="anim scale-in relative">
               <div className={`absolute inset-0 -inset-x-6 bg-gradient-to-r from-transparent via-white/[0.03] to-transparent rounded-3xl`} />
@@ -448,7 +452,7 @@ function ServiceInner({ slug }: { slug: string }) {
                 {service.stats.map((s, i) => (
                   <div
                     key={i}
-                    className={`px-4 sm:px-6 text-center ${
+                    className={`px-5 sm:px-6 text-center ${
                       i > 0 ? "md:border-l border-white/10" : ""
                     } ${i === 2 ? "border-l md:border-l border-white/10" : ""} ${
                       i >= 2 ? "mt-8 md:mt-0 pt-8 md:pt-0 border-t md:border-t-0 border-white/10" : ""
@@ -470,10 +474,10 @@ function ServiceInner({ slug }: { slug: string }) {
 
       {/* ══════ USE CASES — par secteur ══════ */}
       {service.useCases.cases.length > 0 && (
-        <section className="py-14 sm:py-20 px-4 sm:px-6 bg-dark-2">
+        <section className="py-14 sm:py-20 px-5 sm:px-6 bg-dark-2">
           <div className="max-w-5xl mx-auto">
             <div className="anim fade-up section-badge mb-5"><Sparkles size={12} /> {t({ fr: "Cas d'usage", en: "Use cases" })}</div>
-            <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl lg:text-3xl font-bold mb-5 leading-tight">
+            <h2 className="anim fade-up delay-1 font-display text-lg sm:text-xl lg:text-3xl font-bold mb-5 leading-tight">
               {t(service.useCases.headline)}
             </h2>
             <p className="anim fade-up delay-2 text-white/55 text-sm sm:text-base leading-relaxed mb-12 max-w-3xl">
@@ -534,11 +538,11 @@ function ServiceInner({ slug }: { slug: string }) {
 
       {/* ══════ STACK technique — Logos colorés en grille ══════ */}
       {service.stack.tools.length > 0 && (
-        <section className="py-14 sm:py-20 px-4 sm:px-6">
+        <section className="py-14 sm:py-20 px-5 sm:px-6">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
               <div className="anim fade-up section-badge mx-auto mb-5"><Cpu size={12} /> {t({ fr: "Stack technique", en: "Tech stack" })}</div>
-              <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl lg:text-3xl font-bold mb-4 leading-tight">
+              <h2 className="anim fade-up delay-1 font-display text-lg sm:text-xl lg:text-3xl font-bold mb-4 leading-tight">
                 {t(service.stack.headline)}
               </h2>
               <p className="anim fade-up delay-2 text-white/55 text-sm sm:text-base leading-relaxed max-w-3xl mx-auto">
@@ -572,11 +576,11 @@ function ServiceInner({ slug }: { slug: string }) {
 
       {/* ══════ PRICING ══════ */}
       {service.pricing.tiers.length > 0 && (
-        <section className="py-14 sm:py-20 px-4 sm:px-6 bg-dark-2">
+        <section className="py-14 sm:py-20 px-5 sm:px-6 bg-dark-2">
           <div className="max-w-5xl mx-auto">
             <div className="text-center mb-12">
               <div className="anim fade-up section-badge mx-auto mb-5"><Tag size={12} /> {t({ fr: "Tarifs", en: "Pricing" })}</div>
-              <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl lg:text-3xl font-bold mb-4 leading-tight">
+              <h2 className="anim fade-up delay-1 font-display text-lg sm:text-xl lg:text-3xl font-bold mb-4 leading-tight">
                 {t(service.pricing.headline)}
               </h2>
               <p className="anim fade-up delay-2 text-white/55 text-sm sm:text-base leading-relaxed max-w-3xl mx-auto">
@@ -631,11 +635,11 @@ function ServiceInner({ slug }: { slug: string }) {
 
       {/* ══════ FAQ ══════ */}
       {service.faq.length > 0 && (
-        <section className="py-14 sm:py-20 px-4 sm:px-6">
+        <section className="py-14 sm:py-20 px-5 sm:px-6">
           <div className="max-w-3xl mx-auto">
             <div className="text-center mb-10">
               <div className="anim fade-up section-badge mx-auto mb-5">? FAQ</div>
-              <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl lg:text-3xl font-bold leading-tight">
+              <h2 className="anim fade-up delay-1 font-display text-lg sm:text-xl lg:text-3xl font-bold leading-tight">
                 {t({ fr: "Questions fréquentes", en: "Frequently asked questions" })}
               </h2>
             </div>
@@ -675,7 +679,7 @@ function ServiceInner({ slug }: { slug: string }) {
 
       {/* ══════ Services connexes ══════ */}
       {service.relatedSlugs.length > 0 && (
-        <section className="py-14 sm:py-20 px-4 sm:px-6 bg-dark-2">
+        <section className="py-14 sm:py-20 px-5 sm:px-6 bg-dark-2">
           <div className="max-w-5xl mx-auto">
             <div className="anim fade-up section-badge mb-5">→ {t({ fr: "Services connexes", en: "Related services" })}</div>
             <h2 className="anim fade-up delay-1 font-display text-xl sm:text-2xl font-bold mb-8 leading-tight">
@@ -713,9 +717,9 @@ function ServiceInner({ slug }: { slug: string }) {
       )}
 
       {/* ══════ CTA Final ══════ */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6">
+      <section className="py-16 sm:py-24 px-5 sm:px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="anim fade-up font-display text-2xl sm:text-3xl lg:text-4xl font-bold mb-5 leading-tight">
+          <h2 className="anim fade-up font-display text-xl sm:text-2xl lg:text-4xl font-bold mb-5 leading-tight">
             {t(service.cta.headline)}
           </h2>
           <p className="anim fade-up delay-1 text-white/55 text-sm sm:text-base lg:text-lg mb-8 leading-relaxed max-w-2xl mx-auto">
@@ -742,7 +746,7 @@ function ServiceInner({ slug }: { slug: string }) {
       </section>
 
       {/* ══════ Footer — identique à la home + section Services pour l'interconnexion ══════ */}
-      <footer className="border-t border-border py-10 sm:py-14 px-4 sm:px-6">
+      <footer className="border-t border-border py-10 sm:py-14 px-5 sm:px-6">
         <div className="max-w-6xl mx-auto">
           {/* Sections de liens (Brand + Nav + Services) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1.2fr] gap-8 sm:gap-10 lg:gap-12 mb-8 sm:mb-10">
