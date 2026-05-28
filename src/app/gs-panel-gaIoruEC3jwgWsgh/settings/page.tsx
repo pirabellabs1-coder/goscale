@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   Save, Globe, Mail, Bell, Shield, Lock, Eye, EyeOff,
-  AlertTriangle, CheckCircle2, Loader2,
+  AlertTriangle, CheckCircle2, Loader2, Image as ImageIcon, Upload, Trash2,
 } from "lucide-react";
 
 type SettingsState = {
@@ -17,6 +17,8 @@ type SettingsState = {
   notify_messages: boolean;
   maintenance_mode: boolean;
   maintenance_message: string;
+  logo_url: string;
+  about_photo_url: string;
 };
 
 const defaultSettings: SettingsState = {
@@ -30,6 +32,8 @@ const defaultSettings: SettingsState = {
   notify_messages: true,
   maintenance_mode: false,
   maintenance_message: "",
+  logo_url: "",
+  about_photo_url: "",
 };
 
 export default function SettingsPage() {
@@ -114,6 +118,35 @@ export default function SettingsPage() {
                 onChange={(e) => upd("site_description", e.target.value)}
               />
             </div>
+          </div>
+        </div>
+
+        {/* Identité visuelle */}
+        <div className="bg-dark-2 rounded-2xl border border-border p-6">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-xl bg-purple/10 flex items-center justify-center">
+              <ImageIcon size={18} className="text-purple" />
+            </div>
+            <h3 className="font-display text-lg font-bold">Identité visuelle</h3>
+            <span className="ml-auto text-[10px] uppercase tracking-widest text-white/40">visible publiquement</span>
+          </div>
+          <div className="grid sm:grid-cols-2 gap-6">
+            <ImageField
+              label="Logo"
+              hint="Carré recommandé. Affiché dans la barre de navigation."
+              value={s.logo_url}
+              fallback="/logo.jpg"
+              rounded="rounded-xl"
+              onChange={(url) => upd("logo_url", url)}
+            />
+            <ImageField
+              label="Photo « À propos »"
+              hint="Portrait 4:5 recommandé. Affichée dans la section À propos."
+              value={s.about_photo_url}
+              fallback="https://i.postimg.cc/tR89Dwj9/Whats-App-Image-2026-05-10-at-01-30-44.jpg"
+              rounded="rounded-2xl"
+              onChange={(url) => upd("about_photo_url", url)}
+            />
           </div>
         </div>
 
@@ -242,6 +275,86 @@ export default function SettingsPage() {
 
         {/* Security — admin account */}
         <SecuritySection />
+      </div>
+    </div>
+  );
+}
+
+function ImageField({
+  label, hint, value, fallback, rounded, onChange,
+}: {
+  label: string;
+  hint: string;
+  value: string;
+  fallback: string;
+  rounded: string;
+  onChange: (url: string) => void;
+}) {
+  const [uploading, setUploading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // allow re-selecting the same file
+    if (!file) return;
+    setErr(null);
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json();
+      if (res.ok && data.url) {
+        onChange(data.url);
+      } else {
+        setErr(data.error || "Échec de l'upload");
+      }
+    } catch {
+      setErr("Erreur réseau");
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const preview = value || fallback;
+
+  return (
+    <div>
+      <label className="text-xs text-white/40 mb-1.5 block">{label}</label>
+      <div className="flex items-start gap-4">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={preview}
+          alt={label}
+          className={`h-20 w-20 object-cover border border-border bg-dark shrink-0 ${rounded}`}
+        />
+        <div className="flex flex-col gap-2 min-w-0">
+          <div className="flex items-center gap-2">
+            <label className="btn-dark px-3 py-2 rounded-lg text-xs flex items-center gap-1.5 cursor-pointer">
+              {uploading ? <Loader2 size={13} className="animate-spin" /> : <Upload size={13} />}
+              {uploading ? "Envoi..." : "Choisir une image"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp,image/gif,image/avif"
+                className="hidden"
+                onChange={handleFile}
+                disabled={uploading}
+              />
+            </label>
+            {value && (
+              <button
+                type="button"
+                onClick={() => onChange("")}
+                className="px-2.5 py-2 rounded-lg text-xs text-red-400 hover:bg-red-500/10 flex items-center gap-1.5"
+              >
+                <Trash2 size={13} /> Retirer
+              </button>
+            )}
+          </div>
+          <p className="text-[11px] text-white/30 leading-snug">{hint}</p>
+          {!value && <p className="text-[11px] text-white/25">Aucune image personnalisée — l&apos;image par défaut est utilisée.</p>}
+          {err && <p className="text-[11px] text-red-400">{err}</p>}
+        </div>
       </div>
     </div>
   );

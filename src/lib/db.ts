@@ -629,10 +629,15 @@ async function ensureSettingsTable() {
       notify_messages BOOLEAN NOT NULL DEFAULT TRUE,
       maintenance_mode BOOLEAN NOT NULL DEFAULT FALSE,
       maintenance_message TEXT NOT NULL DEFAULT 'Le site est en maintenance. Nous revenons rapidement.',
+      logo_url TEXT NOT NULL DEFAULT '',
+      about_photo_url TEXT NOT NULL DEFAULT '',
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       CONSTRAINT site_settings_singleton CHECK (id = 1)
     )
   `;
+  // Idempotent migrations for existing installs
+  await sql`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS logo_url TEXT NOT NULL DEFAULT ''`;
+  await sql`ALTER TABLE site_settings ADD COLUMN IF NOT EXISTS about_photo_url TEXT NOT NULL DEFAULT ''`;
   // Seed the singleton row if not exists
   await sql`INSERT INTO site_settings (id) VALUES (1) ON CONFLICT (id) DO NOTHING`;
   _settingsEnsured = true;
@@ -655,6 +660,8 @@ export async function updateSettings(data: Partial<{
   notify_messages: boolean;
   maintenance_mode: boolean;
   maintenance_message: string;
+  logo_url: string;
+  about_photo_url: string;
 }>) {
   await ensureSettingsTable();
   const sets: string[] = [];

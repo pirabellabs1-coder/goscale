@@ -36,6 +36,7 @@ export async function PUT(request: Request) {
       "contact_email", "contact_phone", "contact_whatsapp", "contact_address",
       "notify_email", "notify_messages",
       "maintenance_mode", "maintenance_message",
+      "logo_url", "about_photo_url",
     ] as const;
     const patch: Record<string, unknown> = {};
     for (const k of allowed) {

@@ -765,6 +765,8 @@ function HomePage() {
     contact_address: string;
     maintenance_mode: boolean;
     maintenance_message: string;
+    logo_url: string;
+    about_photo_url: string;
   };
   const [settings, setSettings] = useState<SiteSettings | null>(null);
 
@@ -899,7 +901,7 @@ function HomePage() {
       <div className="bg-dark text-white min-h-screen flex items-center justify-center p-6">
         <div className="max-w-md text-center">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.jpg" alt={settings.site_name || "GoScaleStudio"} className="h-16 w-16 rounded-2xl object-cover mx-auto mb-6" />
+          <img src={settings.logo_url || "/logo.jpg"} alt={settings.site_name || "GoScaleStudio"} className="h-16 w-16 rounded-2xl object-cover mx-auto mb-6" />
           <h1 className="font-display text-3xl font-bold mb-4">
             <span className="gradient-text">{(settings.site_name || "GoScale").replace(/Studio$/i, "")}</span>
             {settings.site_name?.toLowerCase().endsWith("studio") ? "Studio" : ""}
@@ -938,7 +940,7 @@ function HomePage() {
         <div className="max-w-7xl mx-auto px-5 sm:px-6 py-4 flex items-center justify-between gap-3">
           <button onClick={() => scrollTo("hero")} className="flex items-center gap-2 shrink-0">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.jpg" alt={fullName} className="h-8 w-8 rounded-lg object-cover" />
+            <img src={settings?.logo_url || "/logo.jpg"} alt={fullName} className="h-8 w-8 rounded-lg object-cover" />
             <span className="font-display text-base sm:text-xl font-bold"><span className="gradient-text">{brandPrefix}</span>{brandSuffix}</span>
           </button>
           {/* Desktop nav (lg+ pour éviter le débordement à 6 liens + 2 controls) */}
@@ -1761,7 +1763,7 @@ function HomePage() {
                 <div className="relative glass rounded-3xl p-2 overflow-hidden">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src="https://i.postimg.cc/tR89Dwj9/Whats-App-Image-2026-05-10-at-01-30-44.jpg"
+                    src={settings?.about_photo_url || "https://i.postimg.cc/tR89Dwj9/Whats-App-Image-2026-05-10-at-01-30-44.jpg"}
                     alt="Fidah IMOROU BOUKARI - CEO GoScaleStudio"
                     className="w-full aspect-[4/5] object-cover rounded-2xl"
                   />
@@ -2134,22 +2136,8 @@ function HomePage() {
       <div className="divider max-w-4xl mx-auto" />
 
       {/* ── FAQ ── */}
+      {/* FAQPage JSON-LD is emitted once in app/layout.tsx — duplicating it here invalidates both for Google. */}
       <section id="faq" className="py-16 sm:py-24 px-5 sm:px-6">
-        {/* FAQPage structured data for Google rich snippets and AI assistants — emits both languages */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: faqItems.map((f) => ({
-                "@type": "Question",
-                name: lang === "en" ? f.q.en : f.q.fr,
-                acceptedAnswer: { "@type": "Answer", text: lang === "en" ? f.a.en : f.a.fr },
-              })),
-            }),
-          }}
-        />
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-10 sm:mb-12">
             <div className="anim fade-up section-badge mx-auto mb-4"><MessageSquare size={12} /> FAQ</div>
