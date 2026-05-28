@@ -43,6 +43,7 @@ export async function POST(request: Request) {
       image_url: body.image_url || body.img || "",
       video_url: body.video_url || "",
       images: Array.isArray(body.images) ? body.images.filter((u: unknown) => typeof u === "string") : [],
+      featured: !!body.featured,
       sort_order: body.sort_order || body.order || 0,
     });
     return NextResponse.json(project, { status: 201 });

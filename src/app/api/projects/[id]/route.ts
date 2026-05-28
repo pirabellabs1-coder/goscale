@@ -45,6 +45,12 @@ export async function PUT(request: Request, context: Ctx) {
       const project = await duplicateProjectById(parseInt(id));
       return NextResponse.json(project, { status: 201 });
     }
+    if (body.action === "toggle-featured") {
+      const current = await getProjectById(parseInt(id));
+      if (!current) return NextResponse.json({ error: "Projet introuvable" }, { status: 404 });
+      const project = await updateProject(parseInt(id), { featured: !current.featured });
+      return NextResponse.json(project);
+    }
 
     const project = await updateProject(parseInt(id), {
       title: body.title,
@@ -61,6 +67,7 @@ export async function PUT(request: Request, context: Ctx) {
       image_url: body.image_url ?? body.img,
       video_url: body.video_url,
       images: Array.isArray(body.images) ? body.images.filter((u: unknown) => typeof u === "string") : undefined,
+      featured: body.featured,
       sort_order: body.sort_order ?? body.order,
     });
     return NextResponse.json(project);

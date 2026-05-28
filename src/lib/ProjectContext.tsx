@@ -18,6 +18,7 @@ export interface Project {
   image_url: string;
   video_url: string;
   images?: string[];
+  featured?: boolean;
   sort_order: number;
   created_at: string;
   updated_at: string;
@@ -44,6 +45,7 @@ interface ProjectContextType {
   updateProject: (id: number, data: Partial<Project>) => Promise<void>;
   deleteProject: (id: number) => Promise<void>;
   toggleStatus: (id: number) => Promise<void>;
+  toggleFeatured: (id: number) => Promise<void>;
   duplicateProject: (id: number) => Promise<void>;
   markMessageRead: (id: number) => Promise<void>;
   deleteMessage: (id: number) => Promise<void>;
@@ -130,6 +132,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     if (res.ok) await refreshProjects();
   };
 
+  const toggleFeatured = async (id: number) => {
+    const res = await fetch(`/api/projects/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "toggle-featured" }),
+    });
+    if (res.ok) await refreshProjects();
+  };
+
   const duplicateProject = async (id: number) => {
     const res = await fetch(`/api/projects/${id}`, {
       method: "PUT",
@@ -178,6 +189,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         updateProject,
         deleteProject,
         toggleStatus,
+        toggleFeatured,
         duplicateProject,
         markMessageRead,
         deleteMessage,

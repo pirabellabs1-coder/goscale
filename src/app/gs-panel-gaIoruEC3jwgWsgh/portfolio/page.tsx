@@ -5,7 +5,7 @@ import { useProjects, Project } from "@/lib/ProjectContext";
 import {
   Plus, Search, Eye, EyeOff, Copy, Trash2, Edit3, X, Save,
   ChevronLeft, ExternalLink, Video, Image as ImageIcon,
-  Upload, AlertTriangle, Loader2,
+  Upload, AlertTriangle, Loader2, Star,
 } from "lucide-react";
 import ConfirmModal from "@/components/admin/ConfirmModal";
 
@@ -20,7 +20,7 @@ const categoryColors: Record<string, string> = {
 };
 
 export default function PortfolioPage() {
-  const { projects, addProject, updateProject, deleteProject, toggleStatus, duplicateProject, loading } = useProjects();
+  const { projects, addProject, updateProject, deleteProject, toggleStatus, toggleFeatured, duplicateProject, loading } = useProjects();
   const [filter, setFilter] = useState("Tous");
   const [search, setSearch] = useState("");
   const [showForm, setShowForm] = useState(false);
@@ -36,6 +36,7 @@ export default function PortfolioPage() {
     image_url: "",
     video_url: "",
     images: [] as string[],
+    featured: false,
     sort_order: 0,
   });
 
@@ -57,6 +58,7 @@ export default function PortfolioPage() {
       image_url: "",
       video_url: "",
       images: [],
+      featured: false,
       sort_order: projects.length + 1,
     });
     setShowForm(true);
@@ -81,6 +83,7 @@ export default function PortfolioPage() {
       image_url: p.image_url,
       video_url: p.video_url || "",
       images: Array.isArray(p.images) ? p.images : [],
+      featured: p.featured ?? false,
       sort_order: p.sort_order,
     });
     setShowForm(true);
@@ -329,18 +332,37 @@ export default function PortfolioPage() {
                     <h3 className="font-semibold text-sm truncate cursor-pointer hover:text-brand transition-colors" onClick={() => setViewProject(p)}>
                       {p.title}
                     </h3>
-                    <div className="flex items-center gap-2 mt-1">
+                    <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <span className={`text-xs px-2 py-0.5 rounded-full border ${colorMap[color] || colorMap.brand}`}>
                         {p.category}
                       </span>
+                      {p.featured && (
+                        <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber/15 text-amber border border-amber/30 flex items-center gap-1">
+                          <Star size={10} className="fill-amber" /> Vedette
+                        </span>
+                      )}
                       {p.result && <span className="text-xs text-white/40">&middot; {p.result}</span>}
                     </div>
                   </div>
-                  <div
-                    onClick={() => toggleStatus(p.id)}
-                    className={`toggle-track flex-shrink-0 cursor-pointer ${p.status === "published" ? "on" : ""}`}
-                  >
-                    <div className="toggle-knob" />
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => toggleFeatured(p.id)}
+                      title={p.featured ? "Retirer de la vedette" : "Mettre en vedette"}
+                      className={`p-1.5 rounded-lg border transition-colors ${
+                        p.featured
+                          ? "bg-amber/15 border-amber/30 text-amber"
+                          : "border-border text-white/30 hover:text-amber hover:border-amber/30"
+                      }`}
+                    >
+                      <Star size={15} className={p.featured ? "fill-amber" : ""} />
+                    </button>
+                    <div
+                      onClick={() => toggleStatus(p.id)}
+                      className={`toggle-track cursor-pointer ${p.status === "published" ? "on" : ""}`}
+                    >
+                      <div className="toggle-knob" />
+                    </div>
                   </div>
                 </div>
                 <p className="text-xs text-white/50 mb-4 line-clamp-2">{p.description}</p>
@@ -566,6 +588,20 @@ export default function PortfolioPage() {
                 </div>
                 <span className="text-xs text-white/40">
                   {form.status === "published" ? "Publi\u00e9" : "Brouillon"}
+                </span>
+              </div>
+              <div className="flex items-center gap-3">
+                <label className="text-sm text-white/50 flex items-center gap-1.5">
+                  <Star size={14} className={form.featured ? "fill-amber text-amber" : "text-white/40"} /> En vedette :
+                </label>
+                <div
+                  onClick={() => setForm({ ...form, featured: !form.featured })}
+                  className={`toggle-track cursor-pointer ${form.featured ? "on" : ""}`}
+                >
+                  <div className="toggle-knob" />
+                </div>
+                <span className="text-xs text-white/40">
+                  {form.featured ? "Affich\u00e9 en priorit\u00e9" : "Affichage normal"}
                 </span>
               </div>
               <button onClick={handleSave} className="btn-primary px-6 py-3 rounded-xl text-sm flex items-center justify-center gap-2 mt-2">

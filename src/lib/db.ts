@@ -112,6 +112,7 @@ export async function createTables() {
       status TEXT NOT NULL DEFAULT 'draft',
       image_url TEXT NOT NULL DEFAULT '',
       video_url TEXT NOT NULL DEFAULT '',
+      featured BOOLEAN NOT NULL DEFAULT FALSE,
       sort_order INT NOT NULL DEFAULT 0,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -123,6 +124,7 @@ export async function createTables() {
   await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS long_description_en TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS result_en TEXT NOT NULL DEFAULT ''`;
   await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS images JSONB NOT NULL DEFAULT '[]'::jsonb`;
+  await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS featured BOOLEAN NOT NULL DEFAULT FALSE`;
 
   await sql`
     CREATE TABLE IF NOT EXISTS messages (
@@ -152,6 +154,7 @@ async function ensureProjectsBilingual() {
     await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS long_description_en TEXT NOT NULL DEFAULT ''`;
     await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS result_en TEXT NOT NULL DEFAULT ''`;
     await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS images JSONB NOT NULL DEFAULT '[]'::jsonb`;
+    await sql`ALTER TABLE projects ADD COLUMN IF NOT EXISTS featured BOOLEAN NOT NULL DEFAULT FALSE`;
     _projectsBilingualEnsured = true;
   } catch {
     // table doesn't exist yet — createTables() will handle it
@@ -161,7 +164,7 @@ async function ensureProjectsBilingual() {
 export async function getProjects() {
   await ensureProjectsBilingual();
   const { rows } = await sql`
-    SELECT * FROM projects ORDER BY sort_order ASC, created_at DESC
+    SELECT * FROM projects ORDER BY featured DESC, sort_order ASC, created_at DESC
   `;
   return rows;
 }
@@ -169,7 +172,7 @@ export async function getProjects() {
 export async function getPublishedProjects() {
   await ensureProjectsBilingual();
   const { rows } = await sql`
-    SELECT * FROM projects WHERE status = 'published' ORDER BY sort_order ASC, created_at DESC
+    SELECT * FROM projects WHERE status = 'published' ORDER BY featured DESC, sort_order ASC, created_at DESC
   `;
   return rows;
 }
@@ -194,6 +197,7 @@ export async function createProject(data: {
   image_url: string;
   video_url?: string;
   images?: string[];
+  featured?: boolean;
   sort_order: number;
 }) {
   await ensureProjectsBilingual();
@@ -204,7 +208,7 @@ export async function createProject(data: {
       description, description_en,
       long_description, long_description_en,
       result, result_en,
-      tools, status, image_url, video_url, images, sort_order
+      tools, status, image_url, video_url, images, featured, sort_order
     )
     VALUES (
       ${data.title}, ${data.title_en || ""}, ${data.category},
@@ -212,7 +216,7 @@ export async function createProject(data: {
       ${data.long_description}, ${data.long_description_en || ""},
       ${data.result}, ${data.result_en || ""},
       ${data.tools}, ${data.status}, ${data.image_url}, ${data.video_url || ""},
-      ${imgs}::jsonb, ${data.sort_order}
+      ${imgs}::jsonb, ${data.featured ?? false}, ${data.sort_order}
     )
     RETURNING *
   `;
@@ -236,6 +240,7 @@ export async function updateProject(
     image_url: string;
     video_url: string;
     images: string[];
+    featured: boolean;
     sort_order: number;
   }>
 ) {
@@ -258,6 +263,7 @@ export async function updateProject(
   if (data.image_url !== undefined) { sets.push(`image_url = $${idx++}`); values.push(data.image_url); }
   if (data.video_url !== undefined) { sets.push(`video_url = $${idx++}`); values.push(data.video_url); }
   if (data.images !== undefined) { sets.push(`images = $${idx++}::jsonb`); values.push(JSON.stringify(data.images)); }
+  if (data.featured !== undefined) { sets.push(`featured = $${idx++}`); values.push(data.featured); }
   if (data.sort_order !== undefined) { sets.push(`sort_order = $${idx++}`); values.push(data.sort_order); }
 
   if (sets.length === 0) return null;

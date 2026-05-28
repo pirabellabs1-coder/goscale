@@ -1695,6 +1695,11 @@ function HomePage() {
                         <span className={`absolute top-4 left-4 text-xs font-bold px-3 py-1 rounded-full border ${colorMap[cat] || colorMap.brand}`}>
                           {trCategory(p.category)}
                         </span>
+                        {p.featured && (
+                          <span className="absolute top-14 left-4 text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-amber/90 text-black flex items-center gap-1 shadow-lg">
+                            <Star size={11} className="fill-black" /> {t({ fr: "En vedette", en: "Featured" })}
+                          </span>
+                        )}
                         {p.video_url && (
                           <span className="absolute top-4 right-4 text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-md bg-black/60 backdrop-blur-sm text-white/80 flex items-center gap-1">
                             <Play size={10} /> {t({ fr: "Vidéo", en: "Video" })}
